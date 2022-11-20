@@ -1,6 +1,7 @@
+from PIL import Image
 import fitz
 import re
-from fitz import Rect
+import io
 
 
 def _get_sensitive_data(text: str) -> (str, str):
@@ -163,7 +164,7 @@ class PDF:
         for page_number, pix in enumerate(self._get_pixmap(dpi=500 if good_quality else 100)):
             pix.save(f"{self.filename}_{page_number}_{500 if good_quality else 100}_dpi.png")
 
-    def search_for_words(self, args: list[str]) -> dict[list[Rect]]:
+    def search_for_words(self, args: list[str]) -> dict[list[fitz.Rect]]:
         """
         Funkcja search_for_words wyszukuje w PDFie podane w liście wyrażenia tekstowe i zwraca ich współrzędne
 
@@ -186,11 +187,12 @@ class PDF:
                     page.add_highlight_annot(res)
             doc.save("highlighted.pdf")
 
-    def hide_text(self, args: list[str]):
+    def hide_text(self, args: list[str], path: str = "hidden.pdf"):
         """
         Funkcja hide_text ukrywa w PDFie podane w liście wyrażenia tekstowe i zapisuje do nowego PDFu
 
         :param args: Lista słów/wyrażeń do zaznaczenia
+        :param path: Scieżka do zapisu przetworzonego pliku
         """
         with fitz.open(self.filepath) as doc:
             for page in doc:
@@ -207,10 +209,14 @@ class PDF:
                         for area in areas
                     ]
                     page.apply_redactions()
-            doc.save("hidden.pdf")
+            doc.save(path)
 
-    def hide_sensitive(self):
-        """Funkcja hide_sensitive ukrywa w PDFie wrażliwe wyrażenia tekstowe i zapisuje do nowego PDFu"""
+    def hide_sensitive(self, path: str = "sensitive.pdf"):
+        """
+        Funkcja hide_sensitive ukrywa w PDFie wrażliwe wyrażenia tekstowe i zapisuje do nowego PDFu
+
+        :param path: Scieżka do zapisu przetworzonego pliku
+        """
         with fitz.open(self.filepath) as doc:
             for page in doc:
                 sensitive = _get_sensitive_data(page.get_text("text").split('\n'))
@@ -227,9 +233,4 @@ class PDF:
                             for area in areas
                         ]
                         page.apply_redactions()
-            doc.save("sensitive.pdf")
-
-
-pdf = PDF("invoice.pdf")
-pdf.hide_sensitive()
-
+            doc.save(path)

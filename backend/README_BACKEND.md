@@ -15,26 +15,7 @@ Polecam **pyenv**: https://github.com/pyenv/pyenv
 >Ctrl + shift + p -> Python: Select Interpreter
 >```
 
->Instalujemy Flaska i inne zaleności
+>Instalujemy zależności
 >```PYTHON
->pip install Flask
->    lub (w przyszłości)
 >pip install -r requirements.txt
 >```
-
->Ustawiamy zmienne środowiskowe.
->Otwieramy terminal ***w folderze Anonimization-System/***
->
-> Linux/MacOS:
-> ```BASH
-> $ export FLASK_APP=flaskr
-> $ export FLASK_ENV=development
-> $ flask run
-> ```
-> Windows:
-> ```POWERSHELL
-> > $env:FLASK_APP = "flaskr"
-> > $env:FLASK_ENV = "development"
-> > flask run
-> ```
-
