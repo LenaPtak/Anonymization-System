@@ -1,6 +1,7 @@
+from PIL import Image
 import fitz
 import re
-from fitz import Rect
+import io
 
 
 def _get_sensitive_data(text: str) -> str:
@@ -144,7 +145,7 @@ class PDF:
         for page_number, pix in enumerate(self._get_pixmap(dpi=500 if good_quality else 100)):
             pix.save(f"{self.filename}_{page_number}_{500 if good_quality else 100}_dpi.png")
 
-    def search_for_words(self, args: list[str]) -> dict[list[Rect]]:
+    def search_for_words(self, args: list[str]) -> dict[list[fitz.Rect]]:
         """
         Funkcja search_for_words wyszukuje w PDFie podane w liście wyrażenia tekstowe i zwraca ich współrzędne
 
@@ -214,3 +215,23 @@ class PDF:
                     ]
                     page.apply_redactions()
             doc.save(path)
+
+    def extract_images(self) -> list[str]:
+        """
+        Funkcja extract_images wyszukuje w PDFie obrazki i zapisuje je w folderze /images
+
+        :return: Lista nazw obrazków znalezionych podczas procesowania dla badanego pliku PDF
+        """
+        images_in_pdf = []
+        with fitz.open(self.filepath) as doc:
+            for page_index, page in enumerate(doc):
+                for image_index, img in enumerate(page.get_images(), start=1):
+                    xref = img[0]  # get the XREF of the image
+                    base_image = doc.extract_image(xref)
+                    image_bytes = base_image["image"]  # extract the image bytes
+                    image_ext = base_image["ext"]  # get the image extension
+                    image = Image.open(io.BytesIO(image_bytes))  # load it to PIL
+                    image_name = f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
+                    images_in_pdf.append(image_name)
+                    image.save(open(image_name, "wb"))
+        return images_in_pdf
