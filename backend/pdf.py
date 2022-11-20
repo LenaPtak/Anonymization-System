@@ -4,18 +4,37 @@ import re
 import io
 
 
-def _get_sensitive_data(text: str) -> str:
+def _get_sensitive_data(text: str) -> (str, str):
     """
     Funkcja _get_sensitive_data wyszukuje w PDFie dopasowań wyrażeń regularnych
 
     :param text: Tekst będący źródłem przeszukiwania (tutaj zawartość PDF)
-    :return: Dopasowane wyrażenie w postaci string
+    :return: Dopasowane wyrażenie w postaci tuple (nazwa, dopasowanie)
     """
-    email_regex = r"([\w\.\d]+\@[\w\d]+\.[\w\d]+)"
+    regexes = {
+        "Email address": r"([\w\.\d]+\@[\w\d]+\.[\w\d]+)",
+        "U.S.Social Security No": r"(\b(?!000|666|9\d{2})([0-8]\d{2}|7([0-6]\d))([-]?|\s{1})(?!00)\d\d\2(?!0000)\d{4}\b)", # noqa E501
+        "IPV4 address": r"(^\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}$)",
+        "Dates in MM/DD/YYYY format": r"(^([1][12]|[0]?[1-9])[\/-]([3][01]|[12]\d|[0]?[1-9])[\/-](\d{4}|\d{2})$)",
+        "MasterCard number": r"(^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$)",
+        "Visa card number": r"(\b([4]\d{3}[\s]\d{4}[\s]\d{4}[\s]\d{4}|[4]\d{3}[-]\d{4}[-]\d{4}[-]\d{4}|[4]\d{3}[.]\d{4}[.]\d{4}[.]\d{4}|[4]\d{3}\d{4}\d{4}\d{4})\b)", # noqa E501
+        "American Express card number": r"(^3[47][0-9]{13}$)",
+        "U.S. ZIP code": r"(^((\d{5}-\d{4})|(\d{5})|([A-Z]\d[A-Z]\s\d[A-Z]\d))$)",
+        "Invoice No.": r"([A-Z]{2,4}-+[0-9]{4,12})",
+        "File path": r"(\\[^\\]+$	)",
+        "Dollar amount": r"(\$[0-9]*.[0-9][0-9])",
+        "Date type 1": r"([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\})",  # 2003-08-06
+        "Date type 2": r"([A-Z][a-z][a-z] [0-9][0-9]*, [0-9]\{4\})",  # Jan 3, 2003
+        "Date type 3": r"(^(\d{1,2})\/(\d{1,2})\/(\d{2}|(19|20)\d{2})$)",  # DD/MM/YY or DD/MM/YYYY or MM/DD/YY or MM/DD/YYYY # noqa E501
+        "Phone No.": r"((^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$))",
+        "Credit card": r"(^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|622((12[6-9]|1[3-9][0-9])|([2-8][0-9][0-9])|(9(([0-1][0-9])|(2[0-5]))))[0-9]{10}|64[4-9][0-9]{13}|65[0-9]{14}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})*)$" # noqa E501
+    }
+
     for line in text:
-        if re.search(email_regex, line, re.IGNORECASE):
-            search = re.search(email_regex, line, re.IGNORECASE)
-            yield search.group(1)
+        for regex_name, regex_pattern in regexes.items():
+            if re.search(regex_pattern, line, re.IGNORECASE):
+                search = re.search(regex_pattern, line, re.IGNORECASE)
+                yield regex_name, search.group(1)
 
 
 class PDF:
@@ -201,37 +220,17 @@ class PDF:
         with fitz.open(self.filepath) as doc:
             for page in doc:
                 sensitive = _get_sensitive_data(page.get_text("text").split('\n'))
-                for word in sensitive:
-                    areas = page.search_for(word, quads=True)
-                    [
-                        page.add_redact_annot(
-                            area,
-                            text="XXX",
-                            fontsize=6,
-                            align=fitz.TEXT_ALIGN_CENTER,
-                            fill=(0.9, 0.9, 0.9),
-                        )
-                        for area in areas
-                    ]
-                    page.apply_redactions()
+                for datatype, word in set(sensitive):
+                    if areas := page.search_for(word, quads=True):
+                        [
+                            page.add_redact_annot(
+                                area,
+                                text=datatype,
+                                fontsize=10,
+                                align=fitz.TEXT_ALIGN_CENTER,
+                                fill=(0.1, 0.9, 0.9),
+                            )
+                            for area in areas
+                        ]
+                        page.apply_redactions()
             doc.save(path)
-
-    def extract_images(self) -> list[str]:
-        """
-        Funkcja extract_images wyszukuje w PDFie obrazki i zapisuje je w folderze /images
-
-        :return: Lista nazw obrazków znalezionych podczas procesowania dla badanego pliku PDF
-        """
-        images_in_pdf = []
-        with fitz.open(self.filepath) as doc:
-            for page_index, page in enumerate(doc):
-                for image_index, img in enumerate(page.get_images(), start=1):
-                    xref = img[0]  # get the XREF of the image
-                    base_image = doc.extract_image(xref)
-                    image_bytes = base_image["image"]  # extract the image bytes
-                    image_ext = base_image["ext"]  # get the image extension
-                    image = Image.open(io.BytesIO(image_bytes))  # load it to PIL
-                    image_name = f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
-                    images_in_pdf.append(image_name)
-                    image.save(open(image_name, "wb"))
-        return images_in_pdf
