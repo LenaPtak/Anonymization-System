@@ -1,12 +1,16 @@
 import React from "react"
-import DragDropFile from "./components/js/DragDropFile"
+import Navbar from "./components/js/Navbar"
+import Footer from "./components/js/Footer"
+import Content from "./components/js/Content"
+import "./App.css";
 
 
 function App() {
   return (
     <div className="page">
-      <h1>React Drag & Drop</h1>
-      <DragDropFile />
+      <Navbar />
+      <Content />
+      <Footer />
      </div>
     )
 }
