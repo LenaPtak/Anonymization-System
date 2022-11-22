@@ -62,6 +62,7 @@ export default function DragDropFile() {
     }
   };
 
+
   const handleDrop = function (e) {
     e.preventDefault();
     e.stopPropagation();

@@ -18,12 +18,13 @@
   border-width: 2px;
   border-radius: 1rem;
   border-style: dashed;
-  border-color: #cbd5e1;
-  background-color: #f8fafc;
+  border-color: #cbd5e19f;
+  background-color: #21222a;
 }
 
 #label-file-upload.drag-active {
-  background-color: #ffffff;
+  background-color: #ffffff1e;
+
 }
 
 .upload-button {
@@ -33,6 +34,7 @@
   border: none;
   font-family: "Oswald", sans-serif;
   background-color: transparent;
+  color: #fff;
 }
 
 .upload-button:hover {
@@ -48,6 +50,34 @@
   right: 0px;
   bottom: 0px;
   left: 0px;
+}
+
+/* List of upload files */
+main {
+  padding: 57px 27px;
+  color: #62ff7d;
+}
+
+.main--title {
+  margin: 0;
+  margin-bottom: 20px;
+  letter-spacing: -0.05em;
+  color: #fff;
+}
+
+.main--files {
+  margin-top: 46px;
+  max-width: 400px;
+}
+
+.main--files > li {
+  line-height: 19px;
+  padding-block: 10px;
+}
+
+.main--files > li::marker {
+  font-size: 1.4rem;
+  color: #62ff7d;
 }
 
 #btn-upload-files {

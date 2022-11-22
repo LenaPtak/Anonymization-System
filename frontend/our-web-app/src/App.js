@@ -1,16 +1,18 @@
-import React from "react";
-import DragDropFile from "./components/js/DragDropFile";
+import React from "react"
+import Navbar from "./components/js/Navbar"
+import Footer from "./components/js/Footer"
+import Content from "./components/js/Content"
+import "./App.css";
+
 
 function App() {
   return (
     <div className="page">
-      <div className="header">
-        <h1>DOCUMENTS ANONYMISATION</h1>
-        <h5>Upload the files where you want to wipe sensitive data</h5>
-        <DragDropFile />
-      </div>
-    </div>
-  );
+      <Navbar />
+      <Content />
+      <Footer />
+     </div>
+    )
 }
 
 export default App;
