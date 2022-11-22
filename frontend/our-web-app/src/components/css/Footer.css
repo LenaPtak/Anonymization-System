@@ -1,0 +1,13 @@
+.contact {
+  color: #62ff7d;
+}
+
+.footer {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #21222a;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}

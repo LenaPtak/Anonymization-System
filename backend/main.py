@@ -48,6 +48,20 @@ async def list_files():
     return {"files": [filename for filename in directory if os.path.isfile("files/" + filename)]}
 
 
+origins = [
+    "http://localhost:3000",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.get("/")
 async def main():
     """
@@ -86,6 +100,21 @@ Endpoint do ściągania plików ze strony.
 async def download_file(filename: str):
     file_path = f"files/{filename}"
     return FileResponse(file_path, media_type='application/pdf', filename=file_path)
+
+"""
+Endpoint to uploadu i zapisu plików .jpeg, .png, .png, .pdf.
+"""
+@app.post("/upload")
+async def recieveFile(files: list[UploadFile] = File(...)):
+
+    saved = []
+    for uploaded_file in files:
+        file_location = f"files/{uploaded_file.filename}"
+        saved.append(file_location)
+        with open(file_location, "wb+") as file_object:
+            file_object.write(uploaded_file.file.read())
+
+    return {"saved": [file_location for file_location in saved]}
 
 
 if __name__ == "__main__":
