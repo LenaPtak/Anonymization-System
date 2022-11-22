@@ -1,15 +1,34 @@
-import uvicorn
-
-from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import HTMLResponse
-from fastapi.responses import FileResponse
-from fastapi import status, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-
 import os
+
+import uvicorn
+from fastapi import (
+    FastAPI,
+    File,
+    HTTPException,
+    UploadFile,
+    status,
+)
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import (
+    FileResponse,
+    HTMLResponse,
+)
 from pdf import PDF
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/api/files")
@@ -48,20 +67,6 @@ async def list_files():
     return {"files": [filename for filename in directory if os.path.isfile("files/" + filename)]}
 
 
-origins = [
-    "http://localhost:3000",
-]
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 @app.get("/")
 async def main():
     """
@@ -79,34 +84,20 @@ async def main():
     return HTMLResponse(content=content)
 
 
-origins = [
-    "http://localhost:3000",
-]
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-"""
-Endpoint do ściągania plików ze strony.
-"""
 @app.get("/download/{filename}")
 async def download_file(filename: str):
+    """
+    Endpoint do ściągania plików ze strony.
+    """
     file_path = f"files/{filename}"
     return FileResponse(file_path, media_type='application/pdf', filename=file_path)
 
-"""
-Endpoint to uploadu i zapisu plików .jpeg, .png, .png, .pdf.
-"""
-@app.post("/upload")
-async def recieveFile(files: list[UploadFile] = File(...)):
 
+@app.post("/upload")
+async def receive_file(files: list[UploadFile] = File(...)):
+    """
+    Endpoint to uploadu i zapisu plików .jpeg, .png, .png, .pdf.
+    """
     saved = []
     for uploaded_file in files:
         file_location = f"files/{uploaded_file.filename}"
