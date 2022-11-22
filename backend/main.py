@@ -79,6 +79,28 @@ async def main():
     return HTMLResponse(content=content)
 
 
+origins = [
+    "http://localhost:3000",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+"""
+Endpoint do ściągania plików ze strony.
+"""
+@app.get("/download/{filename}")
+async def download_file(filename: str):
+    file_path = f"files/{filename}"
+    return FileResponse(file_path, media_type='application/pdf', filename=file_path)
+
 """
 Endpoint to uploadu i zapisu plików .jpeg, .png, .png, .pdf.
 """
