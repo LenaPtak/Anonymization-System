@@ -47,7 +47,7 @@ export default function DragDropFile() {
       body: formData,
     };
 
-    fetch("http://127.0.0.1:8000/upload", requestOptions).then((response) =>
+    fetch("http://127.0.0.1:9876/upload", requestOptions).then((response) =>
       response.json()
     );
   };
