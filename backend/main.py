@@ -67,46 +67,5 @@ async def list_files():
     return {"files": [filename for filename in directory if os.path.isfile("files/" + filename)]}
 
 
-@app.get("/")
-async def main():
-    """
-    Tymczasowy endpoint do testów przesyłania i zwracania przetworzonych plików
-    TODO: Usunąć jak Lena skomunikuje nasze API
-    """
-    content = """
-        <body>
-        <form action="/api/files" enctype="multipart/form-data" method="post">
-        <input name="files" type="file" multiple>
-        <input type="submit">
-        </form>
-        </body>
-    """
-    return HTMLResponse(content=content)
-
-
-@app.get("/download/{filename}")
-async def download_file(filename: str):
-    """
-    Endpoint do ściągania plików ze strony.
-    """
-    file_path = f"files/{filename}"
-    return FileResponse(file_path, media_type='application/pdf', filename=file_path)
-
-
-@app.post("/upload")
-async def receive_file(files: list[UploadFile] = File(...)):
-    """
-    Endpoint to uploadu i zapisu plików .jpeg, .png, .png, .pdf.
-    """
-    saved = []
-    for uploaded_file in files:
-        file_location = f"files/{uploaded_file.filename}"
-        saved.append(file_location)
-        with open(file_location, "wb+") as file_object:
-            file_object.write(uploaded_file.file.read())
-
-    return {"saved": [file_location for file_location in saved]}
-
-
 if __name__ == "__main__":
     uvicorn.run("backend:app", host="0.0.0.0", port=9876, reload=True)

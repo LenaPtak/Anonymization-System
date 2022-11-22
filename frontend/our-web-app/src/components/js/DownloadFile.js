@@ -4,7 +4,7 @@ import "../css/DownloadFile.css";
 export default function DownloadFile() {
 
   const downloadFile = () => {
-    fetch("http://127.0.0.1:9876/download/invoice.pdf", {
+    fetch("http://127.0.0.1:9876/api/download/invoice.pdf", {
       method: "GET",
       headers: {
         "Content-Type": "application/pdf",
