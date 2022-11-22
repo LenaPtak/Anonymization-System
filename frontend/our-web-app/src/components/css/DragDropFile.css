@@ -24,6 +24,7 @@
 
 #label-file-upload.drag-active {
   background-color: #ffffff1e;
+
 }
 
 .upload-button {
@@ -78,3 +79,37 @@ main {
   font-size: 1.4rem;
   color: #62ff7d;
 }
+
+#btn-upload-files {
+  margin-top: 30px;
+  top:50%;
+  background-color:#0a0a23;
+  color: #fff;
+  border:none; 
+  border-radius:10px; 
+  padding:15px;
+  min-height:30px; 
+  min-width: 120px;
+}
+
+
+/* Files list */
+            
+ol li {
+  list-style-type: none;
+  counter-increment: item;
+  margin: 5% 5%;
+  font-size: 130%;
+}
+
+ol li:before {
+  content: counter(item);
+  margin-right: 5px;
+  font-size: 100%;
+  background-color: #0a0a23;
+  color: #fff;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+    

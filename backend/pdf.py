@@ -1,11 +1,16 @@
 import io
 import re
+from typing import (
+    List,
+    Tuple,
+    Union,
+)
 
 import fitz
 from PIL import Image
 
 
-def _get_sensitive_data(text: str) -> (str, str):
+def _get_sensitive_data(text: str) -> Tuple[str, str]:
     """
     Funkcja _get_sensitive_data wyszukuje w PDFie dopasowań wyrażeń regularnych
 
@@ -107,7 +112,7 @@ class PDF:
         with fitz.open(self.filepath) as doc:
             return doc.get_toc()
 
-    def get_text(self, arg="text") -> str | list[tuple | dict]:
+    def get_text(self, arg="text") -> Union[str, List[Union[tuple, dict]]]:
         """
         Funkcja get_text zbiera wszystkie dane tekstowe jakie odnajdzie w PDF
 

@@ -4,6 +4,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.responses import FileResponse
 from fastapi import status, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 import os
 from pdf import PDF
@@ -47,6 +48,20 @@ async def list_files():
     return {"files": [filename for filename in directory if os.path.isfile("files/" + filename)]}
 
 
+origins = [
+    "http://localhost:3000",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.get("/")
 async def main():
     """
@@ -62,6 +77,22 @@ async def main():
         </body>
     """
     return HTMLResponse(content=content)
+
+
+"""
+Endpoint to uploadu i zapisu plików .jpeg, .png, .png, .pdf.
+"""
+@app.post("/upload")
+async def recieveFile(files: list[UploadFile] = File(...)):
+
+    saved = []
+    for uploaded_file in files:
+        file_location = f"files/{uploaded_file.filename}"
+        saved.append(file_location)
+        with open(file_location, "wb+") as file_object:
+            file_object.write(uploaded_file.file.read())
+
+    return {"saved": [file_location for file_location in saved]}
 
 
 if __name__ == "__main__":
