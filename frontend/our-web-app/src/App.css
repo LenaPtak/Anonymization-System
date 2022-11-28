@@ -4,7 +4,9 @@
 
 body {
     margin: 0;
-    font-family: Inter, sans-serif;
+    font-family: Raleway, sans-serif;
+    font-weight: 300;
     height: 100vh;
-    background-color: #282D35;
+    background-color: white;
+    color: black;
 }

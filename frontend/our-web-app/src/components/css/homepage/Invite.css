@@ -1,0 +1,30 @@
+.invite {
+    display: flex;
+    align-items: center;
+    height: 30rem;
+    padding: 22rem 3rem;
+    margin-bottom: 20rem;
+}
+
+.invite__text {
+    align-items: center;
+    width: 35rem;
+    display: table-column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.invite__photo {
+    max-width: 40%;
+    margin-left: 10rem;
+}
+
+.invite__tittle {
+    font-size: 64px;
+    font-weight: bold;
+}
+
+.invite__under-tittle {
+    font-size: 24px;
+    font-weight: 100;
+}

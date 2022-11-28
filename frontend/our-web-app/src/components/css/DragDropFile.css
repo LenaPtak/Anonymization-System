@@ -18,12 +18,12 @@
   border-width: 2px;
   border-radius: 1rem;
   border-style: dashed;
-  border-color: #cbd5e19f;
-  background-color: #21222a;
+  border-color: #9090909f;
+  background-color: #eeeeee;
 }
 
 #label-file-upload.drag-active {
-  background-color: #ffffff1e;
+  background-color: #ddd;
 
 }
 
@@ -34,7 +34,7 @@
   border: none;
   font-family: "Oswald", sans-serif;
   background-color: transparent;
-  color: #fff;
+  color: black;
 }
 
 .upload-button:hover {
@@ -112,4 +112,7 @@ ol li:before {
   padding: 3px 8px;
   border-radius: 3px;
 }
-    
+
+.grey {
+  color: rgb(122, 122, 122);
+}
