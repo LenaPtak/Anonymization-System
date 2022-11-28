@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import "../css/DragDropFile.css";
+import DownloadFile from "./DownloadFile";
+
 
 const MAX_COUNT_FILES = 10;
 
 export default function DragDropFile() {
+
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fileLimit, setFileLimit] = useState(false);
   const [dragActive, setDragActive] = React.useState(false);
   const inputRef = React.useRef(null);
 
+
   const handleFiles = (e) => {
     const chosenFiles = Array.prototype.slice.call(e.target.files);
     handleUploadFiles(chosenFiles);
   };
+
 
   const handleUploadFiles = (files) => {
     const uploaded = [...uploadedFiles];
@@ -36,6 +41,7 @@ export default function DragDropFile() {
     }
   };
 
+
   const handleSubmit = (e) => {
     const formData = new FormData();
     uploadedFiles.forEach((file) => {
@@ -51,6 +57,7 @@ export default function DragDropFile() {
       response.json()
     );
   };
+
 
   const handleDrag = function (e) {
     e.preventDefault();
@@ -73,9 +80,11 @@ export default function DragDropFile() {
     }
   };
 
+
   const onButtonClick = () => {
     inputRef.current.click();
   };
+
 
   return (
     <form
@@ -124,6 +133,9 @@ export default function DragDropFile() {
           <li>{file.name}</li>
         ))}
       </ol>
+      <DownloadFile 
+        uploadedFiles={uploadedFiles}
+      />
     </form>
   );
 };
