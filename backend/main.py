@@ -1,4 +1,5 @@
 import os
+import cv2
 
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
@@ -6,6 +7,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pdf import PDF
 from starlette.responses import RedirectResponse
+
+# TODO(Jan): Make machinelearning a module
+
+# temporary until module is made - adds machinelearning/ to pythonpath
+from pathlib import Path
+import sys
+sys.path.insert(1, str(Path(__file__).parent / "./machinelearning"))
+
+# TODO(Jan): move that to top and remove flake suppresion
+from machinelearning.yolo_wrapper import YoloWrapper  # noqa: E402
+
 
 app = FastAPI()
 
@@ -51,6 +63,20 @@ async def send_processed_file_back(filename: str):
     directory = os.listdir("files/")
     if filename in directory and os.path.isfile("files/" + filename):
         pdf = PDF("files/" + filename)
+        images = pdf.extract_images()
+        # if there is something to process, instantiate the model(s) and make them do their thing
+        if images is not []:
+            # For now only Yolo is merged, therefore this is the only model that is currently implemented
+            yw = YoloWrapper()
+            for image_dir in images:
+                image = cv2.imread(image_dir)
+                # I think it was JPEGS that needed flipping, TODO(Jan): Check that
+                if image_dir[-4:] == '.JPG' or image_dir[-4:] == '.jpg' or image_dir[-5:] == '.jpeg' or image_dir[-5:] == '.JPEG':
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                results = yw.model(image)
+                image = yw.process_results(results, image)
+                cv2.imwrite(image_dir, image)
+
         pdf.hide_sensitive("files/processed_" + filename)
         return FileResponse(
             path=f"files/processed_{filename}",
