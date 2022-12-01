@@ -1,5 +1,5 @@
 [tool.black]
 line-length = 79
-target-version = ['py3.10']
+target-version = ['py310']
 skip-string-normalization = true
 include = '\.pyi?$'

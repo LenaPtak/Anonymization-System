@@ -1,25 +1,14 @@
 import os
 
 import uvicorn
-from fastapi import (
-    FastAPI,
-    File,
-    HTTPException,
-    UploadFile,
-    status,
-)
+from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import (
-    FileResponse,
-    HTMLResponse,
-)
+from fastapi.responses import FileResponse
 from pdf import PDF
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-]
+origins = ["*"]
 
 
 app.add_middleware(
@@ -32,7 +21,7 @@ app.add_middleware(
 
 
 @app.post("/api/files")
-async def capture_uploaded_pdfs(files: list[UploadFile] = File(...)):
+async def capture_uploaded_pdfs(files: list[UploadFile] = File):
     """
     Endpoint to uploadu i zapisu plików PDF.
     """
@@ -40,7 +29,7 @@ async def capture_uploaded_pdfs(files: list[UploadFile] = File(...)):
         if uploaded_file.content_type != "application/pdf":
             raise HTTPException(
                 status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-                detail=f'File {uploaded_file.filename} is not application/pdf type.',
+                detail=f"File {uploaded_file.filename} is not application/pdf type.",
             )
     saved = []
     for uploaded_file in files:
@@ -48,7 +37,7 @@ async def capture_uploaded_pdfs(files: list[UploadFile] = File(...)):
         saved.append(file_location)
         with open(file_location, "wb+") as file_object:
             file_object.write(uploaded_file.file.read())
-    return {"saved": [file_location for file_location in saved]}
+    return {"saved": saved}
 
 
 @app.get("/api/file/{filename}")
@@ -57,14 +46,24 @@ async def send_processed_file_back(filename: str):
     if filename in directory and os.path.isfile("files/" + filename):
         pdf = PDF("files/" + filename)
         pdf.hide_sensitive("files/processed_" + filename)
-        return FileResponse(path=f"files/processed_{filename}", filename=filename, media_type='application/pdf')
+        return FileResponse(
+            path=f"files/processed_{filename}",
+            filename=filename,
+            media_type="application/pdf",
+        )
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @app.get("/api/files")
 async def list_files():
     directory = os.listdir("files/")
-    return {"files": [filename for filename in directory if os.path.isfile("files/" + filename)]}
+    return {
+        "files": [
+            filename
+            for filename in directory
+            if os.path.isfile("files/" + filename)
+        ]
+    }
 
 
 if __name__ == "__main__":

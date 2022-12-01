@@ -1,10 +1,6 @@
 import io
 import re
-from typing import (
-    List,
-    Tuple,
-    Union,
-)
+from typing import List, Tuple, Union
 
 import fitz
 from PIL import Image
@@ -66,9 +62,13 @@ class PDF:
         with fitz.open(self.filepath) as doc:
             with open("raw_text.txt", "wb") as out:
                 for page in doc:  # iterate the document pages
-                    text = page.get_text(sort=True).encode("utf8")  # get plain text (is in UTF-8)
+                    text = page.get_text(sort=True).encode(
+                        "utf8"
+                    )  # get plain text (is in UTF-8)
                     out.write(text)  # write text of page
-                    out.write(bytes((12,)))  # write page delimiter (form feed 0x0C)
+                    out.write(
+                        bytes((12,))
+                    )  # write page delimiter (form feed 0x0C)
 
     def make_template(self):
         """Funkcja make_template zapisuje szablon PDFu"""
@@ -77,7 +77,9 @@ class PDF:
             paths = page.get_drawings()
 
             with fitz.open() as out_file:
-                out_page = out_file.new_page(width=page.rect.width, height=page.rect.height)
+                out_page = out_file.new_page(
+                    width=page.rect.width, height=page.rect.height
+                )
                 shape = out_page.new_shape()
                 for path in paths:
                     for item in path["items"]:
@@ -88,7 +90,9 @@ class PDF:
                         elif item[0] == "qu":  # quad
                             shape.draw_quad(item[1])
                         elif item[0] == "c":  # curve
-                            shape.draw_bezier(item[1], item[2], item[3], item[4])
+                            shape.draw_bezier(
+                                item[1], item[2], item[3], item[4]
+                            )
                         else:
                             raise ValueError("unhandled drawing", item)
 
@@ -96,19 +100,31 @@ class PDF:
                         fill=path["fill"],  # fill color
                         color=path["color"],  # line color
                         dashes=path["dashes"],  # line dashing
-                        even_odd=path.get("even_odd", True),  # control color of overlaps
-                        closePath=path["closePath"],  # whether to connect last and first point
-                        lineJoin=path["lineJoin"],  # how line joins should look like
-                        lineCap=max(path["lineCap"]),  # how line ends should look like
+                        even_odd=path.get(
+                            "even_odd", True
+                        ),  # control color of overlaps
+                        closePath=path[
+                            "closePath"
+                        ],  # whether to connect last and first point
+                        lineJoin=path[
+                            "lineJoin"
+                        ],  # how line joins should look like
+                        lineCap=max(
+                            path["lineCap"]
+                        ),  # how line ends should look like
                         width=path["width"],  # line width
-                        stroke_opacity=path.get("stroke_opacity", 1),  # same value for both
-                        fill_opacity=path.get("fill_opacity", 1),  # opacity parameters
+                        stroke_opacity=path.get(
+                            "stroke_opacity", 1
+                        ),  # same value for both
+                        fill_opacity=path.get(
+                            "fill_opacity", 1
+                        ),  # opacity parameters
                     )
                 shape.commit()
                 out_file.save("drawings-page-0.pdf")
 
     def get_table_of_contents(self):
-        """Funkcja get_table_of_contents ładuje spis treści PDFu """
+        """Funkcja get_table_of_contents ładuje spis treści PDFu"""
         with fitz.open(self.filepath) as doc:
             return doc.get_toc()
 
@@ -171,8 +187,12 @@ class PDF:
 
         :param good_quality: Ustawione na True zapisze pliki PNG w większej rozdzielczości
         """
-        for page_number, pix in enumerate(self._get_pixmap(dpi=500 if good_quality else 100)):
-            pix.save(f"{self.filename}_{page_number}_{500 if good_quality else 100}_dpi.png")
+        for page_number, pix in enumerate(
+            self._get_pixmap(dpi=500 if good_quality else 100)
+        ):
+            pix.save(
+                f"{self.filename}_{page_number}_{500 if good_quality else 100}_dpi.png"
+            )
 
     def search_for_words(self, args: list[str]) -> dict[list[fitz.Rect]]:
         """
@@ -182,7 +202,11 @@ class PDF:
         :return: Słownik zawierający współrzędne wyrażeń tekstowych w postaci obiektów Rect
         """
         with fitz.open(self.filepath) as doc:
-            return {arg: page.search_for(arg, quads=True) for page in doc for arg in set(args)}
+            return {
+                arg: page.search_for(arg, quads=True)
+                for page in doc
+                for arg in set(args)
+            }
 
     def highlight_text(self, args: list[str]):
         """
@@ -229,7 +253,9 @@ class PDF:
         """
         with fitz.open(self.filepath) as doc:
             for page in doc:
-                sensitive = _get_sensitive_data(page.get_text("text").split('\n'))
+                sensitive = _get_sensitive_data(
+                    page.get_text("text").split("\n")
+                )
                 for datatype, word in set(sensitive):
                     if areas := page.search_for(word, quads=True):
                         [
@@ -256,9 +282,13 @@ class PDF:
                 for image_index, img in enumerate(page.get_images(), start=1):
                     xref = img[0]  # get the XREF of the image
                     base_image = doc.extract_image(xref)
-                    image_bytes = base_image["image"]  # extract the image bytes
+                    image_bytes = base_image[
+                        "image"
+                    ]  # extract the image bytes
                     image_ext = base_image["ext"]  # get the image extension
-                    image = Image.open(io.BytesIO(image_bytes))  # load it to PIL
+                    image = Image.open(
+                        io.BytesIO(image_bytes)
+                    )  # load it to PIL
                     image_name = f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
                     images_in_pdf.append(image_name)
                     image.save(open(image_name, "wb"))
