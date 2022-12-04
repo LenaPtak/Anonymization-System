@@ -1,4 +1,4 @@
-# How to run projekt
+# How to run project
 
 1. Install Docker (Docker Desktop)
 2. Pull repository
