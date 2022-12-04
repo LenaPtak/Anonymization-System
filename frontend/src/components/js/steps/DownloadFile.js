@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/DownloadFile.css";
+import "../../css/steps/DownloadFile.css";
 
 
 export default function DownloadFile(uploadedFiles) {
@@ -7,7 +7,7 @@ export default function DownloadFile(uploadedFiles) {
   const downloadFile = () => {
 
     uploadedFiles.uploadedFiles.forEach(file => {      
-      fetch("http://0.0.0.0:8000/api/file/"+file.name, {
+      fetch("http://127.0.0.1:9876/api/file/"+file.name, {
         method: "GET",
         headers: {
           "Content-Type": "application/pdf",
@@ -36,9 +36,9 @@ export default function DownloadFile(uploadedFiles) {
 
 
   return (
-    <div className="">
-      <button className="btn--download" label="Download" onClick={downloadFile}>
-        Download
+    <div className="download-file">
+      <button className="download-file__btn" label="Download" onClick={downloadFile}>
+        Download files
       </button>
     </div>
   );

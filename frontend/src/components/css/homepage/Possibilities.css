@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     height: 30rem;
-    margin-bottom: 20rem;
+    margin-bottom: 5rem;
 }
 
 .possibilities__text {
@@ -29,10 +29,10 @@
 
 .possibilities__item {
     background-color: #eee;
-    height: 15rem;
+    height: 12rem;
     width: 13rem;
     margin: 1rem;
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
     border-radius: 5px;
 }
