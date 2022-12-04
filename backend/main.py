@@ -5,6 +5,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pdf import PDF
+from starlette.responses import RedirectResponse
 
 app = FastAPI()
 
@@ -20,8 +21,13 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def docs_redirect():
+    return RedirectResponse(url='/docs')
+
+
 @app.post("/api/files")
-async def capture_uploaded_pdfs(files: list[UploadFile] = File):
+async def capture_uploaded_pdfs(files: list[UploadFile] = File()):  # noqa B008
     """
     Endpoint to uploadu i zapisu plików PDF.
     """
