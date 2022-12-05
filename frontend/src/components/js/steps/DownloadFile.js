@@ -7,7 +7,7 @@ export default function DownloadFile(uploadedFiles) {
   const downloadFile = () => {
 
     uploadedFiles.uploadedFiles.forEach(file => {      
-      fetch("http://127.0.0.1:9876/api/file/"+file.name, {
+      fetch("http://127.0.0.1:8000/api/file/"+file.name, {
         method: "GET",
         headers: {
           "Content-Type": "application/pdf",

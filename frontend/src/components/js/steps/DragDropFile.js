@@ -48,9 +48,10 @@ export default function DragDropFile() {
       body: formData,
     };
 
-    fetch("http://127.0.0.1:9876/api/files", requestOptions).then((response) =>
+    fetch("http://127.0.0.1:8000/api/files", requestOptions).then((response) =>
       response.json()
-    );
+    ).catch((e) => console.log(`e: ${e}`))
+    ;
   };
 
   const handleDrag = function (e) {

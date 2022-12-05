@@ -17,3 +17,7 @@
     font-weight: 300;
     margin: 0px 1rem;
 }
+
+.header__pages:hover {
+    color: rgb(108, 255, 78);
+}
