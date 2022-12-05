@@ -1,3 +1,8 @@
+.drag-drop-file {
+  height: 100%;
+}
+
+
 #form-file-upload {
   height: 16rem;
   width: 28rem;
@@ -80,18 +85,19 @@ main {
   color: #62ff7d;
 }
 
-#btn-upload-files {
-  margin-top: 30px;
-  top:50%;
+.btn-upload-files {
+  margin: 3rem;
   background-color:#0a0a23;
   color: #fff;
   border:none; 
   border-radius:10px; 
-  padding:15px;
-  min-height:30px; 
-  min-width: 120px;
+  padding: 1rem;
 }
 
+.btn-upload-files:hover {
+  background-color: rgb(108, 255, 78);
+  color: black;
+}
 
 /* Files list */
             

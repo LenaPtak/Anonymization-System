@@ -1,0 +1,6 @@
+.select__model {
+    display: flex;
+    align-items: center;
+    height: 30rem;
+    margin-bottom: 5rem;
+}

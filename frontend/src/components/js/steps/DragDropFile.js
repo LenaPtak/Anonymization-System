@@ -1,23 +1,19 @@
 import React, { useState } from "react";
-import "../css/DragDropFile.css";
+import "../../css/steps/DragDropFile.css";
 import DownloadFile from "./DownloadFile";
-
 
 const MAX_COUNT_FILES = 10;
 
 export default function DragDropFile() {
-
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fileLimit, setFileLimit] = useState(false);
   const [dragActive, setDragActive] = React.useState(false);
   const inputRef = React.useRef(null);
 
-
   const handleFiles = (e) => {
     const chosenFiles = Array.prototype.slice.call(e.target.files);
     handleUploadFiles(chosenFiles);
   };
-
 
   const handleUploadFiles = (files) => {
     const uploaded = [...uploadedFiles];
@@ -41,7 +37,6 @@ export default function DragDropFile() {
     }
   };
 
-
   const handleSubmit = (e) => {
     const formData = new FormData();
     uploadedFiles.forEach((file) => {
@@ -53,11 +48,11 @@ export default function DragDropFile() {
       body: formData,
     };
 
-    fetch("http://0.0.0.0:8000/api/files", requestOptions).then((response) =>
+    fetch("http://127.0.0.1:8000/api/files", requestOptions).then((response) =>
       response.json()
-    );
+    ).catch((e) => console.log(`e: ${e}`))
+    ;
   };
-
 
   const handleDrag = function (e) {
     e.preventDefault();
@@ -69,7 +64,6 @@ export default function DragDropFile() {
     }
   };
 
-
   const handleDrop = function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -80,62 +74,60 @@ export default function DragDropFile() {
     }
   };
 
-
   const onButtonClick = () => {
     inputRef.current.click();
   };
 
-
   return (
-    <form
-      id="form-file-upload"
-      onDragEnter={handleDrag}
-      onSubmit={(e) => e.preventDefault()}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".jpeg, .png, .png, .pdf"
-        id="input-file-upload"
-        multiple={true}
-        onChange={handleFiles}
-      />
-      <label
-        id="label-file-upload"
-        htmlFor="input-file-upload"
-        className={dragActive ? "drag-active" : ""}
+    <div className="drag-drop-file">
+      <form
+        id="form-file-upload"
+        onDragEnter={handleDrag}
+        onSubmit={(e) => e.preventDefault()}
       >
-        <div>
-          <p>Drag and drop your file here or</p>
-          <button className="upload-button" onClick={onButtonClick}>
-            Upload a file
-          </button>
-        </div>
-      </label>
-      {dragActive && (
-        <div
-          id="drag-file-element"
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        ></div>
-      )}
-      <button
-        id="btn-upload-files"
-        className={`btn btn-primary ${!fileLimit ? "" : "disabled"} `}
-        onClick={handleSubmit}
-      >
-        Upload
-      </button>
-      <ol>
-        {uploadedFiles.map((file) => (
-          <li>{file.name}</li>
-        ))}
-      </ol>
-      <DownloadFile 
-        uploadedFiles={uploadedFiles}
-      />
-    </form>
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".jpeg, .png, .png, .pdf"
+          id="input-file-upload"
+          multiple={true}
+          onChange={handleFiles}
+        />
+        <label
+          id="label-file-upload"
+          htmlFor="input-file-upload"
+          className={dragActive ? "drag-active" : ""}
+        >
+          <div>
+            <p>Drag and drop your file here or</p>
+            <button className="upload-button" onClick={onButtonClick}>
+              Upload a file
+            </button>
+          </div>
+        </label>
+        {dragActive && (
+          <div
+            id="drag-file-element"
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          ></div>
+        )}
+        <button
+          id=""
+          className={`btn-upload-files ${!fileLimit ? "" : "disabled"} `}
+          onClick={handleSubmit}
+        >
+          Submit files
+        </button>
+        <ol>
+          {uploadedFiles.map((file) => (
+            <li>{file.name}</li>
+          ))}
+        </ol>
+        <DownloadFile uploadedFiles={uploadedFiles} />
+      </form>
+    </div>
   );
-};
+}

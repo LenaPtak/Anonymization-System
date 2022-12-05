@@ -13,9 +13,19 @@ export default function Possibilities() {
         </h5>
       </div>
       <div className="d-flex justify-content-center possibilities__items">
-        <div className="possibilities__item">Opcja 1</div>
-        <div className="possibilities__item">Opcja 2</div>
-        <div className="possibilities__item">Opcja 3</div>
+        <div className="d-flex align-items-center possibilities__item">
+          Select category by which you want to hide the data
+        </div>
+        <div className="d-flex align-items-center possibilities__item">
+          Converting .pdf .jpg .png files
+        </div>
+        <div className="d-flex align-items-center possibilities__item">
+          You can enter the exact phrases you want to hide
+        </div>
+        <div className="d-flex align-items-center possibilities__item">
+          You can choose whether you want to combine the documents or prefer
+          each one separately
+        </div>
       </div>
     </div>
   );
