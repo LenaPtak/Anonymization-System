@@ -50,6 +50,14 @@ async def capture_uploaded_pdfs(files: list[UploadFile] = File()):  # noqa B008
                 detail=f"File {uploaded_file.filename} is not application/pdf type.",
             )
     saved = []
+    try:
+        os.mkdir("files")
+    except FileExistsError:
+        pass
+    try:
+        os.mkdir("images")
+    except FileExistsError:
+        pass
     for uploaded_file in files:
         file_location = f"files/{uploaded_file.filename}"
         saved.append(file_location)
