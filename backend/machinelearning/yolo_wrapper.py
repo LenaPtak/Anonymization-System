@@ -63,7 +63,7 @@ class YoloWrapper(Wrapper):
         if self.show_image:
             im_pil = Image.fromarray(out)
             im_pil.show()
-        return image
+        return data
 
     def get_all_classes(self):
         return self.class_names
