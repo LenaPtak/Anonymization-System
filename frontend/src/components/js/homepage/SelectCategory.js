@@ -1,5 +1,6 @@
 import React from "react";
 import "../../css/homepage/SelectCategory.css";
+import { Link } from "react-router-dom";
 
 export default function SelectCategory() {
   return (
@@ -15,9 +16,14 @@ export default function SelectCategory() {
           Select categories such as e.g. PESEL, e-mail, telephone numbers and
           other that you want to hide. You can enter the exact phrases too!
         </h5>
-        <button className="select-category__btn">
-          Let's anonymize some documents
-        </button>
+        <Link
+          to="/anonymization"
+          style={{ textDecoration: "none", color: "black" }}
+        >
+          <button className="select-category__btn">
+            Let's anonymize some documents
+          </button>
+        </Link>
       </div>
     </div>
   );

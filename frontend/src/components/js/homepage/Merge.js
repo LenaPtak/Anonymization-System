@@ -1,5 +1,6 @@
 import React from "react";
 import "../../css/homepage/SelectCategory.css";
+import { Link } from "react-router-dom";
 
 export default function SelectCategory() {
   return (
@@ -15,9 +16,14 @@ export default function SelectCategory() {
           Things getting chaotic? Merge and split files, or remove excess pages.
           Smallpdf has it all.
         </h5>
-        <button className="select-category__btn">
-          Let's anonymize some documents
-        </button>
+        <Link
+          to="/anonymization"
+          style={{ textDecoration: "none", color: "black" }}
+        >
+          <button className="select-category__btn">
+            Let's anonymize some documents
+          </button>
+        </Link>
       </div>
     </div>
   );

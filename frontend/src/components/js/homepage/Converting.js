@@ -1,5 +1,6 @@
 import React from "react";
 import "../../css/homepage/Invite.css";
+import { Link } from "react-router-dom";
 
 export default function Converting() {
   return (
@@ -10,7 +11,14 @@ export default function Converting() {
           If you want, you can convert your files in .pdf .jpg .jpeg and .png
           formats in any direction.
         </h5>
-        <button className="invite__btn">Let's anonymize some documents</button>
+        <Link
+          to="/anonymization"
+          style={{ textDecoration: "none", color: "black" }}
+        >
+          <button className="invite__btn">
+            Let's anonymize some documents
+          </button>
+        </Link>
       </div>
       <img className="invite__photo" src="..\images\homepage3.svg" alt="" />
     </div>
