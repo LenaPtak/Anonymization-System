@@ -46,7 +46,7 @@ def _get_sensitive_data(text: str) -> Tuple[str, str]:
 class PDF:
     def __init__(self, filepath):
         self.filepath = filepath
-        self.filename = filepath.split(".")[-2][1:]
+        self.filename = filepath.replace('/','_').split(".")[-2][1:]
 
         with fitz.open(self.filepath) as doc:
             self.page_count = doc.page_count
