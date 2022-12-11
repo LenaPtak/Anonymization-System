@@ -6,6 +6,7 @@ import OtherTools from "./components/js/other_tools/OtherTools";
 import Step from "./components/js/steps/Step";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import SecondStep from "./components/js/steps/SecondStep";
 
 function App() {
   return (
@@ -18,6 +19,10 @@ function App() {
       <Route path="about-us" element={<AboutUs />} />
       <Route path="other" element={<OtherTools />} />
       <Route path="anonymization" element={<Step />} />
+      <Route
+          path="anonymization/select-category"
+          element={<SecondStep />}
+        />
     </Routes>
   );
 }
