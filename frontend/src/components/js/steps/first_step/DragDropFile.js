@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../css/steps/DragDropFile.css";
+import "../../../css/steps/DragDropFile.css";
 import DownloadFile from "./DownloadFile";
 
 const MAX_COUNT_FILES = 10;
@@ -119,7 +119,7 @@ export default function DragDropFile() {
           className={`btn-upload-files ${!fileLimit ? "" : "disabled"} `}
           onClick={handleSubmit}
         >
-          Submit files
+          Upload files
         </button>
         <ol>
           {uploadedFiles.map((file) => (

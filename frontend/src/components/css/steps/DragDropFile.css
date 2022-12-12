@@ -1,7 +1,6 @@
 .drag-drop-file {
-  height: 100%;
+  height: 30rem;
 }
-
 
 #form-file-upload {
   height: 16rem;
@@ -29,7 +28,6 @@
 
 #label-file-upload.drag-active {
   background-color: #ddd;
-
 }
 
 .upload-button {
@@ -86,11 +84,11 @@ main {
 }
 
 .btn-upload-files {
-  margin: 3rem;
-  background-color:#0a0a23;
+  margin: 1rem;
+  background-color: #0a0a23;
   color: #fff;
-  border:none; 
-  border-radius:10px; 
+  border: none;
+  border-radius: 10px;
   padding: 1rem;
 }
 
@@ -100,7 +98,6 @@ main {
 }
 
 /* Files list */
-            
 ol li {
   list-style-type: none;
   counter-increment: item;

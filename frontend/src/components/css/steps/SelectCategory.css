@@ -1,6 +1,20 @@
-.select__model {
-    display: flex;
-    align-items: center;
-    height: 30rem;
-    margin-bottom: 5rem;
+.select {
+  background-color: rgb(245, 245, 245);
+  border-radius: 75rem;
+}
+
+.one-mode {
+  padding: 1rem 2rem;
+}
+
+.categories {
+  padding: 1rem 2rem;
+}
+
+.phrases {
+  padding: 1rem 2rem;
+}
+
+.description {
+  padding: 1rem 2rem;
 }

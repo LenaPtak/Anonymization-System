@@ -1,30 +1,29 @@
 .steps-line {
-    display: flex;
-    height: 10rem;
-    margin: 5rem;
-    padding: 5rem;
-    align-items: center;
+  display: flex;
+  margin: 2rem;
+  padding: 3rem;
+  align-items: center;
 }
 .steps-line__line {
-    background-color: #eee;
-    width: 60rem;
-    height: 3px;
+  background-color: #eee;
+  width: 50rem;
+  height: 3px;
 }
 
 .steps-line__circle {
-    background-color: #eee;
-    width: 3em;
-    height: 3rem;
-    border-radius: 100%;
+  background-color: #eee;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 100%;
 }
 
 .steps-line__circle:hover {
-    background-color: #ddd;
+  background-color: #ccc;
 }
 
 .steps-line__circle-active {
-    background-color: rgb(108, 255, 78);
-    width: 3em;
-    height: 3rem;
-    border-radius: 100%;
+  background-color: rgb(108, 255, 78);
+  border-radius: 100%;
+  width: 2.5rem;
+  height: 2.5rem;
 }

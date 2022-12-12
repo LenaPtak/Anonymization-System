@@ -12,7 +12,7 @@ export default function Converting() {
           formats in any direction.
         </h5>
         <Link
-          to="/anonymization"
+          to="/anonymization/send-files"
           style={{ textDecoration: "none", color: "black" }}
         >
           <button className="invite__btn">
