@@ -1,30 +1,35 @@
-.about-us__content {
+.contact__content {
     height: 46rem;
     width: 100%;
     align-items: center;
 }
 
-.about-us__container {
+.contact__container {
     padding: 5rem 7rem;
     width: 50%;
 }
 
-.about-us__tittle {
+.contact__tittle {
     font-size: 40px;
     font-weight: bold;
     margin-bottom: 2rem;
 }
 
-.about-us-description {
+.contact__description {
     font-size: 24px;
     margin-bottom: 2rem;
 }
 
-.about-us__contact {
+.contact__invite {
+    font-size: 20px;
+    margin-bottom: 2rem;
+}
+
+.contact__contact {
     font-size: 24px;
 }
 
-.about-us__logo {
+.contact__logo {
     height: 25rem;
     margin-left: 8rem;
 }
