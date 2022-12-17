@@ -11,7 +11,7 @@ export default function Invite() {
           Thanks to our tools Your data can be safe.
         </h5>
         <Link
-          to="/anonymization"
+          to="/anonymization/send-files"
           style={{ textDecoration: "none", color: "black" }}
         >
           <button className="invite__btn">

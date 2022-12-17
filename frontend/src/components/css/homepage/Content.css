@@ -1,3 +1,5 @@
 .content {
-    margin: 0px 10rem;
+  margin: 0px 10rem;
+  position: relative;
+  min-height: 100%;
 }

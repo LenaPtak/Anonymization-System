@@ -17,7 +17,7 @@ export default function SelectCategory() {
           other that you want to hide. You can enter the exact phrases too!
         </h5>
         <Link
-          to="/anonymization"
+          to="/anonymization/send-files"
           style={{ textDecoration: "none", color: "black" }}
         >
           <button className="select-category__btn">

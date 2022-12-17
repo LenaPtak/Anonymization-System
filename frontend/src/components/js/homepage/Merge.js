@@ -17,7 +17,7 @@ export default function SelectCategory() {
           Smallpdf has it all.
         </h5>
         <Link
-          to="/anonymization"
+          to="/anonymization/send-files"
           style={{ textDecoration: "none", color: "black" }}
         >
           <button className="select-category__btn">

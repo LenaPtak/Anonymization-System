@@ -1,17 +1,17 @@
 .download-file {
-    height: 15rem;
+  align-items: center;
 }
 
 .download-file__btn {
-    margin: 3rem;
-    border: none;
-    border-radius: 10px;
-    background-color: black;
-    color: #fff;
-    padding: 1rem;
+  margin: 1rem;
+  border: none;
+  border-radius: 10px;
+  background-color: black;
+  color: #fff;
+  padding: 1rem;
 }
 
 .download-file__btn:hover {
-    background-color: rgb(108, 255, 78);
-    color: black;
+  background-color: rgb(108, 255, 78);
+  color: black;
 }

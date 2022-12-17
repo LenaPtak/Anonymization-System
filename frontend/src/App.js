@@ -3,7 +3,10 @@ import Homepage from "./components/js/homepage/Homepage";
 import AboutUs from "./components/js/about_us/AboutUs";
 import Contact from "./components/js/contact/Contact";
 import OtherTools from "./components/js/other_tools/OtherTools";
-import Step from "./components/js/steps/Step";
+import Step from "./components/js/steps/first_step/Step";
+import SecondStep from "./components/js/steps/second_step/SecondStep";
+import ThirdStep from "./components/js/steps/third_step/ThirdStep";
+import FourthStep from "./components/js/steps/fourth_step/FourthStep";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
@@ -17,7 +20,13 @@ function App() {
       <Route path="contact" element={<Contact />} />
       <Route path="about-us" element={<AboutUs />} />
       <Route path="other" element={<OtherTools />} />
-      <Route path="anonymization" element={<Step />} />
+      <Route path="anonymization/send-files" element={<Step />} />
+      <Route path="anonymization/select-category" element={<SecondStep />} />
+      <Route path="anonymization/select-file-type" element={<ThirdStep />} />
+      <Route
+        path="anonymization/select-final-result"
+        element={<FourthStep />}
+      />
     </Routes>
   );
 }
