@@ -9,25 +9,29 @@ import ThirdStep from "./components/js/steps/third_step/ThirdStep";
 import FourthStep from "./components/js/steps/fourth_step/FourthStep";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import Footer from "./components/js/homepage/Footer";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Homepage />}>
-        {/* <Route path="*" element={<Error />} /> */}
-      </Route>
-      <Route path="home" element={<Homepage />} />
-      <Route path="contact" element={<Contact />} />
-      <Route path="about-us" element={<AboutUs />} />
-      <Route path="other" element={<OtherTools />} />
-      <Route path="anonymization/send-files" element={<Step />} />
-      <Route path="anonymization/select-category" element={<SecondStep />} />
-      <Route path="anonymization/select-file-type" element={<ThirdStep />} />
-      <Route
-        path="anonymization/select-final-result"
-        element={<FourthStep />}
-      />
-    </Routes>
+    <div>
+      <Routes>
+        <Route path="/" element={<Homepage />}>
+          {/* <Route path="*" element={<Error />} /> */}
+        </Route>
+        <Route path="home" element={<Homepage />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="about-us" element={<AboutUs />} />
+        <Route path="other" element={<OtherTools />} />
+        <Route path="anonymization/send-files" element={<Step />} />
+        <Route path="anonymization/select-category" element={<SecondStep />} />
+        <Route path="anonymization/select-file-type" element={<ThirdStep />} />
+        <Route
+          path="anonymization/select-final-result"
+          element={<FourthStep />}
+        />
+      </Routes>
+      <Footer />
+    </div>
   );
 }
 
