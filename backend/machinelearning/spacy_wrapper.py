@@ -27,21 +27,22 @@ class SpacyWrapper(Wrapper):
     def process_results(self, results, data):
         # tutaj ma zamazać tylko całe imiona i nazwiska z results.ents
         
-        name_pattern = re.compile(r"[A-Z][a-z]+\s+[A-Z][a-z]+")
+        name_pattern = re.compile(r"[A-ZĄĆĘŻŹŚŃÓŁ][a-ząćężźśńół]+\s+[A-ZĄĆĘŻŹŚŃÓŁ][a-ząćężźśńół]+")
         replaced_data = data
 
         for result in results:
-            if result.label_ == 'persName' and name_pattern.fullmatch(result.text) is not None:
+            if (result.label_ == 'persName' and name_pattern.fullmatch(result.text) is not None) or result.label_ == 'geogName':
                 replacemnt = 'X' * len(result.text)
                 replaced_data = replaced_data.replace(result.text, replacemnt)
-        
+                             
         return replaced_data
-
-
 
 if __name__ == "__main__":
     sp = SpacyWrapper()
-    a = "Jan Bylicki zrobil fajny opis jak dziala NLP na jego Linuksie i to calkiem niezle smiga i wyslal do Pani Anastasii Trubchaninovej i Tomasza P. na ares tomaszp1234@gmail.com wraz z numerem AL47 2121 1009 0000 0002 3569 87411"
+    a = "Jan Bałczyński z ulicy Głogowska 61 zrobil fajny opis jak dziala NLP na jego Linuksie i to calkiem niezle smiga i wyslal do Pani Anastasii Trubchaninovej i Tomasza P. na ares tomaszp1234@gmail.com wraz z numerem AL47 2121 1009 0000 0002 3569 87411"
     res = sp.model(a)
     result = sp.process_results(res.ents, a)
+    print(a)
     print(result)
+    print(len(a)==len(result))
+   
