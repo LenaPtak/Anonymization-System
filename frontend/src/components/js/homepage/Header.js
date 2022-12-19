@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <div className="header">
       <Link
-        to="/home"
+        to="/"
         style={{ textDecoration: "none", color: "black", marginRight: "auto" }}
       >
         <img className="header__logo" src="..\images\logo.png" alt="logo" />

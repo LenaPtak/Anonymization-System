@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../css/steps/DownloadFile.css";
+import "../../../css/steps/first_step/DownloadFile.css";
 
 export default function DownloadFile(uploadedFiles) {
   const downloadFile = () => {

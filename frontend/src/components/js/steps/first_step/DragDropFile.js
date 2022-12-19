@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../../css/steps/DragDropFile.css";
+import "../../../css/steps/first_step/DragDropFile.css";
 import DownloadFile from "./DownloadFile";
 
 const MAX_COUNT_FILES = 10;
@@ -126,7 +126,7 @@ export default function DragDropFile() {
             <li>{file.name}</li>
           ))}
         </ol>
-        <DownloadFile uploadedFiles={uploadedFiles} />
+        {/* <DownloadFile uploadedFiles={uploadedFiles} /> */}
       </form>
     </div>
   );

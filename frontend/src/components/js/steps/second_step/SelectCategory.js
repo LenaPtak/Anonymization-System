@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../../css/steps/SelectCategory.css";
+import "../../../css/steps/second_step/SelectCategory.css";
 
 export default function SelectCategory() {
   const [formData, setFormData] = useState({});
@@ -103,15 +103,24 @@ export default function SelectCategory() {
           </div>
         </div>
         <div className="col description">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
+          <div className="paragraph">
+            You have the option to select from several categories that you'd
+            like to anonymize, such as names, addresses, and phone numbers.
+          </div>
+          <div className="paragraph">
+            Additionally, you can input specific phrases that you'd like to hide
+            from view.
+          </div>
+          <div className="paragraph">
+            Furthermore, you can choose whether you'd like to anonymize quickly
+            and less accurately, or more accurately but at a slower pace. This
+            way, you can tailor the tool to your needs and preferences.
+          </div>
+          <div className="paragraph">
+            We hope that this gives you the control and flexibility you need to
+            protect your privacy online. Either way, we're here to make sure
+            that the process is as smooth and easy as possible.
+          </div>
         </div>
       </div>
 

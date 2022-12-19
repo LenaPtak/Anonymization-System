@@ -9,7 +9,9 @@ export default function Possibilities() {
           Your possibilities
         </h1>
         <h5 className="d-flex justify-content-center possibilities__under-tittle">
-          You can choose the exact settings according to your needs.
+          Thanks for considering using our anonymization tool. We understand
+          that privacy is important to you, and that's why we offer you the
+          ability to customize your anonymization experience.
         </h5>
       </div>
       <div className="d-flex justify-content-center possibilities__items">
