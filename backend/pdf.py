@@ -308,6 +308,7 @@ class PDF:
         :return: Lista nazw obrazków znalezionych podczas procesowania dla badanego pliku PDF
         """
         images_in_pdf = []
+        xrefs = []
         with fitz.open(self.filepath) as doc:
             for page_index, page in enumerate(doc):
                 for image_index, img in enumerate(page.get_images(), start=1):
@@ -320,5 +321,18 @@ class PDF:
                         f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
                     )
                     images_in_pdf.append(image_name)
+                    xrefs.append(xref)
                     image.save(open(image_name, "wb"))
-        return images_in_pdf
+                    print(xref)
+        return (images_in_pdf, xrefs)
+
+    def reintroduce_image(self, path, xref):
+        with fitz.open(self.filepath) as doc:
+            for page_index, page in enumerate(doc):
+                page.clean_contents()
+                for image_index, img in enumerate(page.get_images(), start=1):
+                    if img[0] == xref:
+                        bbox = page.get_image_bbox(img[7])
+                        page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_REMOVE)
+                        page.insert_image(bbox, filename=path)
+            doc.saveIncr()

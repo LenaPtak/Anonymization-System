@@ -172,6 +172,7 @@ async def process_file(file: UserFile) -> FileResponse:
                 results = yolo_wrapper.model(image)
                 image = yolo_wrapper.process_results(results, image)
                 cv2.imwrite(image_dir, image)
+                pdf.reintroduce_image(image_dir, images[1][i])
 
         pdf.hide_sensitive(processed_path)
 
