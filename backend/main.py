@@ -21,7 +21,7 @@ from fastapi_sessions.frontends.implementations import CookieParameters, Session
 from fastapi_sessions.frontends.implementations.cookie import SameSiteEnum
 from fastapi_sessions.session_verifier import SessionVerifier
 from fastapi_utils.tasks import repeat_every
-from models import UserFile, UserSession
+from response_models import UserFile, UserSession
 from pdf import PDF
 from starlette.requests import Request
 from starlette.responses import FileResponse, RedirectResponse
