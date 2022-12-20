@@ -2,15 +2,21 @@
   align-items: center;
 }
 
-.step__content {
+.step__container {
   width: 100%;
-  min-height: 40rem;
+  height: 50rem;
   padding-bottom: 3rem;
   position: relative;
 }
 
+.step__content {
+  width: 60rem;
+  height: 40rem;
+}
+
 .step__form {
-  width: 50%;
+  width: 60rem;
+  height: 25rem;
 }
 
 .step__buttons {

@@ -10,10 +10,12 @@ export default function ThirdStep() {
   return (
     <div className="step">
       <Header />
-      <div className="d-flex flex-column justify-content-center align-items-center step__content">
-        <div className="step__form">
+      <div className="d-flex flex-column justify-content-center align-items-center step__container">
+        <div className="step__content">
           <StepsLine />
-          <SelectFiletype />
+          <div className="step__form">
+            <SelectFiletype />
+          </div>
           <div class="d-flex justify-content-between step__buttons">
             <Link
               to="/anonymization/select-category"

@@ -1,0 +1,14 @@
+.result {
+  padding: 2rem;
+  margin-left: 2rem;
+  background-color: rgb(245, 245, 245);
+  border-radius: 0.75rem;
+}
+
+.result__description {
+  padding: 2rem;
+}
+
+.result__paragraph {
+  margin-bottom: 1rem;
+}

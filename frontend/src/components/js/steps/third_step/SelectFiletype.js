@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../css/steps/SelectFiletype.css";
+import "../../../css/steps/third_step/SelectFiletype.css";
 
 export default function SelectFiletype() {
   return (

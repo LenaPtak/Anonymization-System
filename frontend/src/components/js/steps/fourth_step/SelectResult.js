@@ -1,19 +1,29 @@
 import React from "react";
-import "../../../css/steps/SelectResult.css";
+import "../../../css/steps/fourth_step/SelectResult.css";
 
 export default function SelectResult() {
   return (
     <div className="row g-3">
-      <div className="col decription">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a software like Aldus PageMaker type specimen book.
-        It has survived not only five centuries, but also the leap into
-        electronic typesetting, remaining essentially unchanged. It was
-        popularised in the 1960s with the release of Letraset sheets containing
-        Lorem Ipsum passages, and more recently with desktop publishing software
-        like Aldus PageMaker including versions of Lorem Ipsum.
+      <div className="col result__decription">
+        <div className="result__paragraph">
+          Great! In addition to the customization options mentioned earlier, our
+          anonymization tool also allows you to download your anonymized files
+          in a couple of different ways.
+        </div>
+        <div className="result__paragraph">
+          First, you have the option to download all of your files as a single,
+          merged file. This can be convenient if you want to keep everything in
+          one place and avoid having to manage multiple files.
+        </div>
+        <div className="result__paragraph">
+          On the other hand, if you prefer to keep your files separate, you can
+          also choose to download each file individually. This can be useful if
+          you have a lot of files and want to keep them organized in a specific
+          way.
+        </div>
+        <div className="result__paragraph">
+          Thanks for using our anonymization tool!
+        </div>
       </div>
       <div class="col result">
         <label class="form-label">

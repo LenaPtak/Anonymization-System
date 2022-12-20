@@ -1,10 +1,15 @@
-.description {
+.all-files {
   padding: 2rem;
 }
 
-.result {
+.search {
   padding: 2rem;
-  margin-left: 2rem;
   background-color: rgb(245, 245, 245);
   border-radius: 0.75rem;
 }
+
+
+.filetype__paragraph {
+  margin-bottom: 1rem;
+}
+
