@@ -35,6 +35,7 @@ sys.path.insert(1, str(Path(__file__).parent / "./machinelearning"))
 
 # TODO(Jan): REMOVE FLAKE SUPPRESSION
 from machinelearning.yolo_wrapper import YoloWrapper  # noqa: E402
+import cv2
 
 logging.basicConfig(
     format="%(asctime)s - %(message)s", datefmt="%m/%d/%Y, %H:%M:%S", level=logging.INFO
@@ -156,28 +157,21 @@ async def process_file(file: UserFile) -> FileResponse:
     if processed_type == "application/pdf":
         pdf = PDF(file.location)
         images = pdf.extract_images()
-        if images:
-            pass
+        if images[0]:
             # TODO(Tomasz): SIZE OF PROCESSES FILES IS WAY TOO BIG
-            # TODO(Jan & Tomasz): NOT WORKING YOLO WRAPPER
-            # TODO(Jan): CHECK THAT: I think it was JPEGS that needed flipping,
-            # If there is something to process, instantiate the model(s) and make them do their thing
-            # For now only Yolo is merged, therefore this is the only model that is currently implemented
-            # yolo_wrapper = YoloWrapper()
-            # for image_dir in images:
-            #
-            #     image = cv2.imread(image_dir)
-            #     if (
-            #             image_dir[-4:] == '.JPG'  or
-            #             image_dir[-4:] == '.jpg'  or
-            #             image_dir[-5:] == '.jpeg' or
-            #             image_dir[-5:] == '.JPEG'
-            #     ):
-            #         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            #
-            #     results = yolo_wrapper.model(image)
-            #     image = yolo_wrapper.process_results(results, image)
-            #     cv2.imwrite(image_dir, image)
+            yolo_wrapper = YoloWrapper()
+            for i, image_dir in enumerate(images[0]):
+
+                image = cv2.imread(image_dir)
+                if (
+                        image_dir[-4:] == '.png' or
+                        image_dir[-4:] == '.PNG'
+                ):
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+                results = yolo_wrapper.model(image)
+                image = yolo_wrapper.process_results(results, image)
+                cv2.imwrite(image_dir, image)
 
         pdf.hide_sensitive(processed_path)
 
