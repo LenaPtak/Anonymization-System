@@ -24,7 +24,7 @@ class YoloWrapper(Wrapper):
         self.color_dict = defaultdict(self.generate_color)
 
         if weights_path is None:
-            self.model = torch.hub.load("ultralytics/yolov3", "yolov3")
+            self.model =torch.hub.load('ultralytics/yolov3', 'yolov3') 
         else:
             raise NotImplementedError
 
@@ -63,10 +63,11 @@ class YoloWrapper(Wrapper):
                 )
                 mask = cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
                 out = np.where(mask == np.array([255, 255, 255]), blurred_img, out)
+
         if self.show_image:
             im_pil = Image.fromarray(out)
             im_pil.show()
-        return data
+        return out
 
     def get_all_classes(self):
         return self.class_names
