@@ -14,7 +14,6 @@ def _get_sensitive_data(text: str) -> Tuple[str, str]:
     :return: Dopasowane wyrażenie w postaci tuple (nazwa, dopasowanie)
     """
     regexes = {
-        "Email address": r"([\w\.\d]+\@[\w\d]+\.[\w\d]+)",
         "U.S.Social Security No": r"(\b(?!000|666|9\d{2})([0-8]\d{2}|7([0-6]\d))([-]?|\s{1})(?!00)\d\d\2(?!0000)\d{4}\b)",
         # noqa E501
         "IPV4 address": r"(^\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}$)",
@@ -24,7 +23,6 @@ def _get_sensitive_data(text: str) -> Tuple[str, str]:
         # noqa E501
         "American Express card number": r"(^3[47][0-9]{13}$)",
         "U.S. ZIP code": r"(^((\d{5}-\d{4})|(\d{5})|([A-Z]\d[A-Z]\s\d[A-Z]\d))$)",
-        "Invoice No.": r"([A-Z]{2,4}-+[0-9]{4,12})",
         "File path": r"(\\[^\\]+$	)",
         "Dollar amount": r"(\$[0-9]*.[0-9][0-9])",
         "Date type 1": r"([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\})",  # 2003-08-06
@@ -32,8 +30,53 @@ def _get_sensitive_data(text: str) -> Tuple[str, str]:
         "Date type 3": r"(^(\d{1,2})\/(\d{1,2})\/(\d{2}|(19|20)\d{2})$)",
         # DD/MM/YY or DD/MM/YYYY or MM/DD/YY or MM/DD/YYYY # noqa E501
         "Phone No.": r"((^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$))",
-        "Credit card": r"(^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|622((12[6-9]|1[3-9][0-9])|([2-8][0-9][0-9])|(9(([0-1][0-9])|(2[0-5]))))[0-9]{10}|64[4-9][0-9]{13}|65[0-9]{14}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})*)$"
-        # noqa E501
+        "Credit card": r"(^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|622((12[6-9]|1[3-9][0-9])|([2-8][0-9][0-9])|(9(([0-1][0-9])|(2[0-5]))))[0-9]{10}|64[4-9][0-9]{13}|65[0-9]{14}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})*)$",
+        # noqa E501,
+        "Health insurance No.": r"(^[A-Z]{3}[0-9]{6}[A-Z][0-9]{2}$)",
+        "Passport No.": r"(^[A-Z]{2}[0-9]{7}$)",
+        "Cell phone No.": r"(^\+[0-9]{2}[0-9]{9}$)",
+        "Email address 2": r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
+        "PESEL": r"(^[0-9]{11}$)",
+        "Date of birth": r"(^[0-9]{2}/[0-9]{2}/[0-9]{4}$)",
+        "ID No.": r"(^[A-Z]{3}[0-9]{6}$)",
+        "NIP": r"(^[0-9]{10}$)",
+        "REGON": r"(^[0-9]{9}$)",
+        "Bank account No.": r"(^[0-9]{26}$)",
+        "Passport number": r"(^[A-Z]{2}\d{7}$)",
+        "Driver's license number": r"(^[A-Z]\d{7}$)",
+        "National identification number": r"(^\d{3}\s\d{3}\s\d{3}$)",
+        "National insurance number": r"(^[A-Z]{2}\s\d{6}[A-Z]$)",
+        "National Health Service number": r"(^[A-Z]{3}\d{6}[A-Z]{2}$)",
+        "Credit card security code(CVV)": r"(^\d{3,4}$)",
+        "Date of birth 2": r"(^\d{2}/\d{2}/\d{4}$)",
+        "Age": r"(^[1-9]\d{1,2}$)",
+        "Home address": r"(^\d{1,4}\s[A-Z][a-z]+(\s[A-Z][a-z]+)*$)",
+        "Emergency contact": r"(^[A-Z][a-z]+(\s[A-Z][a-z]+)\s\d{1,4}\s[A-Z][a-z]+(\s[A-Z][a-z]+)$)",
+        "Different - might delete": r"(^[A-Z][a-z]+(\s[A-Z][a-z]+)*$)",
+        "Income": r"(^[1-9]\d*$)",
+        "Blood type": r"(^[A-Z]$)",
+        "Passwords": r"(^[A-Za-z0-9@#$%^&+=]{8,}$)",
+        "Bank account numbers": r"(^[A-Z]{2}\d{6,10}$)",
+        "Credit card numbers": r"(^\d{4}\s\d{4}\s\d{4}\s\d{4}$)",
+        "Invoice numbers": r"(^[A-Z]{2,4}-+[0-9]{4,12}$)",
+        "Transaction amounts": r"(^$\d+(,\d{3})*(.\d{2})?$)",
+        "Personal identification numbers (PINs)": r"(^\d{4,6}$)",
+        "Numer PESEL": r"(\b[0-9]{11}\b)",
+        "Numer dowodu osobistego": r"(\b[A-Z]{3}\d{6}\b)",
+        "Numer karty kredytowej": r"(\b(\d{4}\s){3}\d{4}\b)",
+        "Numer NIP": r"(\b\d{10}\b)",
+        "Numer telefonu": r"(\b\+48\s[0-9]{3}\s[0-9]{3}\s[0-9]{3}\b)",
+        "Numer rachunku bankowego": r"(\b\d{26}\b)",
+        "Data urodzenia": r"(\b\d{2}\/\d{2}\/\d{4}\b)",
+        "Imię/Nazwisko": r"(\b[A-Z][a-z]+(\s[A-Z][a-z]+)*\b)",
+        "Numer faktury/polisy/zamowienia": r"(\b[A-Z]{2}\d{8}\b)",
+        "Kwota": r"(\b\d+(,\d{3})*(\.\d{2})?\b)",
+        "Numer REGON": r"(\b\d{9}\b)",
+        "Adres firmy": r"(\b\d{1,4}\s[A-Z][a-z]+(\s[A-Z][a-z]+)*\b)",
+        "Kwota 2": r"(\b\d+(,\d{3})*(.\d{2})?\b)",
+        "Numer partii/serii": r"(\b\d{1,8}\b)",
+        "Data ważności": r"(\b\d{2}/\d{2}/\d{4}\b)",
+        "Email address": r"([\w\.\d]+\@[\w\d]+\.[\w\d]+)",
     }
 
     for line in text:
@@ -46,7 +89,7 @@ def _get_sensitive_data(text: str) -> Tuple[str, str]:
 class PDF:
     def __init__(self, filepath):
         self.filepath = filepath
-        self.filename = filepath.replace('/','_').split(".")[-2][1:]
+        self.filename = filepath.replace("/", "_").split(".")[-2][1:]
 
         with fitz.open(self.filepath) as doc:
             self.page_count = doc.page_count
@@ -66,9 +109,7 @@ class PDF:
                         "utf8"
                     )  # get plain text (is in UTF-8)
                     out.write(text)  # write text of page
-                    out.write(
-                        bytes((12,))
-                    )  # write page delimiter (form feed 0x0C)
+                    out.write(bytes((12,)))  # write page delimiter (form feed 0x0C)
 
     def make_template(self):
         """Funkcja make_template zapisuje szablon PDFu"""
@@ -90,9 +131,7 @@ class PDF:
                         elif item[0] == "qu":  # quad
                             shape.draw_quad(item[1])
                         elif item[0] == "c":  # curve
-                            shape.draw_bezier(
-                                item[1], item[2], item[3], item[4]
-                            )
+                            shape.draw_bezier(item[1], item[2], item[3], item[4])
                         else:
                             raise ValueError("unhandled drawing", item)
 
@@ -106,19 +145,13 @@ class PDF:
                         closePath=path[
                             "closePath"
                         ],  # whether to connect last and first point
-                        lineJoin=path[
-                            "lineJoin"
-                        ],  # how line joins should look like
-                        lineCap=max(
-                            path["lineCap"]
-                        ),  # how line ends should look like
+                        lineJoin=path["lineJoin"],  # how line joins should look like
+                        lineCap=max(path["lineCap"]),  # how line ends should look like
                         width=path["width"],  # line width
                         stroke_opacity=path.get(
                             "stroke_opacity", 1
                         ),  # same value for both
-                        fill_opacity=path.get(
-                            "fill_opacity", 1
-                        ),  # opacity parameters
+                        fill_opacity=path.get("fill_opacity", 1),  # opacity parameters
                     )
                 shape.commit()
                 out_file.save("drawings-page-0.pdf")
@@ -253,9 +286,7 @@ class PDF:
         """
         with fitz.open(self.filepath) as doc:
             for page in doc:
-                sensitive = _get_sensitive_data(
-                    page.get_text("text").split("\n")
-                )
+                sensitive = _get_sensitive_data(page.get_text("text").split("\n"))
                 for datatype, word in set(sensitive):
                     if areas := page.search_for(word, quads=True):
                         [
@@ -282,14 +313,12 @@ class PDF:
                 for image_index, img in enumerate(page.get_images(), start=1):
                     xref = img[0]  # get the XREF of the image
                     base_image = doc.extract_image(xref)
-                    image_bytes = base_image[
-                        "image"
-                    ]  # extract the image bytes
+                    image_bytes = base_image["image"]  # extract the image bytes
                     image_ext = base_image["ext"]  # get the image extension
-                    image = Image.open(
-                        io.BytesIO(image_bytes)
-                    )  # load it to PIL
-                    image_name = f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
+                    image = Image.open(io.BytesIO(image_bytes))  # load it to PIL
+                    image_name = (
+                        f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
+                    )
                     images_in_pdf.append(image_name)
                     image.save(open(image_name, "wb"))
         return images_in_pdf

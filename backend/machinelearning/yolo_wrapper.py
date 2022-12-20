@@ -11,10 +11,12 @@ from PIL import Image
 # to include the 'core' directory to pythonpath
 from pathlib import Path
 
-sys.path.insert(1, str(Path(__file__).parent / "core"))
+sys.path.insert(1, str(Path(__file__).parent / "./core"))
 
 # TODO(Jan): move that to top and remove flake suppresion
 from core.wrapper import Wrapper  # noqa: E402
+
+sys.path.insert(0, "./yolov3")
 
 
 class YoloWrapper(Wrapper):
@@ -27,7 +29,7 @@ class YoloWrapper(Wrapper):
             raise NotImplementedError
 
         self.show_image = None
-        self.default_class_names = ['person']
+        self.default_class_names = ["person"]
         self.class_names = self.model.names
 
         super().__init__(weights_path)
@@ -47,16 +49,17 @@ class YoloWrapper(Wrapper):
         out = data
         for i in results.xyxy[0]:
             x, y, w, h, conf, class_id = i
-            x, y, w, h, conf, class_id = int(x), \
-                int(y), \
-                int(w), \
-                int(h), \
-                float(conf), \
-                int(class_id)
+            x, y, w, h, conf, class_id = (
+                int(x),
+                int(y),
+                int(w),
+                int(h),
+                float(conf),
+                int(class_id),
+            )
             if self.get_all_classes()[class_id] in self.get_classes():
                 mask = np.zeros(
-                    (np.shape(data)[0], np.shape(data)[1], 3),
-                    dtype=np.uint8
+                    (np.shape(data)[0], np.shape(data)[1], 3), dtype=np.uint8
                 )
                 mask = cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
                 out = np.where(mask == np.array([255, 255, 255]), blurred_img, out)

@@ -7,26 +7,28 @@ import spacy
 # to include the 'core' directory to pythonpath
 from pathlib import Path
 import sys
-sys.path.insert(1, str(Path(__file__).parent / "core"))
+
+sys.path.insert(1, str(Path(__file__).parent / "./core"))
 
 # TODO(Jan): move that to top and remove flake suppresion
 from core.wrapper import Wrapper  # noqa: E402
 
+
 class SpacyWrapper(Wrapper):
-    def __init__(self, weights_path= None):
+    def __init__(self, weights_path=None):
         if weights_path is None:
-            self.model = spacy.load('pl_core_news_sm')
+            self.model = spacy.load("pl_core_news_sm")
         else:
             raise NotImplementedError
-        
+
         super().__init__(weights_path)
-        
+
     def model(self, data):
         return self.model(data)
 
     def process_results(self, results, data):
         # tutaj ma zamazać tylko całe imiona i nazwiska z results.ents
-        
+
         name_pattern = re.compile(r"[A-ZĄĆĘŻŹŚŃÓŁ][a-ząćężźśńół]+\s+[A-ZĄĆĘŻŹŚŃÓŁ][a-ząćężźśńół]+")
         replaced_data = data
 
@@ -36,6 +38,7 @@ class SpacyWrapper(Wrapper):
                 replaced_data = replaced_data.replace(result.text, replacemnt)
                              
         return replaced_data
+
 
 if __name__ == "__main__":
     sp = SpacyWrapper()
