@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from time import time
 from uuid import UUID, uuid4
+
 import uvicorn
 from fastapi import (
     Depends,
@@ -13,19 +14,25 @@ from fastapi import (
     HTTPException,
     Response,
     UploadFile,
-    status
+    status,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_sessions.backends.implementations import InMemoryBackend
-from fastapi_sessions.frontends.implementations import CookieParameters, SessionCookie
+from fastapi_sessions.frontends.implementations import (
+    CookieParameters,
+    SessionCookie,
+)
 from fastapi_sessions.frontends.implementations.cookie import SameSiteEnum
 from fastapi_sessions.session_verifier import SessionVerifier
 from fastapi_utils.tasks import repeat_every
+from pdf import PDF, TXT
 from response_models import UserFile, UserSession
-from pdf import PDF
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
 from starlette.requests import Request
 from starlette.responses import FileResponse, RedirectResponse
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 # TODO(Jan): MAKE MACHINELEARNING A MODULE
 
@@ -33,12 +40,15 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 
 sys.path.insert(1, str(Path(__file__).parent / "./machinelearning"))
 
-# TODO(Jan): REMOVE FLAKE SUPPRESSION
-from machinelearning.yolo_wrapper import YoloWrapper  # noqa: E402
 import cv2
 
+# TODO(Jan): REMOVE FLAKE SUPPRESSION
+from machinelearning.yolo_wrapper import YoloWrapper  # noqa: E402
+
 logging.basicConfig(
-    format="%(asctime)s - %(message)s", datefmt="%m/%d/%Y, %H:%M:%S", level=logging.INFO
+    format="%(asctime)s - %(message)s",
+    datefmt="%m/%d/%Y, %H:%M:%S",
+    level=logging.INFO,
 )
 
 TXT_DIR_PATH = "storage/txt/"
@@ -46,7 +56,12 @@ PNG_DIR_PATH = "storage/png/"
 JPG_DIR_PATH = "storage/jpg/"
 PDF_DIR_PATH = "storage/pdf/"
 
-ALLOWED_FILE_TYPES = {"text/plain", "image/png", "image/jpeg", "application/pdf"}
+ALLOWED_FILE_TYPES = {
+    "text/plain",
+    "image/png",
+    "image/jpeg",
+    "application/pdf",
+}
 CONTENT_TYPE_TO_PATH_MAP = {
     "text/plain": TXT_DIR_PATH,
     "image/png": PNG_DIR_PATH,
@@ -60,15 +75,19 @@ CONTENT_TYPE_TO_EXTENSION_MAP = {
     "application/pdf": ".pdf",
 }
 
+
 class Timer(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         start = time()
         response = await call_next(request)
         end = time()
-        response_time = round(end - start ,2)
+        response_time = round(end - start, 2)
         if response_time > 0.5:
             logging.info(f"Time of response: {response_time}s.")
         return response
+
 
 class BasicVerifier(SessionVerifier[UUID, UserSession]):
     def __init__(
@@ -119,7 +138,9 @@ verifier = BasicVerifier(
     identifier="general_verifier",
     auto_error=True,
     backend=backend,
-    auth_http_exception=HTTPException(status_code=403, detail="invalid session"),
+    auth_http_exception=HTTPException(
+        status_code=403, detail="invalid session"
+    ),
 )
 
 
@@ -134,6 +155,7 @@ def convert_bytes(num: float) -> str:
         if num < 1024.0:
             return "%3.1f %s" % (num, x)
         num /= 1024.0
+
 
 def delete_files_from_storage(files_to_delete: list[str] = None):
     """
@@ -161,31 +183,31 @@ async def process_file(file: UserFile) -> FileResponse:
             # TODO(Tomasz): SIZE OF PROCESSES FILES IS WAY TOO BIG
             yolo_wrapper = YoloWrapper()
             for i, image_dir in enumerate(images[0]):
-
                 image = cv2.imread(image_dir)
-                if (
-                        image_dir[-4:] == '.png' or
-                        image_dir[-4:] == '.PNG'
-                ):
+                if image_dir[-4:] == '.png' or image_dir[-4:] == '.PNG':
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
                 results = yolo_wrapper.model(image)
                 image = yolo_wrapper.process_results(results, image)
                 cv2.imwrite(image_dir, image)
                 pdf.reintroduce_image(image_dir, images[1][i])
-
         pdf.hide_sensitive(processed_path)
 
-        return FileResponse(
-            path=processed_path,
-            filename=processed_name,
-            media_type=processed_type,
-        )
+    elif processed_type == "text/plain":
+        txt = TXT(file.location)
+        txt.hide_sensitive(processed_path)
+
     else:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             detail="Currently only pdf processing is possible.",
         )
+
+    return FileResponse(
+        path=processed_path,
+        filename=processed_name,
+        media_type=processed_type,
+    )
 
 
 app = FastAPI()
@@ -260,7 +282,9 @@ async def read_sessions():
 
 
 @app.delete("/api/session")
-async def delete_session(response: Response, session_id: UUID = Depends(cookie)):
+async def delete_session(
+    response: Response, session_id: UUID = Depends(cookie)
+):
     """
     Deletes current user session.
     Returns response with deleted session details.
@@ -277,7 +301,10 @@ async def delete_session(response: Response, session_id: UUID = Depends(cookie))
 
 
 @app.post("/api/files")
-async def create_files(session_id: UUID = Depends(cookie), uploaded_files: list[UploadFile] = File()):  # noqa B008
+async def create_files(
+    session_id: UUID = Depends(cookie),
+    uploaded_files: list[UploadFile] = File(),
+):  # noqa B008
     """
     Saves given files correlated with session in an internal storage.
     Returns additional information about saved files.
@@ -437,7 +464,10 @@ async def clean_up_sessions():
     for session in active_sessions:
 
         session_data = await backend.read(session)
-        if session_data.updated_time + session_time < datetime.now().timestamp():
+        if (
+            session_data.updated_time + session_time
+            < datetime.now().timestamp()
+        ):
 
             active_sessions.remove(session)
             expired_sessions.append(session_data)
