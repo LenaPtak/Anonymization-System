@@ -1,0 +1,44 @@
+.all-files-type {
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.all-files-type__title {
+  font-size: 24px;
+  font-weight: 100;
+  margin-bottom: 1rem;
+}
+
+.file-type-tile {
+  justify-content: center;
+  display: inline-block;
+  width: 200px;
+  height: 110px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.file-type-tile.selected {
+  background-color: rgb(215, 255, 207);
+  border: 2px solid rgb(108, 255, 78);
+}
+
+.file-type-tile:hover {
+  background-color: rgb(215, 255, 207);
+  border: 2px solid rgb(108, 255, 78);
+}
+
+.file-type-tile input[type="radio"] {
+  display: none;
+}
+
+.file-type-extension {
+  align-items: center;
+  display: block;
+  font-size: 30px;
+  margin: 23px 0px;
+}
