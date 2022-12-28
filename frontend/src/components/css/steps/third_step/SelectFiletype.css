@@ -1,15 +1,9 @@
-.all-files {
-  padding: 2rem;
+.select-filetype__all-files {
+  padding: 0px 2rem;
 }
 
-.search {
+.select-filetype__search {
   padding: 2rem;
   background-color: rgb(245, 245, 245);
   border-radius: 0.75rem;
 }
-
-
-.filetype__paragraph {
-  margin-bottom: 1rem;
-}
-

@@ -9,3 +9,8 @@
   text-align: center;
   padding: 10px;
 }
+
+.select:hover {
+  background-color: rgb(215, 255, 207);
+  border: 2px solid rgb(108, 255, 78);
+}

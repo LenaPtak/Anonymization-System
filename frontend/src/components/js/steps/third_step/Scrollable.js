@@ -22,7 +22,7 @@ export default function Scrollable() {
   );
 
   return (
-    <div>
+    <div className="scrollable">
       <form className="scrollable__form">
         <input
           type="search"
