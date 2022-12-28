@@ -1,18 +1,12 @@
 import React from "react";
 import "../../../css/steps/third_step/SelectFiletype.css";
+import Scrollable from "./Scrolllable";
 
 export default function SelectFiletype() {
   return (
     <div className="row g-3">
       <div className="col search">
-        <p>file.png</p>
-        <p>file.png</p>
-        <p>file.png</p>
-        <p>file.png</p>
-        <p>file.png</p>
-        <p>file.png</p>
-        <p>file.png</p>
-        <p>file.png</p>
+        <Scrollable />
       </div>
       <div class="col all-files">
         <label class="form-label">
