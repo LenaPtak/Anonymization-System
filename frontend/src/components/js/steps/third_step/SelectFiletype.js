@@ -1,6 +1,6 @@
 import React from "react";
 import "../../../css/steps/third_step/SelectFiletype.css";
-import Scrollable from "./Scrolllable";
+import Scrollable from "./Scrollable";
 
 export default function SelectFiletype() {
   return (

@@ -1,0 +1,11 @@
+.select {
+  margin-left: auto;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 0 0 #fff;
+  border-radius: 4px;
+  text-align: center;
+  padding: 10px;
+}
