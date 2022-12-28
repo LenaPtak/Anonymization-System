@@ -11,7 +11,7 @@ export default function SecondStep() {
       <Header />
       <div className="d-flex flex-column justify-content-center align-items-center step__container">
         <div className="d-flex flex-column justify-content-center align-items-center step__content">
-          <StepsLine />
+          <StepsLine activeStep={2} />
           <div className="d-flex flex-column justify-content-center align-items-center step__form">
             <SelectCategory />
           </div>

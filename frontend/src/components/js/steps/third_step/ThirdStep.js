@@ -12,7 +12,7 @@ export default function ThirdStep() {
       <Header />
       <div className="d-flex flex-column justify-content-center align-items-center step__container">
         <div className="step__content">
-          <StepsLine />
+          <StepsLine activeStep={3} />
           <div className="step__form">
             <SelectFiletype />
           </div>
