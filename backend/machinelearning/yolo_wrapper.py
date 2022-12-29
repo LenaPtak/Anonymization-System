@@ -24,7 +24,11 @@ class YoloWrapper(Wrapper):
         self.color_dict = defaultdict(self.generate_color)
 
         if weights_path is None:
-            self.model =torch.hub.load('ultralytics/yolov3', 'yolov3') 
+            self.model = torch.hub.load(
+                'ultralytics/yolov3',
+                'custom',
+                str(Path(__file__).parent / 'yolov3.pt')
+            )
         else:
             raise NotImplementedError
 
