@@ -69,6 +69,26 @@ REGEXES = {
     "Numer partii/serii": r"(\b\d{1,8}\b)",
     "Data ważności": r"(\b\d{2}/\d{2}/\d{4}\b)",
     "Email address": r"([\w\.\d]+\@[\w\d]+\.[\w\d]+)",
+
+    # Pattern to match dates in the format "Month Year" (e.g. "January 2021")
+    "Date type 4": r"\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b \d{4}",
+
+    # Pattern to match dates in the format "Month-Year" (e.g. "January-2021")
+    "Date type 5": r"\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)-\d{4}",
+
+    # Pattern to match dates in the format "Month/Year" (e.g. "January/2021")
+    "Date type 6" : r"\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/\d{4}",
+
+
+    # Pattern to match dates in the format "MM.YYYY" (e.g. "01.2021")
+    "Date type 7": r"\b(?:0[1-9]|1[0-2])\.[0-9]{4}\b",
+
+    # Pattern to match dates in the format "MM.YYYY-MM.YYYY" (e.g. "01.2021-03.2023")
+    "Date type 8": r"\b(?:0[1-9]|1[0-2])\.[0-9]{4}-(?:0[1-9]|1[0-2])\.[0-9]{4}\b",
+
+    # Pattern to match dates in the format "MM.YYYY-MM.YYYY" (e.g. "01.2021-03.2023")
+    "Date type 9": r"\b(?:0[1-9]|1[0-2])\.[0-9]{4}.*(?:0[1-9]|1[0-2])\.[0-9]{4}\b",
+
 }
 
 
@@ -93,9 +113,24 @@ def _get_sensitive_data(
 
     for line in text.split("\n"):
         for regex_name, regex_pattern in regexes.items():
+
+            line_joined = "".join(line.split())
+
             if re.search(regex_pattern, line, re.IGNORECASE):
                 search = re.search(regex_pattern, line, re.IGNORECASE)
-                yield regex_name, search.group(1)
+                yield regex_name, search.group()
+
+            elif re.search(regex_pattern, line_joined, re.IGNORECASE):
+                search = re.search(".*", line, re.IGNORECASE)
+                print(search)
+                yield regex_name, search.group()
+
+            else:
+                for word in line.split():
+                    # print(word)
+                    if re.search(regex_pattern, word, re.IGNORECASE):
+                        search = re.search(regex_pattern, word, re.IGNORECASE)
+                        yield regex_name, search.group()
 
 
 class PDF:
@@ -306,23 +341,50 @@ class PDF:
 
         :param path: Scieżka do zapisu przetworzonego pliku
         """
+        chosen_regexes = [
+            "Numer PESEL",
+            "Numer dowodu osobistego",
+            "Numer karty kredytowej",
+            "Numer NIP",
+            "Numer telefonu",
+            "Numer rachunku bankowego",
+            "Email address",
+            "Date type 1",
+            "Date type 2",
+            "Date type 3",
+            "Date type 4",
+            "Date type 5",
+            "Date type 6",
+            "Date type 7",
+            "Date type 8",
+            "Date type 9",
+        ]
+
         with fitz.open(self.filepath) as doc:
             for page in doc:
-                sensitive = _get_sensitive_data(page.get_text("text"))
+                with open("text_result.txt", "w") as text_file:
+                    text_file.write(page.get_text("text"))
+
+                sensitive = _get_sensitive_data(
+                    page.get_text("text"), chosen_regexes=chosen_regexes
+                )
                 for datatype, word in set(sensitive):
                     if areas := page.search_for(word, quads=True):
-                        [
+                        for area in areas:
                             page.add_redact_annot(
                                 area,
-                                text=datatype,
+                                text=len(word) * "*",
                                 fontsize=10,
                                 align=fitz.TEXT_ALIGN_CENTER,
-                                fill=(0.1, 0.9, 0.9),
+                                fill=(0.8, 0.8, 0.8),
                             )
-                            for area in areas
-                        ]
-                        page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
-                doc.save(path, garbage=3, deflate=True)
+
+                        page.apply_redactions(
+                            images=fitz.PDF_REDACT_IMAGE_NONE
+                        )
+
+                # TODO : higher garbage might make yolo problems
+                doc.save(path, deflate=True, garbage=1)
 
     def extract_images(self) -> list[str]:
         """
