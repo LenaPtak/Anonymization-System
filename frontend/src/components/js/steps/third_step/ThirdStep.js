@@ -21,13 +21,13 @@ export default function ThirdStep() {
               to="/anonymization/select-category"
               style={{ textDecoration: "none", color: "black" }}
             >
-              <button className="invite__btn">Previous step</button>
+              <button className="step__btn">Previous step</button>
             </Link>
             <Link
               to="/anonymization/select-final-result"
               style={{ textDecoration: "none", color: "black" }}
             >
-              <button className="invite__btn">Next step</button>
+              <button className="step__btn">Next step</button>
             </Link>
           </div>
         </div>
