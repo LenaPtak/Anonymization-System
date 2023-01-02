@@ -321,8 +321,9 @@ class PDF:
                             )
                             for area in areas
                         ]
-                        page.apply_redactions()
-                doc.save(path)
+                        page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
+                doc.save(path, garbage=3, deflate=True)
+
 
     def extract_images(self) -> list[str]:
         """
