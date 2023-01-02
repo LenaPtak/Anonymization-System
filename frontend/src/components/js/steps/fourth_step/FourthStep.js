@@ -21,9 +21,9 @@ export default function FourthStep() {
               to="/anonymization/select-file-type"
               style={{ textDecoration: "none", color: "black" }}
             >
-              <button className="invite__btn">Previous step</button>
+              <button className="step__btn">Previous step</button>
             </Link>
-            <button className="invite__btn">Finish!</button>
+            <button className="step__btn">Finish!</button>
           </div>
         </div>
       </div>

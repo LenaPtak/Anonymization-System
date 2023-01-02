@@ -4,7 +4,7 @@
 
 .step__container {
   width: 100%;
-  height: 50rem;
+  height: 45rem;
   padding-bottom: 3rem;
   position: relative;
 }
@@ -16,7 +16,7 @@
 
 .step__form {
   width: 60rem;
-  height: 25rem;
+  height: 24rem;
 }
 
 .step__buttons {
@@ -35,7 +35,7 @@
   font-family: "Basier circle", -apple-system, system-ui, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 1.1rem;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1;
   padding: 1rem 1.6rem;
