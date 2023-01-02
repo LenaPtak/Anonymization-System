@@ -324,7 +324,6 @@ class PDF:
                         page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
                 doc.save(path, garbage=3, deflate=True)
 
-
     def extract_images(self) -> list[str]:
         """
         Funkcja extract_images wyszukuje w PDFie obrazki i zapisuje je w folderze /images
