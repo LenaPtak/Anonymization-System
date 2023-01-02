@@ -5,132 +5,39 @@ from typing import List, Tuple, Union
 import fitz
 from PIL import Image
 
-REGEXES = {
-    "U.S.Social Security No": r"(\b(?!000|666|9\d{2})([0-8]\d{2}|7([0-6]\d))([-]?|\s{1})(?!00)\d\d\2(?!0000)\d{4}\b)",
-    # noqa E501
-    "IPV4 address": r"(^\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}$)",
-    "Dates in MM/DD/YYYY format": r"(^([1][12]|[0]?[1-9])[\/-]([3][01]|[12]\d|[0]?[1-9])[\/-](\d{4}|\d{2})$)",
-    "MasterCard number": r"(^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$)",
-    "Visa card number": r"(\b([4]\d{3}[\s]\d{4}[\s]\d{4}[\s]\d{4}|[4]\d{3}[-]\d{4}[-]\d{4}[-]\d{4}|[4]\d{3}[.]\d{4}[.]\d{4}[.]\d{4}|[4]\d{3}\d{4}\d{4}\d{4})\b)",
-    # noqa E501
-    "American Express card number": r"(^3[47][0-9]{13}$)",
-    "U.S. ZIP code": r"(^((\d{5}-\d{4})|(\d{5})|([A-Z]\d[A-Z]\s\d[A-Z]\d))$)",
-    "File path": r"(\\[^\\]+$	)",
-    "Dollar amount": r"(\$[0-9]*.[0-9][0-9])",
-    "Date type 1": r"([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\})",  # 2003-08-06
-    "Date type 2": r"([A-Z][a-z][a-z] [0-9][0-9]*, [0-9]\{4\})",  # Jan 3, 2003
-    "Date type 3": r"(^(\d{1,2})\/(\d{1,2})\/(\d{2}|(19|20)\d{2})$)",
-    # DD/MM/YY or DD/MM/YYYY or MM/DD/YY or MM/DD/YYYY # noqa E501
-    "Phone No.": r"((^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$))",
-    "Credit card": r"(^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|622((12[6-9]|1[3-9][0-9])|([2-8][0-9][0-9])|(9(([0-1][0-9])|(2[0-5]))))[0-9]{10}|64[4-9][0-9]{13}|65[0-9]{14}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})*)$",
-    # noqa E501,
-    "Health insurance No.": r"(^[A-Z]{3}[0-9]{6}[A-Z][0-9]{2}$)",
-    "Passport No.": r"(^[A-Z]{2}[0-9]{7}$)",
-    "Cell phone No.": r"(^\+[0-9]{2}[0-9]{9}$)",
-    "Email address 2": r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
-    "PESEL": r"(^[0-9]{11}$)",
-    "Date of birth": r"(^[0-9]{2}/[0-9]{2}/[0-9]{4}$)",
-    "ID No.": r"(^[A-Z]{3}[0-9]{6}$)",
-    "NIP": r"(^[0-9]{10}$)",
-    "REGON": r"(^[0-9]{9}$)",
-    "Bank account No.": r"(^[0-9]{26}$)",
-    "Passport number": r"(^[A-Z]{2}\d{7}$)",
-    "Driver's license number": r"(^[A-Z]\d{7}$)",
-    "National identification number": r"(^\d{3}\s\d{3}\s\d{3}$)",
-    "National insurance number": r"(^[A-Z]{2}\s\d{6}[A-Z]$)",
-    "National Health Service number": r"(^[A-Z]{3}\d{6}[A-Z]{2}$)",
-    "Credit card security code(CVV)": r"(^\d{3,4}$)",
-    "Date of birth 2": r"(^\d{2}/\d{2}/\d{4}$)",
-    "Age": r"(^[1-9]\d{1,2}$)",
-    "Home address": r"(^\d{1,4}\s[A-Z][a-z]+(\s[A-Z][a-z]+)*$)",
-    "Emergency contact": r"(^[A-Z][a-z]+(\s[A-Z][a-z]+)\s\d{1,4}\s[A-Z][a-z]+(\s[A-Z][a-z]+)$)",
-    "Different - might delete": r"(^[A-Z][a-z]+(\s[A-Z][a-z]+)*$)",
-    "Income": r"(^[1-9]\d*$)",
-    "Blood type": r"(^[A-Z]$)",
-    "Passwords": r"(^[A-Za-z0-9@#$%^&+=]{8,}$)",
-    "Bank account numbers": r"(^[A-Z]{2}\d{6,10}$)",
-    "Credit card numbers": r"(^\d{4}\s\d{4}\s\d{4}\s\d{4}$)",
-    "Invoice numbers": r"(^[A-Z]{2,4}-+[0-9]{4,12}$)",
-    "Transaction amounts": r"(^$\d+(,\d{3})*(.\d{2})?$)",
-    "Personal identification numbers (PINs)": r"(^\d{4,6}$)",
-    "Numer PESEL": r"(\b[0-9]{11}\b)",
-    "Numer dowodu osobistego": r"(\b[A-Z]{3}\d{6}\b)",
-    "Numer karty kredytowej": r"(\b(\d{4}\s){3}\d{4}\b)",
-    "Numer NIP": r"(\b\d{10}\b)",
-    "Numer telefonu": r"(\b\+48\s[0-9]{3}\s[0-9]{3}\s[0-9]{3}\b)",
-    "Numer rachunku bankowego": r"(\b\d{26}\b)",
-    "Data urodzenia": r"(\b\d{2}\/\d{2}\/\d{4}\b)",
-    "Imię/Nazwisko": r"(\b[A-Z][a-z]+(\s[A-Z][a-z]+)*\b)",
-    "Numer faktury/polisy/zamowienia": r"(\b[A-Z]{2}\d{8}\b)",
-    "Kwota": r"(\b\d+(,\d{3})*(\.\d{2})?\b)",
-    "Numer REGON": r"(\b\d{9}\b)",
-    "Adres firmy": r"(\b\d{1,4}\s[A-Z][a-z]+(\s[A-Z][a-z]+)*\b)",
-    "Kwota 2": r"(\b\d+(,\d{3})*(.\d{2})?\b)",
-    "Numer partii/serii": r"(\b\d{1,8}\b)",
-    "Data ważności": r"(\b\d{2}/\d{2}/\d{4}\b)",
-    "Email address": r"([\w\.\d]+\@[\w\d]+\.[\w\d]+)",
-
-    # Pattern to match dates in the format "Month Year" (e.g. "January 2021")
-    "Date type 4": r"\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b \d{4}",
-
-    # Pattern to match dates in the format "Month-Year" (e.g. "January-2021")
-    "Date type 5": r"\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)-\d{4}",
-
-    # Pattern to match dates in the format "Month/Year" (e.g. "January/2021")
-    "Date type 6" : r"\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/\d{4}",
+from regexes import polish_sensitive, regexes_global
 
 
-    # Pattern to match dates in the format "MM.YYYY" (e.g. "01.2021")
-    "Date type 7": r"\b(?:0[1-9]|1[0-2])\.[0-9]{4}\b",
-
-    # Pattern to match dates in the format "MM.YYYY-MM.YYYY" (e.g. "01.2021-03.2023")
-    "Date type 8": r"\b(?:0[1-9]|1[0-2])\.[0-9]{4}-(?:0[1-9]|1[0-2])\.[0-9]{4}\b",
-
-    # Pattern to match dates in the format "MM.YYYY-MM.YYYY" (e.g. "01.2021-03.2023")
-    "Date type 9": r"\b(?:0[1-9]|1[0-2])\.[0-9]{4}.*(?:0[1-9]|1[0-2])\.[0-9]{4}\b",
-
-}
-
-
-def _get_sensitive_data(
-    text: str, chosen_regexes: list = None
-) -> Tuple[str, str]:
+def _get_sensitive_data(text: str, chosen_regexes: list = None) -> Tuple[str, str]:
     """
     This function look for regular expressions in given text.
 
     :param text: Source text, passed as string with possible newlines.
     :return: Generator of matches in form (regex_name: str, match: str)
     """
+    regexes = regexes_global
     if chosen_regexes:
         regexes = {
-            key: REGEXES[key]
-            for key in [
-                regex for regex in chosen_regexes if regex in REGEXES.keys()
-            ]
+            key: regexes_global[key]
+            for key in [regex for regex in chosen_regexes if regex in regexes_global.keys()]
         }
-    else:
-        regexes = REGEXES
 
     for line in text.split("\n"):
         for regex_name, regex_pattern in regexes.items():
 
             line_joined = "".join(line.split())
+            if re.search(regex_pattern, line_joined, re.IGNORECASE):
+                search = re.search(".*", line, re.IGNORECASE)
+                yield regex_name, search.group()
+
+            for word in line.split():
+                if re.search(regex_pattern, word, re.IGNORECASE):
+                    search = re.search(regex_pattern, word, re.IGNORECASE)
+                    yield regex_name, search.group()
 
             if re.search(regex_pattern, line, re.IGNORECASE):
                 search = re.search(regex_pattern, line, re.IGNORECASE)
                 yield regex_name, search.group()
-
-            elif re.search(regex_pattern, line_joined, re.IGNORECASE):
-                search = re.search(".*", line, re.IGNORECASE)
-                print(search)
-                yield regex_name, search.group()
-
-            else:
-                for word in line.split():
-                    # print(word)
-                    if re.search(regex_pattern, word, re.IGNORECASE):
-                        search = re.search(regex_pattern, word, re.IGNORECASE)
-                        yield regex_name, search.group()
 
 
 class PDF:
@@ -152,13 +59,9 @@ class PDF:
         with fitz.open(self.filepath) as doc:
             with open("raw_text.txt", "wb") as out:
                 for page in doc:  # iterate the document pages
-                    text = page.get_text(sort=True).encode(
-                        "utf8"
-                    )  # get plain text (is in UTF-8)
+                    text = page.get_text(sort=True).encode("utf8")  # get plain text (is in UTF-8)
                     out.write(text)  # write text of page
-                    out.write(
-                        bytes((12,))
-                    )  # write page delimiter (form feed 0x0C)
+                    out.write(bytes((12,)))  # write page delimiter (form feed 0x0C)
 
     def make_template(self):
         """Funkcja make_template zapisuje szablon PDFu"""
@@ -167,9 +70,7 @@ class PDF:
             paths = page.get_drawings()
 
             with fitz.open() as out_file:
-                out_page = out_file.new_page(
-                    width=page.rect.width, height=page.rect.height
-                )
+                out_page = out_file.new_page(width=page.rect.width, height=page.rect.height)
                 shape = out_page.new_shape()
                 for path in paths:
                     for item in path["items"]:
@@ -180,9 +81,7 @@ class PDF:
                         elif item[0] == "qu":  # quad
                             shape.draw_quad(item[1])
                         elif item[0] == "c":  # curve
-                            shape.draw_bezier(
-                                item[1], item[2], item[3], item[4]
-                            )
+                            shape.draw_bezier(item[1], item[2], item[3], item[4])
                         else:
                             raise ValueError("unhandled drawing", item)
 
@@ -190,25 +89,13 @@ class PDF:
                         fill=path["fill"],  # fill color
                         color=path["color"],  # line color
                         dashes=path["dashes"],  # line dashing
-                        even_odd=path.get(
-                            "even_odd", True
-                        ),  # control color of overlaps
-                        closePath=path[
-                            "closePath"
-                        ],  # whether to connect last and first point
-                        lineJoin=path[
-                            "lineJoin"
-                        ],  # how line joins should look like
-                        lineCap=max(
-                            path["lineCap"]
-                        ),  # how line ends should look like
+                        even_odd=path.get("even_odd", True),  # control color of overlaps
+                        closePath=path["closePath"],  # whether to connect last and first point
+                        lineJoin=path["lineJoin"],  # how line joins should look like
+                        lineCap=max(path["lineCap"]),  # how line ends should look like
                         width=path["width"],  # line width
-                        stroke_opacity=path.get(
-                            "stroke_opacity", 1
-                        ),  # same value for both
-                        fill_opacity=path.get(
-                            "fill_opacity", 1
-                        ),  # opacity parameters
+                        stroke_opacity=path.get("stroke_opacity", 1),  # same value for both
+                        fill_opacity=path.get("fill_opacity", 1),  # opacity parameters
                     )
                 shape.commit()
                 out_file.save("drawings-page-0.pdf")
@@ -277,12 +164,8 @@ class PDF:
 
         :param good_quality: Ustawione na True zapisze pliki PNG w większej rozdzielczości
         """
-        for page_number, pix in enumerate(
-            self._get_pixmap(dpi=500 if good_quality else 100)
-        ):
-            pix.save(
-                f"{self.filename}_{page_number}_{500 if good_quality else 100}_dpi.png"
-            )
+        for page_number, pix in enumerate(self._get_pixmap(dpi=500 if good_quality else 100)):
+            pix.save(f"{self.filename}_{page_number}_{500 if good_quality else 100}_dpi.png")
 
     def search_for_words(self, args: list[str]) -> dict[list[fitz.Rect]]:
         """
@@ -349,6 +232,7 @@ class PDF:
             "Numer telefonu",
             "Numer rachunku bankowego",
             "Email address",
+            "Home address",
             "Date type 1",
             "Date type 2",
             "Date type 3",
@@ -358,17 +242,37 @@ class PDF:
             "Date type 7",
             "Date type 8",
             "Date type 9",
+            "Date type 10",
+            "Date type 11",
+            "Date type 12",
+            "Date type 13",
+            "Date type 14",
+            "Date type 15",
+            "Date type 15",
+            "Date type 16",
+            "Date type 17",
+            "Date type 19",
+            "Date type 20",
+            "Date type 21",
+            "Date type 22",
+            "Date type 23",
+            "Date type 24",
+            "Date type 25",
+            "Date type 26",
+            "Date type 27",
+            "Date type 28",
+            "Date type 29",
+            "Date type 30",
+            "Date type 31",
+
         ]
 
         with fitz.open(self.filepath) as doc:
             for page in doc:
-                with open("text_result.txt", "w") as text_file:
-                    text_file.write(page.get_text("text"))
-
                 sensitive = _get_sensitive_data(
                     page.get_text("text"), chosen_regexes=chosen_regexes
                 )
-                for datatype, word in set(sensitive):
+                for datatype, word in set(sensitive) :
                     if areas := page.search_for(word, quads=True):
                         for area in areas:
                             page.add_redact_annot(
@@ -382,6 +286,22 @@ class PDF:
                         page.apply_redactions(
                             images=fitz.PDF_REDACT_IMAGE_NONE
                         )
+
+
+                for line in page.get_text("text").split("\n"):
+                    for word in line.split():
+                        if word in polish_sensitive or word.upper() in polish_sensitive or word.capitalize() in polish_sensitive:
+                            print(f"{word} in polish")
+                            areas = page.search_for(word, quads=True)
+                            for area in areas:
+                                page.add_redact_annot(
+                                    area,
+                                    text=len(word) * "*",
+                                    fontsize=10,
+                                    align=fitz.TEXT_ALIGN_CENTER,
+                                    fill=(0.8, 0.8, 0.8),
+                                )
+                                page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
 
                 # TODO : higher garbage might make yolo problems
                 doc.save(path, deflate=True, garbage=1)
@@ -398,13 +318,9 @@ class PDF:
                 for image_index, img in enumerate(page.get_images(), start=1):
                     xref = img[0]  # get the XREF of the image
                     base_image = doc.extract_image(xref)
-                    image_bytes = base_image[
-                        "image"
-                    ]  # extract the image bytes
+                    image_bytes = base_image["image"]  # extract the image bytes
                     image_ext = base_image["ext"]  # get the image extension
-                    image = Image.open(
-                        io.BytesIO(image_bytes)
-                    )  # load it to PIL
+                    image = Image.open(io.BytesIO(image_bytes))  # load it to PIL
                     image_name = f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
                     images_in_pdf.append(image_name)
                     xrefs.append(xref)
@@ -419,9 +335,7 @@ class PDF:
                 for image_index, img in enumerate(page.get_images(), start=1):
                     if img[0] == xref:
                         bbox = page.get_image_bbox(img[7])
-                        page.apply_redactions(
-                            images=fitz.PDF_REDACT_IMAGE_REMOVE
-                        )
+                        page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_REMOVE)
                         page.insert_image(bbox, filename=path)
             doc.saveIncr()
 
