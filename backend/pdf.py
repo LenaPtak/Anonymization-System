@@ -81,12 +81,16 @@ def _get_sensitive_data(
     :param text: Source text, passed as string with possible newlines.
     :return: Generator of matches in form (regex_name: str, match: str)
     """
-    regexes = {
-        key: REGEXES[key]
-        for key in [
-            regex for regex in chosen_regexes if regex in REGEXES.keys()
-        ]
-    }
+    if chosen_regexes:
+        regexes = {
+            key: REGEXES[key]
+            for key in [
+                regex for regex in chosen_regexes if regex in REGEXES.keys()
+            ]
+        }
+    else:
+        regexes = REGEXES
+
     for line in text.split("\n"):
         for regex_name, regex_pattern in regexes.items():
             if re.search(regex_pattern, line, re.IGNORECASE):
