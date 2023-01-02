@@ -1,9 +1,9 @@
 import React from "react";
 import "../../../css/steps/second_step/SelectCategory.css";
-import Description from "./Description";
 import Phrases from "./Phrases";
 import Categories from "./Categories";
 import Mode from "./Mode";
+import Description from "./Description";
 
 export default function SelectCategory() {
   const handleSubmit = (event) => {
