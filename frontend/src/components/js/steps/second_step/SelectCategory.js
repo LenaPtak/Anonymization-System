@@ -12,8 +12,8 @@ export default function SelectCategory() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div class="row g-3">
-        <div class="col select-category__select">
+      <div className="row g-3">
+        <div className="col select-category__select">
           <Mode />
           <Categories />
           <Phrases />
@@ -21,7 +21,7 @@ export default function SelectCategory() {
         <Description />
       </div>
 
-      {/* <button type="submit" class="btn btn-primary" onSubmit={handleSubmit}>
+      {/* <button type="submit" className="btn btn-primary" onSubmit={handleSubmit}>
         Save
       </button> */}
     </form>

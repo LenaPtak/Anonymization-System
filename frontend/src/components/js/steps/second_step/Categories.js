@@ -14,11 +14,11 @@ export default function Categories() {
   };
 
   return (
-    <div class="select-category__categories justify-content-center">
-      <div class="categories__title d-flex justify-content-center">
+    <div className="select-category__categories justify-content-center">
+      <div className="categories__title d-flex justify-content-center">
         Select categories you want to hide:
       </div>
-      <div class="d-flex justify-content-center">
+      <div className="d-flex justify-content-center">
         <div
           className={`categories__select-mode ${
             selectedCategories.includes("names") ? "selected" : ""

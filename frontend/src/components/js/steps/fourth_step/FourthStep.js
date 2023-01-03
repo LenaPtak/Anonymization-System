@@ -16,7 +16,7 @@ export default function FourthStep() {
           <div className="step__form">
             <SelectResult />
           </div>
-          <div class="d-flex justify-content-between step__buttons">
+          <div className="d-flex justify-content-between step__buttons">
             <Link
               to="/anonymization/select-file-type"
               style={{ textDecoration: "none", color: "black" }}

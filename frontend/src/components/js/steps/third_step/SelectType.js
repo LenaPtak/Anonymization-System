@@ -3,8 +3,8 @@ import "../../../css/steps/third_step/SelectType.css";
 
 export default function SelectType() {
   return (
-    <select class="form-select select">
-      <option selected value="pdf">
+    <select className="form-select select" defaultValue={"pdf"}>
+      <option value="pdf">
         .pdf
       </option>
       <option value="png">.png</option>

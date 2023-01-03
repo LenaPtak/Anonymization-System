@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Header from "../../homepage/Header";
 import StepsLine from "../StepsLine";
 
-export default function SecondStep() {
+export default function SecondStep(props) {
   return (
     <div className="step">
       <Header />
@@ -15,7 +15,7 @@ export default function SecondStep() {
           <div className="d-flex flex-column justify-content-center align-items-center step__form">
             <SelectCategory />
           </div>
-          <div class="d-flex justify-content-between step__buttons">
+          <div className="d-flex justify-content-between step__buttons">
             <Link
               to="/anonymization/send-files"
               style={{ textDecoration: "none", color: "black" }}

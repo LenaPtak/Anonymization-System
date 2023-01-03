@@ -9,11 +9,11 @@ export default function Result() {
   };
 
   return (
-    <div class="result">
-      <div class="result__title">
+    <div className="result">
+      <div className="result__title">
         Choose in what form you want to receive your files:
       </div>
-      <div class="">
+      <div className="">
         <div
           className={`result__tile ${
             selectedResult === "merge" ? "selected" : ""
