@@ -45,13 +45,16 @@ export default function DragDropFile() {
 
     const requestOptions = {
       method: "POST",
+      credentials: "include",
       body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
     };
 
-    fetch("http://127.0.0.1:8000/api/files", requestOptions).then((response) =>
-      response.json()
-    ).catch((e) => console.log(`e: ${e}`))
-    ;
+    fetch("http://localhost:8000/api/files", requestOptions)
+      .then((response) => response.json())
+      .catch((e) => console.log(`e: ${e}`));
   };
 
   const handleDrag = function (e) {
@@ -79,9 +82,9 @@ export default function DragDropFile() {
   };
 
   return (
-    <div className="drag-drop-file">
+    <div className="dd">
       <form
-        id="form-file-upload"
+        className="dd__upload"
         onDragEnter={handleDrag}
         onSubmit={(e) => e.preventDefault()}
       >
@@ -89,7 +92,7 @@ export default function DragDropFile() {
           ref={inputRef}
           type="file"
           accept=".jpeg, .png, .png, .pdf"
-          id="input-file-upload"
+          className="dd__input"
           multiple={true}
           onChange={handleFiles}
         />
@@ -99,9 +102,9 @@ export default function DragDropFile() {
           className={dragActive ? "drag-active" : ""}
         >
           <div>
-            <p>Drag and drop your file here or</p>
-            <button className="upload-button" onClick={onButtonClick}>
-              Upload a file
+            <div className="dd_text">Drag and drop your file here or</div>
+            <button className="dd__uploadBtn" onClick={onButtonClick}>
+              upload a file
             </button>
           </div>
         </label>
@@ -126,7 +129,7 @@ export default function DragDropFile() {
             <li>{file.name}</li>
           ))}
         </ol>
-        {/* <DownloadFile uploadedFiles={uploadedFiles} /> */}
+        <DownloadFile uploadedFiles={uploadedFiles} />
       </form>
     </div>
   );

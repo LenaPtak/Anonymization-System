@@ -15,7 +15,7 @@
   display: inline-block;
   width: 200px;
   height: 110px;
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
@@ -24,12 +24,12 @@
 
 .file-type-tile.selected {
   background-color: rgb(215, 255, 207);
-  border: 2px solid rgb(108, 255, 78);
+  border: 1px solid rgb(108, 255, 78);
 }
 
 .file-type-tile:hover {
   background-color: rgb(215, 255, 207);
-  border: 2px solid rgb(108, 255, 78);
+  border: 1px solid rgb(108, 255, 78);
 }
 
 .file-type-tile input[type="radio"] {

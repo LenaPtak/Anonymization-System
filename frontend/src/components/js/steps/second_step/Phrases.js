@@ -11,14 +11,14 @@ export default function Phrases() {
     });
   };
   return (
-    <div class="phrases">
-      <div class="">
-        <div class="phrases__title">
+    <div className="phrases">
+      <div className="">
+        <div className="phrases__title">
           Enter the exact phrases you want to anonymise:
         </div>
         <div className="d-flex justify-content-center">
           <textarea
-            class="phrases__textarea"
+            className="phrases__textarea"
             aria-label=""
             onChange={handleChange}
           />

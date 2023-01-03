@@ -9,7 +9,7 @@ export default function SelectFiletype() {
       <div className="col select-filetype__search">
         <Scrollable />
       </div>
-      <div class="col select-filetype__all-files">
+      <div className="col select-filetype__all-files">
         <AllFilesType />
       </div>
     </div>

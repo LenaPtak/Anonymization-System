@@ -15,9 +15,11 @@ export default function Step() {
           <div className="d-flex flex-column justify-content-center align-items-center step__form">
             <DragDropFile />
           </div>
-          <div class="d-flex flex-row-reverse step__buttons">
+          <div className="d-flex flex-row-reverse step__buttons">
             <Link
-              to="/anonymization/select-category"
+              to={{
+                pathname: "/anonymization/select-category",
+              }}
               style={{ textDecoration: "none", color: "black" }}
             >
               <button className="step__btn">Next step</button>
