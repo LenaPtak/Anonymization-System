@@ -8,14 +8,14 @@ import Merge from "./Merge";
 import TemporarySessionHandlingButtons from "./TemporarySessionHandlingButtons";
 
 export default function Content() {
-    return (
-        <div className="content">
-            <TemporarySessionHandlingButtons/>
-            <Invite/>
-            <Possibilities/>
-            <SelectCategory/>
-            <Converting/>
-            <Merge/>
-        </div>
-    );
+  return (
+    <div className="content">
+      <TemporarySessionHandlingButtons />
+      <Invite />
+      <Possibilities />
+      <SelectCategory />
+      <Converting />
+      <Merge />
+    </div>
+  );
 }

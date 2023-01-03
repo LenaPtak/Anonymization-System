@@ -21,7 +21,7 @@
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .result__tile.selected {
@@ -44,5 +44,5 @@
   justify-content: center;
   font-size: 36px;
   text-align: center;
-  padding: 2rem 0px;
+  padding: 1.5rem 0px;
 }
