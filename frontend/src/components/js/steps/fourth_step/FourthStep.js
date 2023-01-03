@@ -7,6 +7,34 @@ import Footer from "../../homepage/Footer";
 import SelectResult from "./SelectResult";
 
 export default function FourthStep() {
+  function deleteSession() {
+    fetch(`http://localhost:8000/api/session`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((response) => {
+        // this callback function is executed when the promise is fulfilled
+        if (response.ok) {
+          return response.json();
+        } else if (response.status === 403) {
+          return {
+            tip: "You have no permission to delete session, probably was already deleted or not yet created. Check your cookies.",
+          };
+        } else {
+          throw new Error(
+            "Communication between React and FastAPI is not working. Something went wrong."
+          );
+        }
+      })
+      .then((data) => {
+        // this callback function is executed when the promise is fulfilled
+        console.log(data);
+      })
+      .catch((error) => {
+        // this callback function is executed when the promise is rejected
+        console.error(error);
+      });
+  }
   return (
     <div className="step">
       <Header />
@@ -23,7 +51,14 @@ export default function FourthStep() {
             >
               <button className="step__btn">Previous step</button>
             </Link>
-            <button className="step__btn">Finish!</button>
+            <Link
+              to="/home"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <button className="step__btn" onClick={deleteSession}>
+                Finish!
+              </button>
+            </Link>
           </div>
         </div>
       </div>
