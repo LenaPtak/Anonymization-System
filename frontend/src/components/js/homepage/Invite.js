@@ -1,6 +1,7 @@
 import React from "react";
 import "../../css/homepage/Invite.css";
 import { Link } from "react-router-dom";
+import StartBtn from "./StartBtn";
 
 export default function Invite() {
   return (
@@ -14,9 +15,7 @@ export default function Invite() {
           to="/anonymization/send-files"
           style={{ textDecoration: "none", color: "black" }}
         >
-          <button className="invite__btn">
-            Let's anonymize some documents
-          </button>
+          <StartBtn />
         </Link>
       </div>
       <img className="invite__photo" src="..\images\homepage1.svg" alt="" />

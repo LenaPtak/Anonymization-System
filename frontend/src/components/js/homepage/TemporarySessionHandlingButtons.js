@@ -3,7 +3,7 @@ import React from 'react';
 export default function TemporarySessionHandlingButtons() {
 
     function createSession() {
-        fetch(`http://localhost:8000/create_session`, {
+        fetch(`http://localhost:8000/api/session`, {
             method: 'POST',
             credentials: "include",
         }).then((response) => {
@@ -29,7 +29,7 @@ export default function TemporarySessionHandlingButtons() {
     }
 
     function readSession() {
-        fetch(`http://localhost:8000/read_session`, {
+        fetch(`http://localhost:8000/api/session`, {
             method: 'GET',
             credentials: "include",
         }).then((response) => {
@@ -55,8 +55,8 @@ export default function TemporarySessionHandlingButtons() {
     }
 
     function deleteSession() {
-        fetch(`http://localhost:8000/delete_session`, {
-            method: 'POST',
+        fetch(`http://localhost:8000/api/session`, {
+            method: 'DELETE',
             credentials: "include"
         }).then((response) => {
             // this callback function is executed when the promise is fulfilled

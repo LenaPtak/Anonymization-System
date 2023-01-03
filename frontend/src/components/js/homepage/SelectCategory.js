@@ -1,6 +1,7 @@
 import React from "react";
 import "../../css/homepage/SelectCategory.css";
 import { Link } from "react-router-dom";
+import StartBtn from "./StartBtn";
 
 export default function SelectCategory() {
   return (
@@ -20,9 +21,7 @@ export default function SelectCategory() {
           to="/anonymization/send-files"
           style={{ textDecoration: "none", color: "black" }}
         >
-          <button className="select-category__btn">
-            Let's anonymize some documents
-          </button>
+          <StartBtn />
         </Link>
       </div>
     </div>

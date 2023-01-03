@@ -1,12 +1,12 @@
 import React from "react";
-import "../../../css/steps/first_step/DownloadFile.css";
+import "../../../css/steps/fourth_step/DownloadFiles.css";
 
-export default function DownloadFile(uploadedFiles) {
+export default function DownloadFiles(uploadedFiles) {
+  
   const downloadFile = () => {
     uploadedFiles.uploadedFiles.forEach((file) => {
       fetch("http://127.0.0.1:8000/api/file/" + file.name, {
         method: "GET",
-        credentials: "include",
         headers: {
           "Content-Type": "application/pdf",
         },
