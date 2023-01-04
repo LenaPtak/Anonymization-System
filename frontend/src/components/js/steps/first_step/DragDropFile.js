@@ -40,16 +40,13 @@ export default function DragDropFile() {
   const handleSubmit = (e) => {
     const formData = new FormData();
     uploadedFiles.forEach((file) => {
-      formData.append("files", file, file.name);
+      formData.append("uploaded_files", file, file.name);
     });
 
     const requestOptions = {
       method: "POST",
       credentials: "include",
-      body: formData,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      body: formData
     };
 
     fetch("http://localhost:8000/api/files", requestOptions)
