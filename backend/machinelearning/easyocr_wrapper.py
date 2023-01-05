@@ -24,6 +24,7 @@ class EasyOCRWrapper(Wrapper):
             detail=0):
         self.ocr_model = easyocr.Reader(languages)
         self.detail = 0
+        self.show_image = False
         super().__init__(weights_path)
 
     def set_detail(self, det):
@@ -36,9 +37,11 @@ class EasyOCRWrapper(Wrapper):
         return self.ocr_model.readtext(data)
 
     def preprocess_results(self, results, data):
+        texts = []
         for box, text, p in results:
             if p > 0.75:
                 top_l, top_r, bot_r, bot_l = box
+                texts.append(text)
                 print("[INFO] {:.4f}: {}".format(p, text))
                 top_l = (int(top_l[0]), int(top_l[1]))
                 top_r = (int(top_r[0]), int(top_r[1]))
@@ -52,8 +55,10 @@ class EasyOCRWrapper(Wrapper):
                     (top_l[0], top_l[1] - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2
                 )
-        im_pil = Image.fromarray(image)
-        im_pil.show()
+        if self.show_image:
+            im_pil = Image.fromarray(image)
+            im_pil.show()
+        return texts
 
 
 if __name__ == "__main__":
@@ -63,5 +68,6 @@ if __name__ == "__main__":
     image = cv2.imread(str(Path(__file__).parent / "./ocr_torture_test.png"))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     results = eo.model(image)
+    eo.show_image = True
     eo.preprocess_results(results, image)
     # image = eo.process_results(results, image)
