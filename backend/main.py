@@ -33,6 +33,7 @@ from starlette.middleware.base import (
 )
 from starlette.requests import Request
 from starlette.responses import FileResponse, RedirectResponse
+import cv2
 
 # TODO(Jan): MAKE MACHINELEARNING A MODULE
 
@@ -40,10 +41,10 @@ from starlette.responses import FileResponse, RedirectResponse
 
 sys.path.insert(1, str(Path(__file__).parent / "./machinelearning"))
 
-import cv2
 
 # TODO(Jan): REMOVE FLAKE SUPPRESSION
 from machinelearning.yolo_wrapper import YoloWrapper  # noqa: E402
+from machinelearning.easyocr_wrapper import EasyOCRWrapper  # noqa: E402
 
 logging.basicConfig(
     format="%(asctime)s - %(message)s",
@@ -257,6 +258,16 @@ async def process_test_file():
                 results = yolo_wrapper.model(image)
                 image = yolo_wrapper.process_results(results, image)
                 cv2.imwrite(image_dir, image)
+                eo = EasyOCRWrapper(None)
+
+                results = eo.model(image)
+                # text: list(str)
+                # boxes: list((top_left, top_right, bottom_left, bottom_right))
+                # every coordinate is another tuple of (x,y) coordinates
+                # so the shape of boxes combined is list(tuple_4(tuple_2))
+                texts, boxes = eo.preprocess_results(results, image)
+                for text, box in zip(texts, boxes):
+                    print("INFO (EasyOCR):", texts)
 
                 pdf.hide_sensitive(processed_path)
                 pdf_processed = PDF(processed_path)

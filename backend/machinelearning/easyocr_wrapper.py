@@ -38,27 +38,29 @@ class EasyOCRWrapper(Wrapper):
 
     def preprocess_results(self, results, data):
         texts = []
+        boxes = []
         for box, text, p in results:
             if p > 0.75:
                 top_l, top_r, bot_r, bot_l = box
-                texts.append(text)
-                print("[INFO] {:.4f}: {}".format(p, text))
+                # print("[INFO] {:.4f}: {}".format(p, text))
                 top_l = (int(top_l[0]), int(top_l[1]))
                 top_r = (int(top_r[0]), int(top_r[1]))
                 bot_r = (int(bot_r[0]), int(bot_r[1]))
                 bot_l = (int(bot_l[0]), int(bot_l[1]))
                 text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
-                cv2.rectangle(image, top_l, bot_r, (0, 255, 0), 2)
-                cv2.putText(
-                    image,
-                    text,
-                    (top_l[0], top_l[1] - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2
-                )
+                texts.append(text)
+                boxes.append((top_l, top_r, bot_l, bot_r))
+                # cv2.rectangle(image, top_l, bot_r, (0, 255, 0), 2)
+                # cv2.putText(
+                #     image,
+                #     text,
+                #     (top_l[0], top_l[1] - 10),
+                #     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2
+                # )
         if self.show_image:
             im_pil = Image.fromarray(image)
             im_pil.show()
-        return texts
+        return texts, boxes
 
 
 if __name__ == "__main__":
