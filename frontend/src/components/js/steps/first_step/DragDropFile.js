@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "../../../css/steps/first_step/DragDropFile.css";
-import DownloadFile from "./DownloadFile";
 
 const MAX_COUNT_FILES = 10;
 
@@ -46,7 +45,7 @@ export default function DragDropFile() {
     const requestOptions = {
       method: "POST",
       credentials: "include",
-      body: formData
+      body: formData,
     };
 
     fetch("http://localhost:8000/api/files", requestOptions)
@@ -123,10 +122,9 @@ export default function DragDropFile() {
         </button>
         <ol>
           {uploadedFiles.map((file) => (
-            <li>{file.name}</li>
+            <li key={file.name}>{file.name}</li>
           ))}
         </ol>
-        <DownloadFile uploadedFiles={uploadedFiles} />
       </form>
     </div>
   );

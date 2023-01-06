@@ -3,8 +3,10 @@ import "../../../css/steps/Step.css";
 import { Link } from "react-router-dom";
 import StepsLine from "../StepsLine";
 import Header from "../../homepage/Header";
-import Footer from "../../homepage/Footer";
+import Footer from "../../steps/Footer";
 import SelectResult from "./SelectResult";
+import DownloadFile from "../first_step/DownloadFile";
+import FinishBtn from "./FinishBtn";
 
 export default function FourthStep() {
   function deleteSession() {
@@ -28,7 +30,7 @@ export default function FourthStep() {
       })
       .then((data) => {
         // this callback function is executed when the promise is fulfilled
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         // this callback function is executed when the promise is rejected
@@ -43,22 +45,20 @@ export default function FourthStep() {
           <StepsLine activeStep={4} />
           <div className="step__form">
             <SelectResult />
-          </div>
-          <div className="d-flex justify-content-between step__buttons">
-            <Link
-              to="/anonymization/select-file-type"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <button className="step__btn">Previous step</button>
-            </Link>
-            <Link
-              to="/home"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <button className="step__btn" onClick={deleteSession}>
-                Finish!
-              </button>
-            </Link>
+            <div className="d-flex justify-content-between step__buttons">
+              <Link
+                to="/anonymization/select-file-type"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <button className="step__btn">Previous step</button>
+              </Link>
+              <Link
+                to="/home"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <FinishBtn />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

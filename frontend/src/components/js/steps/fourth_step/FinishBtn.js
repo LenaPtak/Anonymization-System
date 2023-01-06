@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import "../../../css/steps/first_step/DownloadFile.css";
+import React, { useState, useEffect } from "react";
+import "../../../css/steps/Step.css";
 
-export default function DownloadFile() {
+export default function FinishBtn() {
   const [files, setFiles] = useState([]);
 
   function readSession() {
@@ -25,7 +25,7 @@ export default function DownloadFile() {
       })
       .then((data) => {
         setFiles(data.files);
-        // console.log(data)
+        // console.log("Sesja: ", data);
       })
       .catch((error) => {
         // this callback function is executed when the promise is rejected
@@ -33,7 +33,7 @@ export default function DownloadFile() {
       });
   }
 
-  const downloadFile = () => {
+  function downloadFile() {
     files.forEach((file) => {
       fetch("http://localhost:8000/api/file/" + file.unique_name, {
         method: "GET",
@@ -53,18 +53,47 @@ export default function DownloadFile() {
           link.parentNode.removeChild(link);
         });
     });
+  }
+
+  function deleteSession() {
+    fetch(`http://localhost:8000/api/session`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((response) => {
+        // this callback function is executed when the promise is fulfilled
+        if (response.ok) {
+          return response.json();
+        } else if (response.status === 403) {
+          return {
+            tip: "You have no permission to delete session, probably was already deleted or not yet created. Check your cookies.",
+          };
+        } else {
+          throw new Error(
+            "Communication between React and FastAPI is not working. Something went wrong."
+          );
+        }
+      })
+      .then((data) => {
+        // console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  useEffect( () => {
+    readSession();
+  }, [])
+
+  
+  const handleSubmit = () => {
+    downloadFile();
   };
 
   return (
-    <div className="download-file">
-      <button onClick={readSession}>Read Session</button>
-      <button
-        className="download-file__btn"
-        label="Download"
-        onClick={downloadFile}
-      >
-        Download files
-      </button>
-    </div>
+    <button className="step__btn" onClick={handleSubmit}>
+      Finish!
+    </button>
   );
 }
