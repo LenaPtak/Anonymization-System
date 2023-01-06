@@ -4,12 +4,12 @@ import "../../../css/steps/third_step/Scrollable.css";
 
 export default function Scrollable() {
   const data = [
-    { name: "faktura" },
-    { name: "dokument" },
-    { name: "analiza_roku" },
-    { name: "filename1" },
-    { name: "filename2" },
-    { name: "filename3" },
+    { name: "faktura", klucz: "0" },
+    { name: "dokument", klucz: "1" },
+    { name: "analiza_roku", klucz: "2" },
+    { name: "filename1", klucz: "3" },
+    { name: "filename2", klucz: "4" },
+    { name: "filename3", klucz: "5" },
   ];
 
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -37,8 +37,8 @@ export default function Scrollable() {
         className="scrollable__scrollbar"
       >
         {filteredData.map((item) => (
-          <div className="scrollable__item">
-            <div className="scrollable__file">{item.name}</div>
+          <div className="scrollable__item" key={item.name}>
+            <div className="scrollable__file" >{item.name}</div>
             <SelectType />
           </div>
         ))}

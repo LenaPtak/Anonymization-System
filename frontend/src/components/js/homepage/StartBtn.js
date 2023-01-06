@@ -8,7 +8,6 @@ export default function StartBtn() {
       credentials: "include",
     })
       .then((response) => {
-        // this callback function is executed when the promise is fulfilled
         if (response.ok) {
           return response.json();
         } else if (response.status === 403) {
@@ -22,11 +21,9 @@ export default function StartBtn() {
         }
       })
       .then((data) => {
-        // this callback function is executed when the promise is fulfilled
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
-        // this callback function is executed when the promise is rejected
         console.error(error);
       });
   }
