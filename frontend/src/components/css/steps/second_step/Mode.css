@@ -23,13 +23,13 @@
 }
 
 .mode__select-mode.selected {
-  background-color: rgb(215, 255, 207);
-  border: 1px solid rgb(108, 255, 78);
+  background-color: rgb(226, 255, 255);
+  border: 1px solid rgb(17 188 191);
 }
 
 .mode__select-mode:hover {
-  background-color: rgb(215, 255, 207);
-  border: 1px solid rgb(108, 255, 78);
+  background-color: rgb(226, 255, 255);
+  border: 1px solid rgb(17 188 191);
 }
 
 .mode__select-mode input[type="radio"] {

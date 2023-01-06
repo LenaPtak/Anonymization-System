@@ -3,6 +3,7 @@ import "../../../css/steps/Step.css";
 import SelectCategory from "./SelectCategory";
 import { Link } from "react-router-dom";
 import Header from "../../homepage/Header";
+import Footer from "../../steps/Footer";
 import StepsLine from "../StepsLine";
 
 export default function SecondStep(props) {
@@ -14,23 +15,24 @@ export default function SecondStep(props) {
           <StepsLine activeStep={2} />
           <div className="d-flex flex-column justify-content-center align-items-center step__form">
             <SelectCategory />
-          </div>
-          <div className="d-flex justify-content-between step__buttons">
-            <Link
-              to="/anonymization/send-files"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <button className="step__btn">Previous step</button>
-            </Link>
-            <Link
-              to="/anonymization/select-file-type"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <button className="step__btn">Next step</button>
-            </Link>
+            <div className="d-flex justify-content-between step__buttons">
+              <Link
+                to="/anonymization/send-files"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <button className="step__btn">Previous step</button>
+              </Link>
+              <Link
+                to="/anonymization/select-file-type"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <button className="step__btn">Next step</button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
