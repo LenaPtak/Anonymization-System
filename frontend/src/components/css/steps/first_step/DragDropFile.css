@@ -60,7 +60,7 @@
 /* List of upload files */
 main {
   padding: 57px 27px;
-  color: #62ff7d;
+  color: rgb(17 188 191);
 }
 
 .main--title {
@@ -82,7 +82,7 @@ main {
 
 .main--files > li::marker {
   font-size: 1.4rem;
-  color: #62ff7d;
+  color: rgb(17 188 191);
 }
 
 .btn-upload-files {
@@ -95,7 +95,7 @@ main {
 }
 
 .btn-upload-files:hover {
-  background-color: rgb(108, 255, 78);
+  background-color: rgb(17 188 191);
   color: black;
 }
 

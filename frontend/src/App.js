@@ -9,7 +9,6 @@ import ThirdStep from "./components/js/steps/third_step/ThirdStep";
 import FourthStep from "./components/js/steps/fourth_step/FourthStep";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/js/homepage/Footer";
 
 function App() {
   return (
@@ -30,7 +29,6 @@ function App() {
           element={<FourthStep />}
         />
       </Routes>
-      <Footer />
     </div>
   );
 }

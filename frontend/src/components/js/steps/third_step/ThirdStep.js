@@ -3,7 +3,7 @@ import "../../../css/steps/Step.css";
 import StepsLine from "../StepsLine";
 import { Link } from "react-router-dom";
 import Header from "../../homepage/Header";
-import Footer from "../../homepage/Footer";
+import Footer from "../../steps/Footer";
 import SelectFiletype from "./SelectFiletype";
 
 export default function ThirdStep() {
@@ -15,20 +15,20 @@ export default function ThirdStep() {
           <StepsLine activeStep={3} />
           <div className="step__form">
             <SelectFiletype />
-          </div>
-          <div className="d-flex justify-content-between step__buttons">
-            <Link
-              to="/anonymization/select-category"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <button className="step__btn">Previous step</button>
-            </Link>
-            <Link
-              to="/anonymization/select-final-result"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <button className="step__btn">Next step</button>
-            </Link>
+            <div className="d-flex justify-content-between step__buttons">
+              <Link
+                to="/anonymization/select-category"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <button className="step__btn">Previous step</button>
+              </Link>
+              <Link
+                to="/anonymization/select-final-result"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <button className="step__btn">Next step</button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
