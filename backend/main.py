@@ -520,6 +520,21 @@ async def delete_files(filename: str, session_id: UUID = Depends(cookie)):
 
 
 @app.on_event("startup")
+async def create_directories():
+    """
+    Creates necessary directories at startup.
+    """
+    for context in [
+        TXT_DIR_PATH,
+        PDF_DIR_PATH,
+        PNG_DIR_PATH,
+        JPG_DIR_PATH,
+        IMG_DIR_PATH,
+    ]:
+        if not os.path.exists(context):
+            os.makedirs(context)
+
+@app.on_event("startup")
 @repeat_every(seconds=15 * 60)
 async def clean_up_sessions():
     """
