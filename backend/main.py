@@ -6,6 +6,7 @@ from pathlib import Path
 from time import time
 from uuid import UUID, uuid4
 
+import cv2
 import uvicorn
 from fastapi import (
     Depends,
@@ -33,7 +34,6 @@ from starlette.middleware.base import (
 )
 from starlette.requests import Request
 from starlette.responses import FileResponse, RedirectResponse
-import cv2
 
 # TODO(Jan): MAKE MACHINELEARNING A MODULE
 
@@ -42,9 +42,10 @@ import cv2
 sys.path.insert(1, str(Path(__file__).parent / "./machinelearning"))
 
 
+from machinelearning.easyocr_wrapper import EasyOCRWrapper  # noqa: E402
+
 # TODO(Jan): REMOVE FLAKE SUPPRESSION
 from machinelearning.yolo_wrapper import YoloWrapper  # noqa: E402
-from machinelearning.easyocr_wrapper import EasyOCRWrapper  # noqa: E402
 
 logging.basicConfig(
     format="%(asctime)s - %(message)s",
@@ -56,6 +57,7 @@ TXT_DIR_PATH = "storage/txt/"
 PNG_DIR_PATH = "storage/png/"
 JPG_DIR_PATH = "storage/jpg/"
 PDF_DIR_PATH = "storage/pdf/"
+IMG_DIR_PATH = "images/"
 
 ALLOWED_FILE_TYPES = {
     "text/plain",
@@ -163,7 +165,7 @@ def delete_files_from_storage(files_to_delete: list[str] = None):
     Deletes files correlated with session and given filenames.
     Returns response with information about deleted files.
     """
-    for context in [TXT_DIR_PATH, PDF_DIR_PATH, PNG_DIR_PATH, JPG_DIR_PATH]:
+    for context in [TXT_DIR_PATH, PDF_DIR_PATH, PNG_DIR_PATH, JPG_DIR_PATH, IMG_DIR_PATH]:
         files = os.listdir(context)
         for file in files:
             if files_to_delete and file not in files_to_delete:
@@ -234,14 +236,15 @@ async def read_docs():
     return RedirectResponse(url="/docs")
 
 
-
 # TODO: THIS IS TEMPORARY ENDPOINT TO FAST TESTING PDF WITHOUT COOKIE ETC. USE "example.pdf"
 @app.get("/api/temporary")
 async def process_test_file():
 
     processed_type = "application/pdf"
     processed_name = "processed_" + "example.pdf"
-    processed_path = CONTENT_TYPE_TO_PATH_MAP["application/pdf"] + processed_name
+    processed_path = (
+        CONTENT_TYPE_TO_PATH_MAP["application/pdf"] + processed_name
+    )
 
     start = time()
 
@@ -279,12 +282,10 @@ async def process_test_file():
     end = time()
     print(f"PROCESSING TIME: {round(end - start, 2)}")
     file_size_before = os.path.getsize("example.pdf")
-    file_size_after =os.path.getsize(processed_path)
-    print(f"FILE SIZE INCREASE: {round(file_size_after / file_size_before, 2) * 100}%")
-
-
-
-
+    file_size_after = os.path.getsize(processed_path)
+    print(
+        f"FILE SIZE INCREASE: {round(file_size_after / file_size_before, 2) * 100}%"
+    )
 
 
 @app.post("/api/session")
