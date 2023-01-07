@@ -18,13 +18,6 @@ from fastapi import (
     status,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_sessions.backends.implementations import InMemoryBackend
-from fastapi_sessions.frontends.implementations import (
-    CookieParameters,
-    SessionCookie,
-)
-from fastapi_sessions.frontends.implementations.cookie import SameSiteEnum
-from fastapi_sessions.session_verifier import SessionVerifier
 from fastapi_utils.tasks import repeat_every
 from pdf import PDF, TXT
 from response_models import UserFile, UserSession
@@ -34,6 +27,7 @@ from starlette.middleware.base import (
 )
 from starlette.requests import Request
 from starlette.responses import FileResponse, RedirectResponse
+from session_utils import cookie, backend, verifier
 
 # TODO(Jan): MAKE MACHINELEARNING A MODULE
 
@@ -92,59 +86,6 @@ class Timer(BaseHTTPMiddleware):
         return response
 
 
-class BasicVerifier(SessionVerifier[UUID, UserSession]):
-    def __init__(
-        self,
-        *,
-        identifier: str,
-        auto_error: bool,
-        backend: InMemoryBackend[UUID, UserSession],
-        auth_http_exception: HTTPException,
-    ):
-        self._identifier = identifier
-        self._auto_error = auto_error
-        self._backend = backend
-        self._auth_http_exception = auth_http_exception
-
-    @property
-    def identifier(self):
-        return self._identifier
-
-    @property
-    def backend(self):
-        return self._backend
-
-    @property
-    def auto_error(self):
-        return self._auto_error
-
-    @property
-    def auth_http_exception(self):
-        return self._auth_http_exception
-
-    def verify_session(self, model: UserSession) -> bool:
-        """If the session exists, it is valid"""
-        return True
-
-
-cookie_params = CookieParameters(samesite=SameSiteEnum.none)
-cookie = SessionCookie(
-    cookie_name="safe-file-cookie",
-    identifier="general_verifier",
-    auto_error=True,
-    secret_key="DONOTUSE",
-    cookie_params=cookie_params,
-)
-
-backend = InMemoryBackend[UUID, UserSession]()
-verifier = BasicVerifier(
-    identifier="general_verifier",
-    auto_error=True,
-    backend=backend,
-    auth_http_exception=HTTPException(
-        status_code=403, detail="invalid session"
-    ),
-)
 
 
 def convert_bytes(num: float) -> str:
