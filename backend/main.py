@@ -165,7 +165,13 @@ def delete_files_from_storage(files_to_delete: list[str] = None):
     Deletes files correlated with session and given filenames.
     Returns response with information about deleted files.
     """
-    for context in [TXT_DIR_PATH, PDF_DIR_PATH, PNG_DIR_PATH, JPG_DIR_PATH, IMG_DIR_PATH]:
+    for context in [
+        TXT_DIR_PATH,
+        PDF_DIR_PATH,
+        PNG_DIR_PATH,
+        JPG_DIR_PATH,
+        IMG_DIR_PATH,
+    ]:
         files = os.listdir(context)
         for file in files:
             if files_to_delete and file not in files_to_delete:
@@ -345,6 +351,11 @@ async def delete_session(
     Returns response with deleted session details.
     """
     session = await backend.read(session_id)
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No session correlated with given cookie",
+        )
     expired_files = [file.unique_name for file in session.files]
     delete_files_from_storage(files_to_delete=expired_files)
 
