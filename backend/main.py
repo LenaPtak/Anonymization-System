@@ -21,13 +21,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi_utils.tasks import repeat_every
 from pdf import PDF, TXT
 from response_models import UserFile, UserSession
+from session_utils import backend, cookie, verifier
 from starlette.middleware.base import (
     BaseHTTPMiddleware,
     RequestResponseEndpoint,
 )
 from starlette.requests import Request
 from starlette.responses import FileResponse, RedirectResponse
-from session_utils import cookie, backend, verifier
 
 # TODO(Jan): MAKE MACHINELEARNING A MODULE
 
@@ -84,8 +84,6 @@ class Timer(BaseHTTPMiddleware):
         if response_time > 0.5:
             logging.info(f"Time of response: {response_time}s.")
         return response
-
-
 
 
 def convert_bytes(num: float) -> str:
@@ -474,6 +472,7 @@ async def create_directories():
     ]:
         if not os.path.exists(context):
             os.makedirs(context)
+
 
 @app.on_event("startup")
 @repeat_every(seconds=15 * 60)
