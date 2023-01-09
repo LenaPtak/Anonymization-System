@@ -10,7 +10,6 @@ export default function FinishBtn() {
       credentials: "include",
     })
       .then((response) => {
-        // this callback function is executed when the promise is fulfilled
         if (response.ok) {
           return response.json();
         } else if (response.status === 403) {
@@ -28,19 +27,28 @@ export default function FinishBtn() {
         // console.log("Sesja: ", data);
       })
       .catch((error) => {
-        // this callback function is executed when the promise is rejected
         console.error(error);
       });
   }
 
   function downloadFile() {
+    let count = 0;
     files.forEach((file) => {
       fetch("http://localhost:8000/api/file/" + file.unique_name, {
         method: "GET",
         credentials: "include",
       })
         .catch((e) => console.log(`e: ${e}`))
-        .then((response) => response.blob())
+        .then((response) => {
+          if (response.ok) {
+            count++;
+            if (count === files.length) {
+              // console.log("Pobieranie zakończone");
+              window.location.replace("/home");
+              // console.log("Pobieranie zakończone");
+            }
+          }
+        })
         .then((blob) => {
           const url = window.URL.createObjectURL(new Blob([blob]));
           const link = document.createElement("a");
@@ -61,7 +69,6 @@ export default function FinishBtn() {
       credentials: "include",
     })
       .then((response) => {
-        // this callback function is executed when the promise is fulfilled
         if (response.ok) {
           return response.json();
         } else if (response.status === 403) {
@@ -75,20 +82,24 @@ export default function FinishBtn() {
         }
       })
       .then((data) => {
-        // console.log(data);
+        // console.log("Sesja: ", data);
       })
       .catch((error) => {
         console.error(error);
       });
   }
 
-  useEffect( () => {
+  useEffect(() => {
     readSession();
-  }, [])
+  }, []);
 
-  
+  const deleteUserData = () => {
+    deleteSession();
+  };
+
   const handleSubmit = () => {
     downloadFile();
+    deleteUserData();
   };
 
   return (

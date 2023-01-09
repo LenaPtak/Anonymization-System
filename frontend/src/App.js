@@ -7,6 +7,8 @@ import Step from "./components/js/steps/first_step/Step";
 import SecondStep from "./components/js/steps/second_step/SecondStep";
 import ThirdStep from "./components/js/steps/third_step/ThirdStep";
 import FourthStep from "./components/js/steps/fourth_step/FourthStep";
+import LoadingPage from "./components/js/steps/LoadingPage";
+import TheEndPage from "./components/js/steps/TheEndPage";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
@@ -28,6 +30,8 @@ function App() {
           path="anonymization/select-final-result"
           element={<FourthStep />}
         />
+        <Route path="loading" element={<LoadingPage />} />
+        <Route path="results" element={<TheEndPage />} />
       </Routes>
     </div>
   );
