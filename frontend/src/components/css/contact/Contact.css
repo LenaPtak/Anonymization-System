@@ -1,35 +1,35 @@
 .contact__content {
-    height: 46rem;
-    width: 100%;
-    align-items: center;
+  height: 44rem;
+  width: 100%;
+  align-items: center;
 }
 
 .contact__container {
-    padding: 5rem 7rem;
-    width: 50%;
+  padding: 5rem 7rem;
+  width: 50%;
 }
 
 .contact__tittle {
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 2rem;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 2rem;
 }
 
 .contact__description {
-    font-size: 24px;
-    margin-bottom: 2rem;
+  font-size: 24px;
+  margin-bottom: 2rem;
 }
 
 .contact__invite {
-    font-size: 20px;
-    margin-bottom: 2rem;
+  font-size: 20px;
+  margin-bottom: 2rem;
 }
 
 .contact__contact {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .contact__logo {
-    height: 25rem;
-    margin-left: 8rem;
+  height: 25rem;
+  margin-left: 8rem;
 }

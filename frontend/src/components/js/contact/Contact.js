@@ -1,8 +1,7 @@
 import React from "react";
 import Header from "../homepage/Header";
-import Footer from "../homepage/Footer";
+import Footer from "../steps/Footer";
 import "../../css/contact/Contact.css";
-
 
 export default function Contact() {
   return (
