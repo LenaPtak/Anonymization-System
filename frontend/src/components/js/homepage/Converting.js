@@ -19,7 +19,7 @@ export default function Converting() {
           <StartBtn />
         </Link>
       </div>
-      <img className="invite__photo" src="..\images\homepage3.svg" alt="" />
+      <img className="invite__photo" src="..\images\zdj3.png" alt="" />
     </div>
   );
 }

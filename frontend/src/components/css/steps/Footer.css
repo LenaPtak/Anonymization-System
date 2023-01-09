@@ -1,15 +1,16 @@
 .step-footer {
   display: flex;
+  margin-top: auto;
+  bottom: 0;
+  /* position: fixed;   jeżeli chcemy żeby była zawsze widoczna */
+  width: 100%;
   align-items: center;
   box-shadow: 0px 0.98256px 15.4564px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   padding: 1rem;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  min-height: 100px;
+  height: 100px;
   z-index: 9999;
+  clear: both;
 }
 
 .step-footer__logo {

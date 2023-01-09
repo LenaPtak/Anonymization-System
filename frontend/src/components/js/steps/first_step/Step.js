@@ -11,9 +11,9 @@ export default function Step() {
     <div className="step">
       <Header />
       <div className="d-flex flex-column justify-content-center align-items-center step__container">
-        <div className="d-flex flex-column justify-content-center align-items-center step__content">
+        <div className="step__content">
           <StepsLine activeStep={1} />
-          <div className="d-flex flex-column justify-content-center align-items-center step__form">
+          <div className="step__form">
             <DragDropFile />
             <div className="d-flex flex-row-reverse step__buttons">
               <Link
@@ -22,12 +22,7 @@ export default function Step() {
                 }}
                 style={{ textDecoration: "none", color: "black" }}
               >
-                <button
-                  className="step__btn"
-                  // onClick={DragDropFile.handleSubmit}
-                >
-                  Next step
-                </button>
+                <button className="step__btn">Next step</button>
               </Link>
             </div>
           </div>

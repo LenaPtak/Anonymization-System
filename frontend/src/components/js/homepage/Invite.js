@@ -18,7 +18,7 @@ export default function Invite() {
           <StartBtn />
         </Link>
       </div>
-      <img className="invite__photo" src="..\images\homepage1.svg" alt="" />
+      <img className="invite__photo" src="..\images\zdj1.png" alt="" />
     </div>
   );
 }
