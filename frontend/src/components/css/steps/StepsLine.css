@@ -1,7 +1,6 @@
 .steps-line {
   display: flex;
-  margin: 2rem;
-  padding: 3rem;
+  margin: 2rem 0rem 4.5rem 0rem;
   align-items: center;
 }
 .steps-line__line {
@@ -15,10 +14,6 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 100%;
-}
-
-.steps-line__circle:hover {
-  background-color: #ccc;
 }
 
 .steps-line__circle-active {

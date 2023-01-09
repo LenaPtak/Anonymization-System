@@ -5,7 +5,6 @@ import StepsLine from "../StepsLine";
 import Header from "../../homepage/Header";
 import Footer from "../../steps/Footer";
 import SelectResult from "./SelectResult";
-import DownloadFile from "../first_step/DownloadFile";
 import FinishBtn from "./FinishBtn";
 
 export default function FourthStep() {
