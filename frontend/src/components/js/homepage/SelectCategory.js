@@ -8,7 +8,7 @@ export default function SelectCategory() {
     <div className="select-category d-flex justify-content-center">
       <img
         className="select-category__photo"
-        src="..\images\homepage2.svg"
+        src="..\images\zdj2.png"
         alt=""
       />
       <div className="select-category__text">
