@@ -44,7 +44,9 @@ export default function FinishBtn() {
             count++;
             if (count === files.length) {
               // console.log("Pobieranie zakończone");
-              window.location.replace("/");
+              setTimeout(() => {
+                window.location.replace("/");
+              }, 3000);
               // console.log("Pobieranie zakończone");
             }
           }
