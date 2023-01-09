@@ -93,13 +93,8 @@ export default function FinishBtn() {
     readSession();
   }, []);
 
-  const deleteUserData = () => {
-    deleteSession();
-  };
-
   const handleSubmit = () => {
     downloadFile();
-    deleteUserData();
   };
 
   return (
