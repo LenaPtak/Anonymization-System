@@ -8,17 +8,17 @@ services:
       - ./backend:/backend
     ports:
       - 8000:8000
-#
-#  frontend:
-#    build:
-#      context: frontend/
-#    image: dockerized-frontend
-#    depends_on:
-#      - backend
-#    volumes:
-#      - ./frontend/src:/app/src
-#      - ./frontend/public:/app/public
-#    ports:
-#      - 3000:3000
-#    environment:
-#      - CHOKIDAR_USEPOLLING=true
+
+  frontend:
+    build:
+      context: frontend/
+    image: dockerized-frontend
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    ports:
+      - 3000:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
