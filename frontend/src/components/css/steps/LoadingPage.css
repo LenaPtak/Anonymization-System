@@ -1,0 +1,33 @@
+.loading {
+  min-height: 100%;
+  position: relative;
+}
+
+.loading__container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading__text {
+  margin-top: 5rem;
+  text-align: center;
+}
+
+.loading__title {
+  font-size: 32px;
+  margin-bottom: 18px;
+}
+
+.loading__subtitle {
+  font-size: 24px;
+  margin-bottom: 32px;
+}
