@@ -1,11 +1,10 @@
 import io
 import re
-from typing import List, Tuple, Union
-
 import fitz
 from PIL import Image
+from typing import List, Tuple, Union
 
-from regexes import polish_sensitive, regexes_global
+from backend.regexes import polish_sensitive, regexes_global
 
 
 def _get_sensitive_data(text: str, chosen_regexes: list = None) -> Tuple[str, str]:
@@ -291,7 +290,7 @@ class PDF:
                 for line in page.get_text("text").split("\n"):
                     for word in line.split():
                         if word in polish_sensitive or word.upper() in polish_sensitive or word.capitalize() in polish_sensitive:
-                            print(f"{word} in polish")
+                            # print(f"{word} in polish")
                             areas = page.search_for(word, quads=True)
                             for area in areas:
                                 page.add_redact_annot(
@@ -325,7 +324,7 @@ class PDF:
                     images_in_pdf.append(image_name)
                     xrefs.append(xref)
                     image.save(open(image_name, "wb"))
-                    print(xref)
+                    # print(xref)
         return (images_in_pdf, xrefs)
 
     def reintroduce_image(self, path, xref):

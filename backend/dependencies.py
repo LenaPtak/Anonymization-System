@@ -1,23 +1,20 @@
 from uuid import UUID
-
 from fastapi import HTTPException
 from fastapi_sessions.backends.implementations import InMemoryBackend
-from fastapi_sessions.frontends.implementations import (
-    CookieParameters,
-    SessionCookie,
-)
+from fastapi_sessions.frontends.implementations import CookieParameters, SessionCookie
 from fastapi_sessions.frontends.implementations.cookie import SameSiteEnum
 from fastapi_sessions.session_verifier import SessionVerifier
-from response_models import UserSession
+
+from backend import pydantics
 
 
-class BasicVerifier(SessionVerifier[UUID, UserSession]):
+class BasicVerifier(SessionVerifier[UUID, pydantics.UserSession]):
     def __init__(
         self,
         *,
         identifier: str,
         auto_error: bool,
-        backend: InMemoryBackend[UUID, UserSession],
+        backend: InMemoryBackend[UUID, pydantics.UserSession],
         auth_http_exception: HTTPException,
     ):
         self._identifier = identifier
@@ -41,7 +38,7 @@ class BasicVerifier(SessionVerifier[UUID, UserSession]):
     def auth_http_exception(self):
         return self._auth_http_exception
 
-    def verify_session(self, model: UserSession) -> bool:
+    def verify_session(self, model: pydantics.UserSession) -> bool:
         """If the session exists, it is valid"""
         return True
 
@@ -55,12 +52,10 @@ cookie = SessionCookie(
     cookie_params=cookie_params,
 )
 
-backend = InMemoryBackend[UUID, UserSession]()
+backend = InMemoryBackend[UUID, pydantics.UserSession]()
 verifier = BasicVerifier(
     identifier="general_verifier",
     auto_error=True,
     backend=backend,
-    auth_http_exception=HTTPException(
-        status_code=403, detail="invalid session"
-    ),
+    auth_http_exception=HTTPException(status_code=403, detail="invalid session")
 )

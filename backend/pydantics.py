@@ -1,17 +1,5 @@
 from pydantic import BaseModel
-from typing import Literal, List
-
-AllowedFileType = Literal[
-    "text/plain",
-    "image/png",
-    "image/jpeg",
-    "application/pdf",
-]
-AllowedResultType = Literal[
-    "default",
-    "merge",
-    "split",
-]
+from typing import List
 
 
 class UserFile(BaseModel):
@@ -27,7 +15,6 @@ class UserSession(BaseModel):
     """
     Model of user session
     """
-
     files_available: bool   # Information, if the files are already in storage
     config_available: bool  # Information, if configs for each file are already in storage
     created_at: float       # Information, about the time of creation
@@ -38,18 +25,13 @@ class UserSession(BaseModel):
 class FileConfig(BaseModel):
     origin_name: str
     unique_name: str
-    origin_type: AllowedFileType
-    result_type: AllowedFileType
+    origin_type: str
+    result_type: str
 
 
 class Config(BaseModel):
-    # Tab 2
     process_model: bool
     process_categories: List
     process_expressions: List
-
-    # Tab 3
     file_configs: List[FileConfig]
-
-    # Tab 4
-    result_type: AllowedResultType
+    result_type: str

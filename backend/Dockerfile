@@ -1,6 +1,6 @@
 FROM python:3.10
 
-WORKDIR /app
+WORKDIR /backend
 
 RUN pip install --upgrade pip
 
@@ -13,4 +13,4 @@ RUN apt-get install libgl1 ffmpeg libsm6 libxext6  -y
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0"]
+CMD ["uvicorn", "app:app", "--reload", "--host", "0.0.0.0"]
