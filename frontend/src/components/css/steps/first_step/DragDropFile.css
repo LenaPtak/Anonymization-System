@@ -100,6 +100,11 @@ main {
 }
 
 /* Files list */
+.dd_scrollable {
+  width: 100%;
+  height: 90%;
+}
+
 ol li {
   font-size: 14px;
   list-style-type: none;
