@@ -1,11 +1,11 @@
 import React from "react";
 import Header from "./Header";
-import Footer from "./Footer";
 import Content from "./Content";
+import Footer from "./Footer";
 
 export default function Homepage() {
   return (
-    <div className="page">
+    <div>
       <Header />
       <Content />
       <Footer />

@@ -1,40 +1,34 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import "../../css/homepage/Footer.css";
 
 export default function Footer() {
-  const [isVisible, setIsVisible] = useState(false);
-  const previousScrollTop = useRef(0);
-
-  useEffect(() => {
-    // function handleScroll() {
-    //   const height = document.documentElement.offsetHeight;
-    //   const scrollTop = document.documentElement.scrollTop;
-    //   console.log("before", isVisible);
-    //   setIsVisible(true);
-    //   // if (scrollTop > previousScrollTop.current) {
-    //   //   setIsVisible(true);
-    //   // } else {
-    //   //   setIsVisible(false);
-    //   // }
-    //   previousScrollTop.current = scrollTop;
-    //   console.log("after", isVisible);
-    // }
-
-    // window.addEventListener("scroll", handleScroll);
-
-    // return () => {
-    //   window.removeEventListener("scroll", handleScroll);
-    // };
-  }, []);
-
   return (
     <div>
-      {/* <div className={`${isVisible ? "footer--hidden" : "footer--visible"}`}> */}
-      <div className="footer">
-        <img className="footer__logo" src="..\images\logo.png" alt="logo" />
-        <h1 className="footer__title">Team</h1>
-        <h1 className="footer__title">History</h1>
-        <h1 className="footer__title">Contact us</h1>
+      <div className="homepage-footer">
+        <Link
+          to="/"
+          style={{
+            textDecoration: "none",
+            color: "black",
+            marginRight: "auto",
+          }}
+        >
+          <img
+            className="homepage-footer__logo"
+            src="..\images\logo.png"
+            alt="logo"
+          />
+        </Link>
+        <Link to="/about-us" style={{ textDecoration: "none", color: "black" }}>
+          <div className="homepage-footer__title">about us</div>
+        </Link>
+        <Link to="/contact" style={{ textDecoration: "none", color: "black" }}>
+          <h1 className="homepage-footer__title">contact</h1>
+        </Link>
+        <Link to="/other" style={{ textDecoration: "none", color: "black" }}>
+          <div className="homepage-footer__title">other tools</div>
+        </Link>
       </div>
     </div>
   );
