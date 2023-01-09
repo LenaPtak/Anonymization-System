@@ -44,7 +44,7 @@ export default function FinishBtn() {
             count++;
             if (count === files.length) {
               // console.log("Pobieranie zakończone");
-              window.location.replace("/home");
+              window.location.replace("/");
               // console.log("Pobieranie zakończone");
             }
           }
@@ -93,13 +93,8 @@ export default function FinishBtn() {
     readSession();
   }, []);
 
-  const deleteUserData = () => {
-    deleteSession();
-  };
-
   const handleSubmit = () => {
     downloadFile();
-    deleteUserData();
   };
 
   return (

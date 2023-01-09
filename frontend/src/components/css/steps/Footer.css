@@ -23,3 +23,7 @@
   font-weight: 300;
   margin: 0px 1rem;
 }
+
+.step-footer__title:hover {
+  color: rgb(17 188 191);
+}

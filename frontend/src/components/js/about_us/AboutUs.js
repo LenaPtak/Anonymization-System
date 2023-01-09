@@ -1,7 +1,7 @@
 import React from "react";
 import "../../css/about_us/AboutUs.css";
 import Header from "../homepage/Header";
-import Footer from "../homepage/Footer";
+import Footer from "../steps/Footer";
 import { Link } from "react-router-dom";
 
 export default function AboutUs() {
