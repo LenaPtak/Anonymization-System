@@ -97,12 +97,22 @@ export default function DragDropFile() {
           htmlFor="input-file-upload"
           className={dragActive ? "drag-active" : ""}
         >
-          <div>
-            <div className="dd_text">Drag and drop your file here or</div>
-            <button className="dd__uploadBtn" onClick={onButtonClick}>
-              upload a file
-            </button>
-          </div>
+          {uploadedFiles.length === 0 ? (
+            <div>
+              <div className="dd_text">Drag and drop your file here or</div>
+              <button className="dd__uploadBtn" onClick={onButtonClick}>
+                upload a file
+              </button>
+            </div>
+          ) : (
+            <div style={{ overflowY: "scroll" }} className="dd_scrollable">
+              <ol>
+                {uploadedFiles.map((file) => (
+                  <li key={file.name}>{file.name}</li>
+                ))}
+              </ol>
+            </div>
+          )}
         </label>
         {dragActive && (
           <div
@@ -120,11 +130,11 @@ export default function DragDropFile() {
         >
           Upload files
         </button>
-        <ol>
+        {/* <ol>
           {uploadedFiles.map((file) => (
             <li key={file.name}>{file.name}</li>
           ))}
-        </ol>
+        </ol> */}
       </form>
     </div>
   );
