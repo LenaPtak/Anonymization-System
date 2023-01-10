@@ -39,18 +39,7 @@ export default function FinishBtn() {
         credentials: "include",
       })
         .catch((e) => console.log(`e: ${e}`))
-        .then((response) => {
-          if (response.ok) {
-            count++;
-            if (count === files.length) {
-              // console.log("Pobieranie zakończone");
-              setTimeout(() => {
-                window.location.replace("/");
-              }, 3000);
-              // console.log("Pobieranie zakończone");
-            }
-          }
-        })
+        .then((response) => response.blob())
         .then((blob) => {
           const url = window.URL.createObjectURL(new Blob([blob]));
           const link = document.createElement("a");
@@ -61,34 +50,17 @@ export default function FinishBtn() {
           document.body.appendChild(link);
           link.click();
           link.parentNode.removeChild(link);
+
+          count++;
+          console.log("Pobieram ", file.origin_name);
+          if (count === files.length) {
+            console.log("Pobieranie zakończone");
+            setTimeout(() => {
+              window.location.replace("/");
+            }, 3000);
+          }
         });
     });
-  }
-
-  function deleteSession() {
-    fetch(`http://localhost:8000/api/session`, {
-      method: "DELETE",
-      credentials: "include",
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else if (response.status === 403) {
-          return {
-            tip: "You have no permission to delete session, probably was already deleted or not yet created. Check your cookies.",
-          };
-        } else {
-          throw new Error(
-            "Communication between React and FastAPI is not working. Something went wrong."
-          );
-        }
-      })
-      .then((data) => {
-        // console.log("Sesja: ", data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 
   useEffect(() => {
