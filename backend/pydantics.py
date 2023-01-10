@@ -30,8 +30,10 @@ class FileConfig(BaseModel):
 
 
 class Config(BaseModel):
-    process_model: bool
-    process_categories: List
-    process_expressions: List
+    regex_categories: list
+    expressions_to_anonymize: list
+    expressions_to_highlight: list
+    hide_people: bool
+    make_raport: bool
+    result_form: str
     file_configs: List[FileConfig]
-    result_type: str
