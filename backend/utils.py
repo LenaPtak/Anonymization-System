@@ -45,6 +45,14 @@ async def process_file(file: UserFile) -> FileResponse:
         txt = TXT(file.location)
         txt.hide_sensitive(processed_path)
 
+    elif processed_type == "image/png":
+        # TODO: Jan Bylicki task 10.10.2023
+        pass
+
+    elif processed_type == "image/jpeg":
+        # TODO: Jan Bylicki task 10.10.2023
+        pass
+
     else:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,

@@ -388,8 +388,10 @@ class TXT:
 
 
 class PNG:
+    # TODO: Jan Bylicki task 10.10.2023
     pass
 
 
 class JPG:
+    # TODO: Jan Bylicki task 10.10.2023
     pass
