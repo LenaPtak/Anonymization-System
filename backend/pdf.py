@@ -1,10 +1,11 @@
 import io
+import logging
 import re
 import fitz
 from PIL import Image
 from typing import List, Tuple, Union
 
-from backend.regexes import polish_sensitive, regexes_global
+from backend.regexes import polish_sensitive, regexes_global, default_regexes
 
 
 def _get_sensitive_data(text: str, chosen_regexes: list = None) -> Tuple[str, str]:
@@ -40,9 +41,26 @@ def _get_sensitive_data(text: str, chosen_regexes: list = None) -> Tuple[str, st
 
 
 class PDF:
-    def __init__(self, filepath):
+    def __init__(
+        self,
+        filepath,
+        regex_categories=None,
+        expressions_to_anonymize=None,
+        expressions_to_highlight=None,
+        hide_people=None,
+        make_raport=None,
+        result_type=None
+    ):
         self.filepath = filepath
         self.filename = filepath.replace("/", "_").split(".")[-2][1:]
+        self.raport = [""]
+
+        self.regex_categories = regex_categories
+        self.expressions_to_anonymize = expressions_to_anonymize
+        self.expressions_to_highlight = expressions_to_highlight
+        self.hide_people = hide_people
+        self.make_raport = make_raport
+        self.result_type = result_type
 
         with fitz.open(self.filepath) as doc:
             self.page_count = doc.page_count
@@ -180,137 +198,145 @@ class PDF:
                 for arg in set(args)
             }
 
-    def highlight_text(self, args: list[str]):
+    def _highlight_expressions(self, page):
         """
-        Funkcja highlight_text zaznacza w PDFie podane w liście wyrażenia tekstowe i zapisuje do nowego PDFu
+        Funkcja _highlight_expressions zaznacza w PDFie podane w liście wyrażenia tekstowe.
 
-        :param args: Lista słów/wyrażeń do zaznaczenia
+        :param page: Page
         """
-        with fitz.open(self.filepath) as doc:
-            for page in doc:
-                for arg in args:
-                    res = page.search_for(arg, quads=True)
-                    page.add_highlight_annot(res)
-            doc.save("highlighted.pdf")
+        if self.expressions_to_highlight:
+            expressions = set()
+            logging.info(f"File {self.filename} enters _highlight_expressions()")
+            for expression in self.expressions_to_highlight:
+                areas = page.search_for(expression, quads=True)
+                for area in areas:
+                    expressions.add(expression)
+                    page.add_highlight_annot(area)
 
-    def hide_text(self, args: list[str], path: str = "hidden.pdf"):
-        """
-        Funkcja hide_text ukrywa w PDFie podane w liście wyrażenia tekstowe i zapisuje do nowego PDFu
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHidden custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
 
-        :param args: Lista słów/wyrażeń do zaznaczenia
-        :param path: Scieżka do zapisu przetworzonego pliku
+    def _anonymize_expressions(self, page):
         """
-        with fitz.open(self.filepath) as doc:
-            for page in doc:
-                for arg in args:
-                    areas = page.search_for(arg)
-                    [
+        Funkcja _anonymize_expressions ukrywa w PDFie podane w liście wyrażenia tekstowe.
+
+        :param page: Page
+        """
+        if self.expressions_to_anonymize:
+            expressions = set()
+            logging.info(f"File {self.filename} enters _anonymize_expressions()")
+            for expression in self.expressions_to_anonymize:
+                areas = page.search_for(expression, quads=True)
+                for area in areas:
+                    expressions.add(expression)
+                    page.add_redact_annot(
+                        area,
+                        text=len(expression) * "*",
+                        fontsize=6,
+                        align=fitz.TEXT_ALIGN_CENTER,
+                        fill=(0.8, 0.8, 0.8),
+                    )
+                    page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
+
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHidden custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
+
+    def _anonymize_polish_expressions(self, page, text):
+        logging.info(f"File {self.filename} enters _anonymize_polish_expressions()")
+        words = set()
+        for line in text.split("\n"):
+            for word in line.split():
+                if word in polish_sensitive or word.upper() in polish_sensitive or word.capitalize() in polish_sensitive:
+                    areas = page.search_for(word, quads=True)
+                    for area in areas:
+                        words.add(word)
                         page.add_redact_annot(
                             area,
-                            text="XXX",
-                            fontsize=6,
+                            text=len(word) * "*",
+                            fontsize=10,
                             align=fitz.TEXT_ALIGN_CENTER,
-                            fill=(0.9, 0.9, 0.9),
+                            fill=(0.8, 0.8, 0.8),
                         )
-                        for area in areas
-                    ]
-                    page.apply_redactions()
-            doc.save(path)
+                        page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
 
-    def hide_sensitive(self, path: str = "sensitive.pdf"):
+        if self.make_raport:
+            if len(words) != 0:
+                self.raport.append(f"\nHidden polish words:\n")
+            for word in words:
+                self.raport.append(f" - {word}\n")
+
+    def _anonymize_regexes_expressions(self, page, text):
+        logging.info(f"File {self.filename} enters _anonymize_regexes_expressions()")
+        regexes = self.regex_categories if self.regex_categories else default_regexes
+        sensitive = _get_sensitive_data(text=text, chosen_regexes=regexes)
+        expressions = set()
+        for datatype, word in set(sensitive):
+            areas = page.search_for(word, quads=True)
+            for area in areas:
+                expressions.add((datatype, word))
+                page.add_redact_annot(
+                    area,
+                    text=len(word) * "*",
+                    fontsize=10,
+                    align=fitz.TEXT_ALIGN_CENTER,
+                    fill=(0.8, 0.8, 0.8),
+                )
+                page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
+
+        if self.make_raport:
+            if len(regexes) != 0:
+                self.raport.append(f"\nUsed regexes:\n")
+            for regex in regexes:
+                self.raport.append(f" - {regex}\n")
+            if len(expressions) != 0:
+                self.raport.append(f"\nHidden regex matches:\n")
+            for datatype, expression in expressions:
+                self.raport.append(f" - Trigger: {datatype}   Expression: {expression}\n")
+
+
+    def hide_sensitive(self, path):
         """
         Funkcja hide_sensitive ukrywa w PDFie wrażliwe wyrażenia tekstowe i zapisuje do nowego PDFu
 
         :param path: Scieżka do zapisu przetworzonego pliku
         """
-        chosen_regexes = [
-            "Numer PESEL",
-            "Numer dowodu osobistego",
-            "Numer karty kredytowej",
-            "Numer NIP",
-            "Numer telefonu",
-            "Numer rachunku bankowego",
-            "Email address",
-            "Home address",
-            "Date type 1",
-            "Date type 2",
-            "Date type 3",
-            "Date type 4",
-            "Date type 5",
-            "Date type 6",
-            "Date type 7",
-            "Date type 8",
-            "Date type 9",
-            "Date type 10",
-            "Date type 11",
-            "Date type 12",
-            "Date type 13",
-            "Date type 14",
-            "Date type 15",
-            "Date type 15",
-            "Date type 16",
-            "Date type 17",
-            "Date type 19",
-            "Date type 20",
-            "Date type 21",
-            "Date type 22",
-            "Date type 23",
-            "Date type 24",
-            "Date type 25",
-            "Date type 26",
-            "Date type 27",
-            "Date type 28",
-            "Date type 29",
-            "Date type 30",
-            "Date type 31",
-
-        ]
-
         with fitz.open(self.filepath) as doc:
             for page in doc:
-                sensitive = _get_sensitive_data(
-                    page.get_text("text"), chosen_regexes=chosen_regexes
-                )
-                for datatype, word in set(sensitive) :
-                    if areas := page.search_for(word, quads=True):
-                        for area in areas:
-                            page.add_redact_annot(
-                                area,
-                                text=len(word) * "*",
-                                fontsize=10,
-                                align=fitz.TEXT_ALIGN_CENTER,
-                                fill=(0.8, 0.8, 0.8),
-                            )
+                text = page.get_text("text")
+                # Anonymize regex expressions from config
+                self._anonymize_regexes_expressions(page, text)
 
-                        page.apply_redactions(
-                            images=fitz.PDF_REDACT_IMAGE_NONE
-                        )
+                # Anonymize polish expressions
+                self._anonymize_polish_expressions(page, text)
 
+                # Anonymize expressions from config
+                self._anonymize_expressions(page)
 
-                for line in page.get_text("text").split("\n"):
-                    for word in line.split():
-                        if word in polish_sensitive or word.upper() in polish_sensitive or word.capitalize() in polish_sensitive:
-                            # print(f"{word} in polish")
-                            areas = page.search_for(word, quads=True)
-                            for area in areas:
-                                page.add_redact_annot(
-                                    area,
-                                    text=len(word) * "*",
-                                    fontsize=10,
-                                    align=fitz.TEXT_ALIGN_CENTER,
-                                    fill=(0.8, 0.8, 0.8),
-                                )
-                                page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE)
+                # Highlight expressions from config
+                self._highlight_expressions(page)
 
-                # TODO : higher garbage might make yolo problems
-                doc.save(path, deflate=True, garbage=1)
+            # TODO : higher garbage might make yolo problems
+            doc.save(path, deflate=True, garbage=1)
 
-    def extract_images(self) -> list[str]:
+        # if self.make_raport:
+        #     raport_header = f"Raport for file: {self.filename}\n"
+        #     raport_type = f"Type: PDF processing\n"
+        #     raport_time = f"Time:{datetime.datetime.now()}\n\n"
+        #     self.raport[0] = raport_header + raport_type + raport_time
+        return self.raport if self.make_raport else None
+
+    def extract_images(self) -> tuple[list, list]:
         """
         Funkcja extract_images wyszukuje w PDFie obrazki i zapisuje je w folderze /images
-        :return: Lista nazw obrazków znalezionych podczas procesowania dla badanego pliku PDF
+        :return: Lista ścieżek zapisanych obrazków znalezionych podczas procesowania dla badanego pliku PDF
         """
-        images_in_pdf = []
+        images = []
         xrefs = []
         with fitz.open(self.filepath) as doc:
             for page_index, page in enumerate(doc):
@@ -321,11 +347,10 @@ class PDF:
                     image_ext = base_image["ext"]  # get the image extension
                     image = Image.open(io.BytesIO(image_bytes))  # load it to PIL
                     image_name = f"images/{self.filename}_{page_index}_{image_index}.{image_ext}"
-                    images_in_pdf.append(image_name)
+                    images.append(image_name)
                     xrefs.append(xref)
                     image.save(open(image_name, "wb"))
-                    # print(xref)
-        return (images_in_pdf, xrefs)
+        return images, xrefs
 
     def reintroduce_image(self, path, xref):
         with fitz.open(self.filepath) as doc:

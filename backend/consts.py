@@ -2,6 +2,7 @@ TXT_DIR_PATH = "storage/txt/"
 PNG_DIR_PATH = "storage/png/"
 JPG_DIR_PATH = "storage/jpg/"
 PDF_DIR_PATH = "storage/pdf/"
+RAP_DIR_PATH = "storage/rap/"
 IMG_DIR_PATH = "images/"
 
 ALLOWED_FILE_TYPES = [

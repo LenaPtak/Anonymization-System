@@ -13,6 +13,7 @@ from backend.consts import (
     PNG_DIR_PATH,
     JPG_DIR_PATH,
     IMG_DIR_PATH,
+    RAP_DIR_PATH,
 )
 
 router = APIRouter()
@@ -28,6 +29,7 @@ async def create_directories():
         PNG_DIR_PATH,
         JPG_DIR_PATH,
         IMG_DIR_PATH,
+        RAP_DIR_PATH,
     ]:
         if not os.path.exists(context):
             os.makedirs(context)

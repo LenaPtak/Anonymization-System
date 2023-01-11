@@ -15,7 +15,7 @@ sys.path.append(ROOT_DIR)
 
 import globals
 
-from backend.routers import files, sessions, configs, developments,events
+from backend.routers import files, sessions, configs, developments, raports, events
 from backend.middlewares import middlewares
 
 
@@ -36,6 +36,7 @@ app.include_router(developments.router)
 app.include_router(sessions.router)
 app.include_router(configs.router)
 app.include_router(events.router)
+app.include_router(raports.router)
 app.include_router(files.router)
 
 

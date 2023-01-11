@@ -3,9 +3,10 @@ from uuid import UUID, uuid4
 from datetime import datetime
 from fastapi import Depends, File, HTTPException, UploadFile, status, APIRouter
 
+from backend.globals import get_config, create_raport, update_raport
 from backend.pydantics import UserFile
 from backend.dependencies import backend, cookie
-from backend.utils import delete_files_from_storage, convert_bytes, process_file
+from backend.utils import delete_files_from_storage, convert_bytes, process_file, _generate_raport_file_header
 from backend.consts import (
     ALLOWED_FILE_TYPES,
     CONTENT_TYPE_TO_PATH_MAP,
@@ -68,10 +69,11 @@ async def read_files(session_id: UUID = Depends(cookie)):
     Returns response with all processed files correlated with session as an attachment.
     """
     session = await backend.read(session_id)
+    config = get_config(session_id)
     response_files = []
     saved_files = []
     for file in session.files:
-        response_file = await process_file(file)
+        response_file = await process_file(file, config)
         response_files.append(response_file)
 
         saved_file = UserFile(
@@ -99,6 +101,8 @@ async def read_file(filename: str, session_id: UUID = Depends(cookie)):
     Returns response with processed file correlated with session and given filename as an attachment.
     """
     session = await backend.read(session_id)
+    config = get_config(session_id)
+
     for saved_file in session.files:
         if saved_file.unique_name == filename:
             file = saved_file
@@ -106,18 +110,25 @@ async def read_file(filename: str, session_id: UUID = Depends(cookie)):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-    response_file = await process_file(file=file)
-    saved_file = UserFile(
-        origin_name=file.origin_name,
-        unique_name=response_file.filename,
-        location=response_file.path,
-        type=response_file.media_type,
-        size=convert_bytes(os.path.getsize(response_file.path)),
-        date=str(datetime.now()),
-    )
-
+    response_file, raport = await process_file(file=file, config=config)
+    response_data = {
+        "origin_name": file.origin_name,
+        "unique_name": response_file.filename,
+        "location": response_file.path,
+        "type": response_file.media_type,
+        "size": convert_bytes(os.path.getsize(response_file.path)),
+        "date": str(datetime.now()),
+    }
+    saved_file = UserFile(**response_data)
     session.files += [saved_file]
     await backend.update(session_id, session)
+
+    if config and config.make_raport:
+        create_raport(session_id)
+        header = _generate_raport_file_header(data=response_data)
+        raport = "".join(raport)
+        text = header + raport
+        update_raport(session_id, text=text)
 
     return response_file
 

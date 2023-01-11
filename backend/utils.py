@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from starlette.responses import FileResponse
 
 from backend.machinelearning.yolo_wrapper import YoloWrapper
-from backend.pydantics import UserFile
+from backend.pydantics import UserFile, Config
 from backend.pdf import PDF, TXT
 from backend.consts import (
     CONTENT_TYPE_TO_PATH_MAP,
@@ -14,32 +14,57 @@ from backend.consts import (
     PDF_DIR_PATH,
     PNG_DIR_PATH,
     JPG_DIR_PATH,
-    IMG_DIR_PATH,
+    IMG_DIR_PATH, RAP_DIR_PATH,
 )
 
-async def process_file(file: UserFile) -> FileResponse:
+async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, list | None | None]:
     """
     Main file processing function
     """
     processed_type = file.type
     processed_name = "processed_" + file.unique_name
     processed_path = CONTENT_TYPE_TO_PATH_MAP[file.type] + processed_name
+    raport = None
 
     if processed_type == "application/pdf":
-        pdf = PDF(file.location)
-        images = pdf.extract_images()
-        if images[0]:
-            yolo_wrapper = YoloWrapper()
-            for i, image_dir in enumerate(images[0]):
-                image = cv2.imread(image_dir)
-                if image_dir[-4:] == '.png' or image_dir[-4:] == '.PNG':
-                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        hide_people = True
 
-                results = yolo_wrapper.model(image)
-                image = yolo_wrapper.process_results(results, image)
-                cv2.imwrite(image_dir, image)
-                pdf.reintroduce_image(image_dir, images[1][i])
-        pdf.hide_sensitive(processed_path)
+        if config:
+            # Look for this particular file expected result type
+            result_type = processed_type
+            for file_config in config.file_configs:
+                if file_config.unique_name == file.unique_name:
+                    result_type = file_config.result_type
+
+            processed_path = CONTENT_TYPE_TO_PATH_MAP[result_type] + processed_name
+            hide_people = config.hide_people
+
+            pdf_config = {
+                "regex_categories": config.regex_categories,
+                "expressions_to_anonymize": config.expressions_to_anonymize,
+                "expressions_to_highlight": config.expressions_to_highlight,
+                "hide_people": config.hide_people,
+                "make_raport": config.make_raport,
+                "result_type": result_type
+            }
+            pdf = PDF(filepath=file.location, **pdf_config)
+        else:
+            pdf = PDF(filepath=file.location)
+
+        if hide_people:
+            paths, xrefs = pdf.extract_images()
+            if paths and xrefs:
+                yolo_wrapper = YoloWrapper()
+                for path, xref in zip(paths, xrefs):
+                    image = cv2.imread(path)
+                    if path[-4:].lower() == '.png':
+                        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    results = yolo_wrapper.model(image)
+                    image = yolo_wrapper.process_results(results, image)
+                    cv2.imwrite(path, image)
+                    pdf.reintroduce_image(path, xref)
+
+        raport = pdf.hide_sensitive(processed_path)
 
     elif processed_type == "text/plain":
         txt = TXT(file.location)
@@ -58,12 +83,12 @@ async def process_file(file: UserFile) -> FileResponse:
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             detail="Currently only pdf processing is possible.",
         )
-
-    return FileResponse(
+    response_file = FileResponse(
         path=processed_path,
         filename=processed_name,
         media_type=processed_type,
     )
+    return response_file, raport
 
 
 def delete_files_from_storage(files_to_delete: list[str] = None):
@@ -77,6 +102,7 @@ def delete_files_from_storage(files_to_delete: list[str] = None):
         PNG_DIR_PATH,
         JPG_DIR_PATH,
         IMG_DIR_PATH,
+        RAP_DIR_PATH,
     ]:
         files = os.listdir(context)
         for file in files:
@@ -84,6 +110,16 @@ def delete_files_from_storage(files_to_delete: list[str] = None):
                 continue
             os.remove(context + file)
             logging.info(f"File: {file} have been deleted.")
+
+
+def _generate_raport_file_header(data: dict):
+    raport_head = f"\n{'============================' * 2}\n"
+    raport_name = f"File name  : {data.get('origin_name')}\n"
+    raport_type = f"File type  : {data.get('type')}       \n"
+    raport_size = f"File size  : {data.get('size')}       \n"
+    raport_time = f"Created at : {data.get('date')}       \n"
+    raport_tail = f"{'============================' * 2}\n\n"
+    return raport_head + raport_name + raport_type + raport_size + raport_time + raport_tail
 
 
 def convert_bytes(num: float) -> str:
