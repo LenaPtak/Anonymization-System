@@ -215,7 +215,7 @@ class PDF:
 
             if self.make_raport:
                 if len(expressions) != 0:
-                    self.raport.append(f"\nHidden custom expressions:\n")
+                    self.raport.append(f"\nHighlighted custom expressions:\n")
                 for expression in expressions:
                     self.raport.append(f" - {expression}\n")
 

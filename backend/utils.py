@@ -24,7 +24,7 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
     processed_type = file.type
     processed_name = "processed_" + file.unique_name
     processed_path = CONTENT_TYPE_TO_PATH_MAP[file.type] + processed_name
-    raport = None
+    raport = []
 
     if processed_type == "application/pdf":
         hide_people = True
@@ -53,6 +53,7 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
 
         if hide_people:
             paths, xrefs = pdf.extract_images()
+            raport += [f"\nHidden people profiles:\n - {len(paths)}\n"]
             if paths and xrefs:
                 yolo_wrapper = YoloWrapper()
                 for path, xref in zip(paths, xrefs):
@@ -62,9 +63,12 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
                     results = yolo_wrapper.model(image)
                     image = yolo_wrapper.process_results(results, image)
                     cv2.imwrite(path, image)
-                    pdf.reintroduce_image(path, xref)
 
-        raport = pdf.hide_sensitive(processed_path)
+                    raport += pdf.hide_sensitive(processed_path)
+                    pdf_processed = PDF(processed_path)
+                    pdf_processed.reintroduce_image(path, xref)
+        else:
+            raport += pdf.hide_sensitive(processed_path)
 
     elif processed_type == "text/plain":
         txt = TXT(file.location)
