@@ -13,7 +13,6 @@ export default function Description() {
         make_raport,
       };
     });
-    console.log(config);
   };
 
   return (

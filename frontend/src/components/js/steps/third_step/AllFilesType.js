@@ -2,12 +2,11 @@ import React, { useContext } from "react";
 import "../../../css/steps/third_step/AllFilesType.css";
 import { ConfigContext } from "../../../../ConfigContext";
 
-export default function AllFilesType() {
+export default function AllFilesType({ handleClick, handleFlag }) {
   const { config, setConfig } = useContext(ConfigContext);
   let filetypes = ["jpg", "pdf", "txt", "png"];
 
-  const handleClick = (filetype) => {
-    console.log(config.file_configs);
+  const handleClickConfig = (filetype) => {
     setConfig((prevConfig) => {
       return {
         ...prevConfig,
@@ -19,6 +18,8 @@ export default function AllFilesType() {
         }),
       };
     });
+    handleClick(filetype);
+    handleFlag();
   };
 
   return (
@@ -32,7 +33,7 @@ export default function AllFilesType() {
             key={filetype}
             className={`file-type-tile`}
             value={filetype}
-            onClick={() => handleClick(filetype)}
+            onClick={() => handleClickConfig(filetype)}
           >
             <div className="file-type-extension">{filetype}</div>
           </div>

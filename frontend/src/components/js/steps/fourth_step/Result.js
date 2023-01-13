@@ -7,7 +7,6 @@ export default function Result() {
   const forms = ["default", "merge", "split"];
 
   const handleClick = (form) => {
-    console.log(config.result_form);
     setConfig((prevConfig) => {
       return {
         ...prevConfig,

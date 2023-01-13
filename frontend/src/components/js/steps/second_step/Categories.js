@@ -25,7 +25,6 @@ export default function Categories() {
         regex_categories,
       };
     });
-    console.log(config);
   };
 
   const [searchTerm, setSearchTerm] = React.useState("");

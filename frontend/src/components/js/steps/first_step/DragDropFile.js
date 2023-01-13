@@ -130,11 +130,6 @@ export default function DragDropFile() {
         >
           Upload files
         </button>
-        {/* <ol>
-          {uploadedFiles.map((file) => (
-            <li key={file.name}>{file.name}</li>
-          ))}
-        </ol> */}
       </form>
     </div>
   );

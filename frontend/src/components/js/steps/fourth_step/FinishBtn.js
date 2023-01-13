@@ -68,7 +68,7 @@ export default function FinishBtn() {
           link.parentNode.removeChild(link);
 
           count++;
-          console.log("Pobieram ", file.origin_name);
+          // console.log("Pobieram ", file.origin_name);
           if (count === files.length) {
             console.log("Pobieranie zakończone");
             setTimeout(() => {
