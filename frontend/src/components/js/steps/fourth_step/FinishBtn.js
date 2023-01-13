@@ -4,6 +4,22 @@ import "../../../css/steps/Step.css";
 export default function FinishBtn() {
   const [files, setFiles] = useState([]);
 
+  function createConfig(config) {
+    fetch("http://localhost:8000/api/config", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   function readSession() {
     fetch(`http://localhost:8000/api/session`, {
       method: "GET",

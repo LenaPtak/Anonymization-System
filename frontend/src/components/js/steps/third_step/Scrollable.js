@@ -47,25 +47,28 @@ export default function Scrollable() {
 
   return (
     <div className="scrollable">
-      <form className="scrollable__form">
-        <input
-          type="search"
-          placeholder="Search..."
-          className="scrollable__search"
-          value={searchTerm}
-          onChange={handleChange}
-        />
-      </form>
-      <div
-        style={{ overflowY: "scroll", height: "200px" }}
-        className="scrollable__scrollbar"
-      >
-        {filteredFiles.map((item) => (
-          <div className="scrollable__item" key={item.unique_name}>
-            <div className="scrollable__file">{item.origin_name}</div>
-            <SelectType />
-          </div>
-        ))}
+      <div className="scrollable__title">Or for specific file:</div>
+      <div className="scrollable__background">
+        <form className="scrollable__form">
+          <input
+            type="search"
+            placeholder="Search..."
+            className="scrollable__search"
+            value={searchTerm}
+            onChange={handleChange}
+          />
+        </form>
+        <div
+          style={{ overflowY: "scroll", height: "200px" }}
+          className="scrollable__scrollbar"
+        >
+          {filteredFiles.map((item) => (
+            <div className="scrollable__item" key={item.unique_name}>
+              <div className="scrollable__file">{item.origin_name}</div>
+              <SelectType file={item} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

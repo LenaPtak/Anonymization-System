@@ -1,7 +1,16 @@
-.description {
-  padding: 1rem 2rem;
+.categories-description {
+  padding: 3.5rem 4rem;
 }
 
-.description__paragraph {
-  margin-bottom: 1rem;
+.categories-description__paragraph {
+  margin-bottom: 2rem;
+  font-size: 20px;
+}
+
+.categories-description__checkbox {
+  font-size: 24px;
+  width: 25px;
+  height: 25px;
+  margin: 0;
+  margin-left: 10px;
 }

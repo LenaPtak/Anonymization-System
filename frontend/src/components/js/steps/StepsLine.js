@@ -18,6 +18,9 @@ export default function StepsLine(props) {
         <div
           className={`steps-line__circle${activeStep === 4 ? "-active" : ""}`}
         ></div>
+        <div
+          className={`steps-line__circle${activeStep === 5 ? "-active" : ""}`}
+        ></div>
       </div>
     </div>
   );
