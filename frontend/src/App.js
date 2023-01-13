@@ -20,7 +20,7 @@ function App() {
     expressions_to_highlight: [],
     hide_people: false,
     make_raport: false,
-    result_form: null,
+    result_form: "",
     file_configs: [
       {
         origin_name: "",

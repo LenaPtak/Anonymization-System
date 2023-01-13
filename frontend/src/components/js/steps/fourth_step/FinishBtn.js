@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { ConfigContext } from "../../../../ConfigContext";
 import "../../../css/steps/Step.css";
 
 export default function FinishBtn() {
   const [files, setFiles] = useState([]);
+  const { config, setConfig } = useContext(ConfigContext);
 
   function createConfig(config) {
     fetch("http://localhost:8000/api/config", {
@@ -84,7 +86,8 @@ export default function FinishBtn() {
   }, []);
 
   const handleSubmit = () => {
-    downloadFile();
+    createConfig(config);
+    // downloadFile();
   };
 
   return (
