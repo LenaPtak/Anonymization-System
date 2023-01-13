@@ -1,0 +1,9 @@
+.phrases-description {
+  padding: 0rem 2rem;
+  width: 100%;
+}
+
+.phrases-description__paragraph {
+  margin-bottom: 1rem;
+  font-size: 20px;
+}

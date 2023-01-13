@@ -1,7 +1,11 @@
-.description {
-  padding: 2rem;
+.fourth-description {
+  padding: 0.5rem;
 }
 
-.description__paragraph {
-  margin-bottom: 1rem;
+.fourth-description__paragraph {
+  margin-bottom: 0.5rem;
+}
+
+b {
+  font-weight: bold;
 }
