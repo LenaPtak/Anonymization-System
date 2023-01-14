@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ConfigContext } from "../../../../ConfigContext";
 import "../../../css/steps/fourth_step/Result.css";
 
 export default function Result() {
-  const [selectedResult, setSelectedResult] = React.useState(null);
+  const { config, setConfig } = useContext(ConfigContext);
+  const forms = ["default", "merge", "split"];
 
-  const handleChange = (event) => {
-    setSelectedResult(event.target.value);
+  const handleClick = (form) => {
+    setConfig((prevConfig) => {
+      return {
+        ...prevConfig,
+        result_form: form,
+      };
+    });
   };
 
   return (
@@ -13,40 +20,23 @@ export default function Result() {
       <div className="result__title">
         Choose in what form you want to receive your files:
       </div>
-      <div className="">
+      {forms.map((form) => (
         <div
+          key={form}
           className={`result__tile ${
-            selectedResult === "merge" ? "selected" : ""
+            config.result_form === form ? "selected" : ""
           }`}
-          onClick={() => setSelectedResult("merge")}
+          onClick={() => handleClick(form)}
         >
-          <input
-            type="radio"
-            name="filetype"
-            id="merge"
-            value="merge"
-            checked={selectedResult === "merge"}
-            onChange={handleChange}
-          />
-          <div className="result__tile__extension">Merge files</div>
+          <div className="result__tile__extension">
+            {form === "default"
+              ? "Default option"
+              : form === "merge"
+              ? "Merge files"
+              : "Split pages"}
+          </div>
         </div>
-        <div
-          className={`result__tile ${
-            selectedResult === "split" ? "selected" : ""
-          }`}
-          onClick={() => setSelectedResult("split")}
-        >
-          <input
-            type="radio"
-            name="filetype"
-            id="split"
-            value="split"
-            checked={selectedResult === "split"}
-            onChange={handleChange}
-          />
-          <div className="result__tile__extension">Split files</div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

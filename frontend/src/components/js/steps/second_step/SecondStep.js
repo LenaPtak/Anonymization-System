@@ -23,7 +23,7 @@ export default function SecondStep(props) {
                 <button className="step__btn">Previous step</button>
               </Link>
               <Link
-                to="/anonymization/select-file-type"
+                to="/anonymization/phrases"
                 style={{ textDecoration: "none", color: "black" }}
               >
                 <button className="step__btn">Next step</button>

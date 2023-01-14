@@ -1,8 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { ConfigContext } from "../../../../ConfigContext";
 import "../../../css/steps/Step.css";
 
 export default function FinishBtn() {
   const [files, setFiles] = useState([]);
+  const { config, setConfig } = useContext(ConfigContext);
+
+  function createConfig(config) {
+    fetch("http://localhost:8000/api/config", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   function readSession() {
     fetch(`http://localhost:8000/api/session`, {
@@ -52,7 +70,7 @@ export default function FinishBtn() {
           link.parentNode.removeChild(link);
 
           count++;
-          console.log("Pobieram ", file.origin_name);
+          // console.log("Pobieram ", file.origin_name);
           if (count === files.length) {
             console.log("Pobieranie zakończone");
             setTimeout(() => {
@@ -68,7 +86,8 @@ export default function FinishBtn() {
   }, []);
 
   const handleSubmit = () => {
-    downloadFile();
+    createConfig(config);
+    // downloadFile();
   };
 
   return (

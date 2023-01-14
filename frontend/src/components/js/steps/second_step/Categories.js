@@ -1,89 +1,70 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ConfigContext } from "../../../../ConfigContext";
 import "../../../css/steps/second_step/Categories.css";
 
 export default function Categories() {
-  const [selectedCategories, setSelectedCategories] = React.useState([]);
+  const { config, setConfig } = useContext(ConfigContext);
 
-  const handleChange = (event) => {
+  let categories = [
+    "names",
+    "addresses",
+    "phone numbers",
+    "pesel",
+    "date",
+    "people face",
+  ];
+
+  const handleConfig = (event) => {
     const category = event.target.value;
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
+    setConfig((prevConfig) => {
+      const regex_categories = prevConfig.regex_categories.includes(category)
+        ? prevConfig.regex_categories.filter((c) => c !== category)
+        : [...new Set([...prevConfig.regex_categories, category])];
+      return {
+        ...prevConfig,
+        regex_categories,
+      };
+    });
   };
 
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredCategories = categories.filter((category) =>
+    category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="select-category__categories justify-content-center">
-      <div className="categories__title d-flex justify-content-center">
-        Select categories you want to hide:
-      </div>
-      <div className="d-flex justify-content-center">
-        <div
-          className={`categories__select-mode ${
-            selectedCategories.includes("names") ? "selected" : ""
-          }`}
-          onClick={() => handleChange({ target: { value: "names" } })}
-        >
+    <div className="categories justify-content-center">
+      <div className="categories__title">Select category to anonymize:</div>
+      <div className="categories__background">
+        <div className="categories__form">
           <input
-            type="checkbox"
-            name="names"
-            id="names"
-            value="names"
-            checked={selectedCategories.includes("names")}
-            onChange={handleChange}
+            type="search"
+            placeholder="Search..."
+            className="categories__search"
+            value={searchTerm}
+            onChange={handleSearch}
           />
-          <div className="categories__extension">names</div>
         </div>
         <div
-          className={`categories__select-mode ${
-            selectedCategories.includes("addresses") ? "selected" : ""
-          }`}
-          onClick={() => handleChange({ target: { value: "addresses" } })}
+          style={{ overflowY: "scroll", height: "200px" }}
+          className="categories__scrollbar"
         >
-          <input
-            type="checkbox"
-            name="addresses"
-            id="addresses"
-            value="addresses"
-            checked={selectedCategories.includes("addresses")}
-            onChange={handleChange}
-          />
-          <div className="categories__extension">addresses</div>
-        </div>
-        <div
-          className={`categories__select-mode ${
-            selectedCategories.includes("phoneNumbers") ? "selected" : ""
-          }`}
-          onClick={() => handleChange({ target: { value: "phoneNumbers" } })}
-        >
-          <input
-            type="checkbox"
-            name="phoneNumbers"
-            id="phoneNumbers"
-            value="phoneNumbers"
-            checked={selectedCategories.includes("phoneNumbers")}
-            onChange={handleChange}
-          />
-          <div className="categories__extension">phone</div>
-        </div>
-        <div
-          className={`categories__select-mode ${
-            selectedCategories.includes("pesel") ? "selected" : ""
-          }`}
-          onClick={() => handleChange({ target: { value: "pesel" } })}
-        >
-          <input
-            type="checkbox"
-            name="pesel"
-            id="pesel"
-            value="pesel"
-            checked={selectedCategories.includes("pesel")}
-            onChange={handleChange}
-          />
-          <div className="categories__extension d-flex align-items-center">
-            pesel
-          </div>
+          {filteredCategories.map((category) => (
+            <div className="categories__item" key={category}>
+              <div className="categories__category">{category}</div>
+              <input
+                className="categories__checkbox"
+                type="checkbox"
+                value={category}
+                id={category}
+                onChange={handleConfig}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>
