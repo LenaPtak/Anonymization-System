@@ -3,7 +3,7 @@ import "../../../css/steps/first_step/DragDropFile.css";
 
 const MAX_COUNT_FILES = 10;
 
-export default function DragDropFile() {
+export default function DragDropFile(props) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fileLimit, setFileLimit] = useState(false);
   const [dragActive, setDragActive] = React.useState(false);
@@ -33,24 +33,8 @@ export default function DragDropFile() {
 
     if (!limitExceeded) {
       setUploadedFiles(uploaded);
+      props.updateUploadedFiles(uploaded);
     }
-  };
-
-  const handleSubmit = (e) => {
-    const formData = new FormData();
-    uploadedFiles.forEach((file) => {
-      formData.append("uploaded_files", file, file.name);
-    });
-
-    const requestOptions = {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    };
-
-    fetch("http://localhost:8000/api/files", requestOptions)
-      .then((response) => response.json())
-      .catch((e) => console.log(`e: ${e}`));
   };
 
   const handleDrag = function (e) {
@@ -123,13 +107,6 @@ export default function DragDropFile() {
             onDrop={handleDrop}
           ></div>
         )}
-        <button
-          id=""
-          className={`btn-upload-files ${!fileLimit ? "" : "disabled"} `}
-          onClick={handleSubmit}
-        >
-          Upload files
-        </button>
       </form>
     </div>
   );

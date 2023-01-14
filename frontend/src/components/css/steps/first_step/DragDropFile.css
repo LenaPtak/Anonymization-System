@@ -6,7 +6,8 @@
 }
 
 .dd__upload {
-  height: 16rem;
+  margin-top: 2rem;
+  height: 20rem;
   width: 90%;
   text-align: center;
   position: relative;
