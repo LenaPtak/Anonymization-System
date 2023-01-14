@@ -7,18 +7,20 @@ export default function Phrases(props) {
 
   const handleChange = (event) => {
     const newText = event.target.value;
+    const phrases = newText.split(",");
+    phrases.map((phrase) => phrase.trim());
     if (props.type === "highlight") {
       setConfig((prevConfig) => {
         return {
           ...prevConfig,
-          expressions_to_highlight: [newText],
+          expressions_to_highlight: phrases,
         };
       });
     } else {
       setConfig((prevConfig) => {
         return {
           ...prevConfig,
-          expressions_to_anonymize: [newText],
+          expressions_to_anonymize: phrases,
         };
       });
     }

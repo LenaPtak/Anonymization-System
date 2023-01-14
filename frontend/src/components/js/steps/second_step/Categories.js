@@ -5,14 +5,7 @@ import "../../../css/steps/second_step/Categories.css";
 export default function Categories() {
   const { config, setConfig } = useContext(ConfigContext);
 
-  let categories = [
-    "names",
-    "addresses",
-    "phone numbers",
-    "pesel",
-    "date",
-    "people face",
-  ];
+  let categories = ["names", "addresses", "phone numbers", "pesel", "date"];
 
   const handleConfig = (event) => {
     const category = event.target.value;
@@ -23,6 +16,15 @@ export default function Categories() {
       return {
         ...prevConfig,
         regex_categories,
+      };
+    });
+  };
+
+  const handleFaces = (event) => {
+    setConfig((prevConfig) => {
+      return {
+        ...prevConfig,
+        hide_people: event.target.checked,
       };
     });
   };
@@ -53,6 +55,16 @@ export default function Categories() {
           style={{ overflowY: "scroll", height: "200px" }}
           className="categories__scrollbar"
         >
+          <div className="categories__item" key="human faces">
+            <div className="categories__category">human faces</div>
+            <input
+              className="categories__checkbox"
+              type="checkbox"
+              value="human faces"
+              id="human faces"
+              onChange={handleFaces}
+            />
+          </div>
           {filteredCategories.map((category) => (
             <div className="categories__item" key={category}>
               <div className="categories__category">{category}</div>
