@@ -15,7 +15,7 @@ export default function FinishBtn() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
+        // console.log("Success:", data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -72,7 +72,6 @@ export default function FinishBtn() {
           count++;
           // console.log("Pobieram ", file.origin_name);
           if (count === files.length) {
-            console.log("Pobieranie zakończone");
             setTimeout(() => {
               window.location.replace("/");
             }, 3000);

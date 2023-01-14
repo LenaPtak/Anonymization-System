@@ -16,10 +16,21 @@ export default function SelectType(props) {
     props.onSelectChange(selectedValue, props.file);
   }
 
+  let filetypeWeb =
+    props.result_type === "image/jpeg"
+      ? "jpg"
+      : props.result_type === "image/png"
+      ? "png"
+      : props.result_type === "text/plain"
+      ? "txt"
+      : props.result_type === "application/pdf"
+      ? "pdf"
+      : props.result_type;
+
   return (
     <select
       className="form-select select"
-      defaultValue={props.result_type}
+      defaultValue={filetypeWeb}
       onClick={handleClick}
       onChange={handleSelectChange}
     >
@@ -27,9 +38,9 @@ export default function SelectType(props) {
         <option
           key={filetype}
           // value={filetype}
-          selected={filetype === props.result_type}
+          selected={filetype === filetypeWeb}
         >
-          {flag ? filetype : props.result_type}
+          {flag ? filetype : filetypeWeb}
         </option>
       ))}
     </select>

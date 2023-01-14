@@ -7,18 +7,29 @@ export default function AllFilesType({ handleClick, handleFlag }) {
   let filetypes = ["jpg", "pdf", "txt", "png"];
 
   const handleClickConfig = (filetype) => {
+    let filetypeConfig =
+      filetype === "jpg"
+        ? "image/jpeg"
+        : filetype === "png"
+        ? "image/png"
+        : filetype === "txt"
+        ? "text/plain"
+        : filetype === "pdf"
+        ? "application/pdf"
+        : "Unknown";
+
     setConfig((prevConfig) => {
       return {
         ...prevConfig,
         file_configs: prevConfig.file_configs.map((file) => {
           return {
             ...file,
-            result_type: filetype,
+            result_type: filetypeConfig,
           };
         }),
       };
     });
-    handleClick(filetype);
+    handleClick(filetypeConfig);
     handleFlag();
   };
 
