@@ -17,6 +17,23 @@ from backend.consts import (
     IMG_DIR_PATH, RAP_DIR_PATH,
 )
 
+
+def _map_expressions_from_list(expressions: list):
+    all_cases_expressions = []
+    for expression in set(expressions):
+        all_cases_expressions.extend([
+            expression.capitalize(),
+            expression.casefold(),
+            expression.lower(),
+            expression.upper(),
+            expression.rstrip(),
+            expression.lstrip(),
+            expression
+        ])
+    return list(set(all_cases_expressions))
+
+
+
 async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, list | None | None]:
     """
     Main file processing function
@@ -41,11 +58,11 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
 
             pdf_config = {
                 "regex_categories": config.regex_categories,
-                "expressions_to_anonymize": config.expressions_to_anonymize,
-                "expressions_to_highlight": config.expressions_to_highlight,
+                "expressions_to_anonymize": _map_expressions_from_list(config.expressions_to_anonymize),
+                "expressions_to_highlight": _map_expressions_from_list(config.expressions_to_highlight),
                 "hide_people": config.hide_people,
                 "make_raport": config.make_raport,
-                "result_type": result_type
+                "result_type": result_type.lower()
             }
             pdf = PDF(filepath=file.location, **pdf_config)
         else:
