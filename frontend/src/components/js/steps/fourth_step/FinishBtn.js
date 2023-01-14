@@ -87,7 +87,7 @@ export default function FinishBtn() {
 
   const handleSubmit = () => {
     createConfig(config);
-    // downloadFile();
+    downloadFile();
   };
 
   return (
