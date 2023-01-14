@@ -43,6 +43,15 @@ async def process_test_file():
                 texts, boxes = eo.preprocess_results(results, image)
                 # for text, box in zip(texts, boxes):
                     # print("INFO (EasyOCR):", texts)
+                # phrases_to_anonymize powinien zawierać te frazy które w znalezionych
+                # stringach trzeba usunąć, wstawiam placeholder value
+                # żeby nie crashowało, zastąp to callem do anonimizowania stringów
+                phrases_to_anonymize = "To usuń"
+                final_anonymized_image = eo.anonymize_strings(
+                        image,
+                        results,
+                        phrases_to_anonymize
+                )
 
                 pdf.hide_sensitive(processed_path)
                 pdf_processed = PDF(processed_path)
