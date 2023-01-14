@@ -57,7 +57,7 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
             hide_people = config.hide_people
 
             pdf_config = {
-                "regex_categories": config.regex_categories,
+                "regex_categories": [regex.upper() for regex in config.regex_categories],
                 "expressions_to_anonymize": _map_expressions_from_list(config.expressions_to_anonymize),
                 "expressions_to_highlight": _map_expressions_from_list(config.expressions_to_highlight),
                 "hide_people": config.hide_people,

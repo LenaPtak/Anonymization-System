@@ -376,13 +376,13 @@ class TXT:
         :param path: Path for allocating processed file.
         """
         chosen_regexes = [
-            "Numer PESEL",
-            "Numer dowodu osobistego",
-            "Numer karty kredytowej",
-            "Numer NIP",
-            "Numer telefonu",
-            "Numer rachunku bankowego",
-            "Email address",
+            "NUMER PESEL",
+            "NUMER DOWODU OSOBISTEGO",
+            "NUMER KARTY KREDYTOWEJ",
+            "NUMER NIP",
+            "NUMER TELEFONU",
+            "NUMER RACHUNKU BANKOWEGO",
+            "EMAIL ADDRESS",
         ]
 
         with open(self.filepath) as file:
