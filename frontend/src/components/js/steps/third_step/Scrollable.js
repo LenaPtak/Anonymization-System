@@ -58,7 +58,17 @@ export default function Scrollable({ selectedFileType, clickFlag }) {
   };
 
   function handleSelectChange(selectedValue, file) {
-    if (!selectedValue) selectedValue = selectedFileType;
+    let filetypeConfig =
+      selectedValue === "jpg"
+        ? "image/jpeg"
+        : selectedValue === "png"
+        ? "image/png"
+        : selectedValue === "txt"
+        ? "text/plain"
+        : selectedValue === "pdf"
+        ? "application/pdf"
+        : "Unknown";
+
     let found = false;
     for (let i = 0; i < config.file_configs.length; i++) {
       if (config.file_configs[i].unique_name === file.unique_name) {
@@ -69,7 +79,7 @@ export default function Scrollable({ selectedFileType, clickFlag }) {
               if (f.unique_name === file.unique_name) {
                 return {
                   ...f,
-                  result_type: selectedValue,
+                  result_type: filetypeConfig,
                 };
               }
               return f;
