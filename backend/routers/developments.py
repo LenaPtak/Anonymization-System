@@ -15,13 +15,13 @@ router = APIRouter(prefix="/api", tags=["Development"])
 async def process_test_file():
 
     processed_type = "application/pdf"
-    processed_name = "processed_" + "cv_1.pdf"
+    processed_name = "processed_" + "example.pdf"
     processed_path = (CONTENT_TYPE_TO_PATH_MAP["application/pdf"] + processed_name)
 
     start = time()
 
     if processed_type == "application/pdf":
-        pdf = PDF("./examples/cv_1.pdf")
+        pdf = PDF("./examples/example.pdf")
         images = pdf.extract_images()
         if images[0]:
             yolo_wrapper = YoloWrapper()
@@ -62,6 +62,6 @@ async def process_test_file():
 
     end = time()
     print(f"PROCESSING TIME: {round(end - start, 2)}")
-    file_size_before = os.path.getsize("./examples/cv_1.pdf")
+    file_size_before = os.path.getsize("./examples/example.pdf")
     file_size_after = os.path.getsize(processed_path)
     print(f"FILE SIZE INCREASE: {round(file_size_after / file_size_before, 2) * 100}%")
