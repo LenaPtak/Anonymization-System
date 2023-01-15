@@ -47,6 +47,7 @@ class EasyOCRWrapper(Wrapper):
     def model(self, data):
         prediction_result = get_prediction(
             image=data,
+            image=image,
             craft_net=self.craft_net,
             refine_net=self.refine_net,
             text_threshold=0.7,

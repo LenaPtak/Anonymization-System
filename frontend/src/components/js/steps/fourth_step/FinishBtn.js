@@ -15,7 +15,7 @@ export default function FinishBtn() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
+        // console.log("Success:", data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -72,13 +72,37 @@ export default function FinishBtn() {
           count++;
           // console.log("Pobieram ", file.origin_name);
           if (count === files.length) {
-            console.log("Pobieranie zakończone");
-            setTimeout(() => {
-              window.location.replace("/");
-            }, 3000);
+            downloadRaport();
           }
         });
     });
+  }
+
+  function downloadRaport() {
+    console.log("funkcja");
+    fetch("http://localhost:8000/api/raport", {
+      method: "GET",
+      credentials: "include",
+    })
+      .catch((e) => console.log(`e: ${e}`))
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", "raport.txt");
+
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+
+        setTimeout(() => {
+          window.location.replace("/");
+        }, 3000);
+
+        console.log("Pobieram raport");
+      });
   }
 
   useEffect(() => {
