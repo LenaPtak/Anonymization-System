@@ -46,6 +46,7 @@ class EasyOCRWrapper(Wrapper):
 
     def model(self, data):
         prediction_result = get_prediction(
+            image=data,
             image=image,
             craft_net=self.craft_net,
             refine_net=self.refine_net,
@@ -104,7 +105,7 @@ class EasyOCRWrapper(Wrapper):
         return texts, boxes
 
     def anonymize_strings(self, image, data, phrases):
-        words = self.ocr_model.readtext(data[0][1], paragraph=False, detail=0, width_ths=0.03)
+        # words = self.ocr_model.readtext(data[0][1], paragraph=False, detail=0, width_ths=0.03)
         # TODO(Jan): Anonymize phrases given by backend
         return image
         
