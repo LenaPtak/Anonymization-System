@@ -35,6 +35,11 @@ export default function Phrases(props) {
         className="phrases__textarea"
         aria-label=""
         onChange={handleChange}
+        value={
+          props.type === "highlight"
+            ? config.expressions_to_highlight.join(",")
+            : config.expressions_to_anonymize.join(",")
+        }
       />
     </div>
   );

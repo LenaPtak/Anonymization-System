@@ -34,6 +34,7 @@ export default function Description() {
           type="checkbox"
           id="raport"
           onChange={handleConfig}
+          checked={config.make_raport}
         />
       </div>
     </div>

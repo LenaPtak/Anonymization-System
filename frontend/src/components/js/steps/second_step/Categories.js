@@ -63,6 +63,7 @@ export default function Categories() {
               value="human faces"
               id="human faces"
               onChange={handleFaces}
+              checked={config.hide_people}
             />
           </div>
           {filteredCategories.map((category) => (
@@ -74,6 +75,7 @@ export default function Categories() {
                 value={category}
                 id={category}
                 onChange={handleConfig}
+                checked={config.regex_categories.includes(category)}
               />
             </div>
           ))}
