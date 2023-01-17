@@ -56,8 +56,12 @@ class EasyOCRWrapper(Wrapper):
             long_size=1280
         )
         texts = []
-        for poly, box_as_ratio, box in zip(prediction_result['polys'], prediction_result['boxes_as_ratios'], prediction_result['boxes']):
-            best_text, best_text_len, r_poly = "", 0, None
+        for poly, box_as_ratio, box in zip(
+                prediction_result['polys'],
+                prediction_result['boxes_as_ratios'],
+                prediction_result['boxes']):
+            best_text, best_text_len, r_poly, best_image = "", 0, None, None
+            rotation = 0
             img = file_utils.rectify_poly(data, poly)
             for i in range(4):
                 candidate = self.ocr_model.readtext(img)
@@ -68,13 +72,22 @@ class EasyOCRWrapper(Wrapper):
                         best_text = candidate
                         best_text_len = leng
                         r_poly = deepcopy(box)
-                box = [[j, -i] for i, j in box]
-            img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-            box = [[-j, i] for i, j in box]
+                        best_image = deepcopy(img)
+                        best_image = cv2.rotate(
+                                best_image,
+                                cv2.ROTATE_90_COUNTERCLOCKWISE
+                        )
+                        rotation = i
+                box = [[abs(j), abs(i)] for i, j in box]
             for i, elem in enumerate(best_text):
-                best_text[i] = (list(np.array(r_poly).astype('int')), best_text[i][1], best_text[i][2])
-            print(best_text)
-            texts.append((best_text, img))
+                best_text[i] = (
+                        list(np.array(r_poly).astype('int')),
+                        best_text[i][1],
+                        best_text[i][2]
+                )
+            # print(best_text)
+            if best_text_len > 0:
+                texts.append((best_text, (best_image, rotation)))
         return texts
 
     def preprocess_results(self, results, image):
@@ -82,32 +95,98 @@ class EasyOCRWrapper(Wrapper):
         boxes = []
         for i, img in results:
             for box, text, p in i:
+                for x in range(img[1]):
+                    box = [[abs(j), abs(i)] for i, j in box]
                 if p > 0.25:
                     top_l, top_r, bot_r, bot_l = box
                     top_l = (int(top_l[0]), int(top_l[1]))
                     top_r = (int(top_r[0]), int(top_r[1]))
                     bot_r = (int(bot_r[0]), int(bot_r[1]))
                     bot_l = (int(bot_l[0]), int(bot_l[1]))
-                    text = "".join([c if ord(c) < 128 else "" for c in text]).strip()
+                    text = "".join([
+                        c if ord(c) < 128
+                        else ""
+                        for c in text
+                    ]).strip()
                     texts.append(text)
                     boxes.append((top_l, top_r, bot_l, bot_r))
-                    cv2.rectangle(image, top_l, bot_r, (0, 255, 0), 2)
-                    cv2.putText(
-                        image,
-                        text,
-                        (top_l[0], top_l[1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2
-                    )
+                    # cv2.rectangle(image, top_l, bot_r, (0, 255, 0), 2)
+                    # cv2.putText(
+                    #     image,
+                    #     text,
+                    #     (top_l[0], top_l[1] - 10),
+                    #     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2
+                    # )
         if self.show_image:
             im_pil = Image.fromarray(image)
             im_pil.show()
         return texts, boxes
 
     def anonymize_strings(self, image, data, phrases):
-        # words = self.ocr_model.readtext(data[0][1], paragraph=False, detail=0, width_ths=0.03)
-        # TODO(Jan): Anonymize phrases given by backend
+        print("INFO: Anonymizing phrases:", phrases)
+        for i in [f for f in data if f is not []]:
+            words = self.ocr_model.readtext(
+                    i[1][0],
+                    paragraph=False,
+                    width_ths=0.03,
+            )
+            # a = (xa,ya) b = (xb,yb)
+            # vec = (xa+(xb-xa), ya+(yb-ya))
+            for word in words:
+                test = False
+                for w in word[1].split():
+                    if w in [x[1] for x in phrases]:
+                        test = True
+                        break
+                if test:
+                    # TODO: Check if the shape should be swapped
+                    box_shape = list(np.shape(i[1][0]))[0:2]
+                    percentage = [
+                        [
+                            word[0][0][0]/box_shape[1],
+                            word[0][0][1]/box_shape[0]
+                        ],
+                        [
+                            word[0][2][0]/box_shape[1],
+                            word[0][2][1]/box_shape[0]
+                        ]
+                    ]
+                    base_coords = i[0][0][0]
+                    # print(base_coords)
+                    for _ in range(i[1][1]):
+                        base_coords = [[x, y] for y, x in base_coords]
+                        percentage = [[x, 1-y] for y, x in percentage]
+                    cv2.fillPoly(
+                            image,
+                            pts=[np.int32(np.array([[
+                                    int(base_coords[0][0]+(base_coords[2][0] -
+                                        base_coords[0][0])*percentage[0][0]),
+                                    int(base_coords[0][1]+(base_coords[2][1] -
+                                        base_coords[0][1])*percentage[0][1])
+                                ],
+                                [
+                                    int(base_coords[1][0]+(base_coords[3][0] -
+                                        base_coords[1][0])*percentage[0][0]),
+                                    int(base_coords[1][1]+(base_coords[3][1] -
+                                        base_coords[1][1])*percentage[0][1])
+                                ],
+                                [
+                                    int(base_coords[0][0]+(base_coords[2][0] -
+                                        base_coords[0][0])*percentage[1][0]),
+                                    int(base_coords[0][1]+(base_coords[2][1] -
+                                        base_coords[0][1])*percentage[1][1])
+                                ],
+                                [
+                                    int(base_coords[1][0]+(base_coords[3][0] -
+                                        base_coords[1][0])*percentage[1][0]),
+                                    int(base_coords[1][1]+(base_coords[3][1] -
+                                        base_coords[1][1])*percentage[1][1])
+                            ]]))],
+                            color=(255, 255, 0)
+                    )
+
         return image
-        
+
 
 if __name__ == "__main__":
     eo = EasyOCRWrapper(None)

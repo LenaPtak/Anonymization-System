@@ -437,6 +437,7 @@ class JPG:
                 text="\n".join(texts),
                 chosen_regexes=regexes
         )
+        sensitive = list(sensitive)
         for i in sensitive:
             print("INFO (IMAGE PROCESSING) sensitive:", i)
         self.image = eo.anonymize_strings(
