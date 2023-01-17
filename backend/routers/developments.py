@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from backend.machinelearning.easyocr_wrapper import EasyOCRWrapper
 from backend.machinelearning.yolo_wrapper import YoloWrapper
 from backend.consts import CONTENT_TYPE_TO_PATH_MAP
-from backend.pdf import PDF
+from backend.pdf import PDF, JPG, PNG
 
 router = APIRouter(prefix="/api", tags=["Development"])
 
@@ -14,9 +14,9 @@ router = APIRouter(prefix="/api", tags=["Development"])
 @router.get("/temporary")
 async def process_test_file():
 
-    processed_type = "application/pdf"
-    processed_name = "processed_" + "example.pdf"
-    processed_path = (CONTENT_TYPE_TO_PATH_MAP["application/pdf"] + processed_name)
+    processed_type = "image/png"
+    processed_name = "processed_" + "example.png"
+    processed_path = (CONTENT_TYPE_TO_PATH_MAP["image/png"] + processed_name)
 
     start = time()
 
@@ -59,6 +59,14 @@ async def process_test_file():
 
         else:
             pdf.hide_sensitive(processed_path)
+    elif processed_type == 'image/jpeg':
+        image_processor = JPG("./examples/example.jpeg")
+        image_processor.hide_sensitive()
+        image_processor.save_image(processed_path)
+    elif processed_type == 'image/png':
+        image_processor = PNG("./examples/example.png")
+        image_processor.hide_sensitive()
+        image_processor.save_image(processed_path)
 
     end = time()
     print(f"PROCESSING TIME: {round(end - start, 2)}")
