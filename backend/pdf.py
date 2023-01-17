@@ -4,8 +4,11 @@ import re
 import fitz
 from PIL import Image
 from typing import List, Tuple, Union
+import cv2
 
 from backend.regexes import polish_sensitive, regexes_global, default_regexes
+from backend.machinelearning.easyocr_wrapper import EasyOCRWrapper
+from backend.machinelearning.yolo_wrapper import YoloWrapper
 
 
 def _get_sensitive_data(text: str, chosen_regexes: list = None) -> Tuple[str, str]:
@@ -412,11 +415,41 @@ class TXT:
             file.write(text)
 
 
-class PNG:
-    # TODO: Jan Bylicki task 10.10.2023
-    pass
-
-
 class JPG:
-    # TODO: Jan Bylicki task 10.10.2023
-    pass
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.filename = filepath.replace("/", "_").split(".")[-2][1:]
+        self.image = cv2.imread(self.filepath)
+        self.regex_categories = polish_sensitive
+
+    def hide_sensitive(self):
+        yolo_wrapper = YoloWrapper()
+        results = yolo_wrapper.model(self.image)
+        self.image = yolo_wrapper.process_results(results, self.image)
+        eo = EasyOCRWrapper(None)
+
+        results = eo.model(self.image)
+        texts, boxes = eo.preprocess_results(results, self.image)
+        regexes = self.regex_categories \
+            if self.regex_categories \
+            else default_regexes
+        sensitive = _get_sensitive_data(
+                text="\n".join(texts),
+                chosen_regexes=regexes
+        )
+        for i in sensitive:
+            print("INFO (IMAGE PROCESSING) sensitive:", i)
+        self.image = eo.anonymize_strings(
+                self.image,
+                results,
+                sensitive
+        )
+
+    def save_image(self, path):
+        cv2.imwrite(path, self.image)
+
+
+class PNG(JPG):
+    def __init__(self, filepath):
+        super().__init__(filepath)
+        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
