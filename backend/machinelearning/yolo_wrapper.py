@@ -1,3 +1,4 @@
+from copy import deepcopy
 import random
 import sys
 from collections import defaultdict
@@ -49,7 +50,22 @@ class YoloWrapper(Wrapper):
         return self.model.model(data)
 
     def process_results(self, results, data):
-        blurred_img = cv2.GaussianBlur(data, (101, 101), 0)
+        blurred_img = deepcopy(data)
+        blocks = 10
+        (h, w) = data.shape[:2]
+        xSteps = np.linspace(0, w, blocks + 1, dtype="int")
+        ySteps = np.linspace(0, h, blocks + 1, dtype="int")
+        for i in range(1, len(ySteps)):
+            for j in range(1, len(xSteps)):
+                startX = xSteps[j - 1]
+                startY = ySteps[i - 1]
+                endX = xSteps[j]
+                endY = ySteps[i]
+                roi = blurred_img[startY:endY, startX:endX]
+                (B, G, R) = [int(x) for x in cv2.mean(roi)[:3]]
+                cv2.rectangle(blurred_img, (startX, startY), (endX, endY),
+                    (B, G, R), -1)
+        # blurred_img = cv2.GaussianBlur(blurred_img, (501, 501), 0)
         out = data
         for i in results.xyxy[0]:
             x, y, w, h, conf, class_id = i
