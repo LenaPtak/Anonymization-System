@@ -16,7 +16,7 @@ export default function Footer() {
         >
           <img
             className="homepage-footer__logo"
-            src="..\images\logo.png"
+            src="..\images\new_logo.png"
             alt="logo"
           />
         </Link>
