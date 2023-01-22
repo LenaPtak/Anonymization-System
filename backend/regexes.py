@@ -3,11 +3,11 @@ import os
 # Load polish sensitive words into set at the very beggining
 polish_sensitive = set()
 files = os.listdir("blobs/")
-for num, file in enumerate(files):
-    with open(os.path.join("blobs/", file), "r") as file:
-        for line in file:
-            if len(line) > 4:
-                polish_sensitive.add(line.rstrip())
+# for num, file in enumerate(files):
+#     with open(os.path.join("blobs/", file), "r") as file:
+#         for line in file:
+#             if len(line) > 4:
+#                 polish_sensitive.add(line.rstrip())
 
 
 regexes_global = {

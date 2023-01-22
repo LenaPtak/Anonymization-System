@@ -1,6 +1,7 @@
 import os
 import cv2
 import logging
+import string
 
 from fastapi import HTTPException, status
 from starlette.responses import FileResponse
@@ -28,8 +29,20 @@ def _map_expressions_from_list(expressions: list):
             expression.upper(),
             expression.rstrip(),
             expression.lstrip(),
+            ''.join(e for e in expression if e.isalnum()),
+            expression[:-1] if not expression[-1].isalnum() else expression,
+            expression[1:] if not expression[0].isalnum() else expression,
+            expression[1:-1] if not expression[-1].isalnum() and not expression[0].isalnum() else expression,
             expression
         ])
+    # for punc in [",", ".", " "]:
+    #     for expression in all_cases_expressions:
+    #         all_cases_expressions.extend([
+    #             expression + punc,
+    #             punc + expression,
+    #             punc + expression + punc
+    #         ])
+
     return list(set(all_cases_expressions))
 
 
@@ -93,8 +106,20 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
                 raport += pdf_raport
 
     elif processed_type == "text/plain":
-        txt = TXT(file.location)
-        txt.hide_sensitive(processed_path)
+        if config:
+            txt_config = {
+                "regex_categories": [regex.upper() for regex in config.regex_categories],
+                "expressions_to_anonymize": _map_expressions_from_list(config.expressions_to_anonymize),
+                "expressions_to_highlight": _map_expressions_from_list(config.expressions_to_highlight),
+                "make_raport": config.make_raport,
+            }
+            txt = TXT(filepath=file.location, **txt_config)
+        else:
+            txt = TXT(filepath=file.location)
+
+        txt_raport = txt.hide_sensitive(processed_path)
+        if txt_raport:
+            raport += txt_raport
 
     elif processed_type == "image/png":
         # TODO: Jan Bylicki task 10.10.2023

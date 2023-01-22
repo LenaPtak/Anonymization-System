@@ -69,7 +69,7 @@ async def process_test_file():
         image_processor.save_image(processed_path)
 
     end = time()
-    print(f"PROCESSING TIME: {round(end - start, 2)}")
-    file_size_before = os.path.getsize("./examples/example.pdf")
-    file_size_after = os.path.getsize(processed_path)
-    print(f"FILE SIZE INCREASE: {round(file_size_after / file_size_before, 2) * 100}%")
+    # print(f"PROCESSING TIME: {round(end - start, 2)}")
+    # file_size_before = os.path.getsize("./examples/example.pdf")
+    # file_size_after = os.path.getsize(processed_path)
+    # print(f"FILE SIZE INCREASE: {round(file_size_after / file_size_before, 2) * 100}%")

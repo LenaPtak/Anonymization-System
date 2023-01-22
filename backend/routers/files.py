@@ -1,3 +1,4 @@
+import asyncio
 import os
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -101,6 +102,8 @@ async def read_file(filename: str, session_id: UUID = Depends(cookie)):
     Returns response with processed file correlated with session and given filename as an attachment.
     """
     session = await backend.read(session_id)
+    # TODO: Investigate
+    await asyncio.sleep(0.5)
     config = get_config(session_id)
 
     for saved_file in session.files:

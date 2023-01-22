@@ -327,11 +327,6 @@ class PDF:
             # TODO : higher garbage might make yolo problems
             doc.save(path, deflate=True, garbage=1)
 
-        # if self.make_raport:
-        #     raport_header = f"Raport for file: {self.filename}\n"
-        #     raport_type = f"Type: PDF processing\n"
-        #     raport_time = f"Time:{datetime.datetime.now()}\n\n"
-        #     self.raport[0] = raport_header + raport_type + raport_time
         return self.raport if self.make_raport else None
 
     def extract_images(self) -> tuple[list, list]:
@@ -368,9 +363,113 @@ class PDF:
 
 
 class TXT:
-    def __init__(self, filepath):
+
+    def __init__(
+        self,
+        filepath,
+        regex_categories=None,
+        expressions_to_anonymize=None,
+        expressions_to_highlight=None,
+        make_raport=None,
+    ):
         self.filepath = filepath
         self.filename = filepath.replace("/", "_").split(".")[-2][1:]
+        self.raport = [""]
+
+        self.regex_categories = regex_categories
+        self.expressions_to_anonymize = expressions_to_anonymize
+        self.expressions_to_highlight = expressions_to_highlight
+        self.make_raport = make_raport
+
+        with open(self.filepath) as file:
+            self.text = file.read()
+    def _highlight_expressions(self, path):
+        """
+        Funkcja _highlight_expressions zaznacza w PDFie podane w liście wyrażenia tekstowe.
+
+        :param page: Page
+        """
+        if self.expressions_to_highlight:
+            expressions = set()
+            logging.info(f"File {self.filename} enters _highlight_expressions()")
+            with open(path, "w+") as file:
+                for expression in self.expressions_to_highlight:
+                    if not expression in self.text or expression.upper() + " ~ >>>" in self.text:
+                        continue
+                    self.text = self.text.replace(expression, f"<<< ~ {expression.upper()} ~ >>>")
+                    expressions.add(expression)
+                file.write(self.text)
+
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHighlighted custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
+
+    def _anonymize_expressions(self, path):
+        """
+        Funkcja _anonymize_expressions ukrywa w PDFie podane w liście wyrażenia tekstowe.
+
+        :param page: Page
+        """
+        if self.expressions_to_anonymize:
+            expressions = set()
+            logging.info(f"File {self.filename} enters _anonymize_expressions()")
+            with open(path, "w+") as file:
+                for expression in self.expressions_to_anonymize:
+                    if not expression in self.text:
+                        continue
+                    self.text = self.text.replace(expression, f"**XXX**")
+                    expressions.add(expression)
+                file.write(self.text)
+
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHidden custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
+
+    def _anonymize_polish_expressions(self, path):
+        logging.info(f"File {self.filename} enters _anonymize_polish_expressions()")
+        words = set()
+        with open(path, "w+") as file:
+            for line in self.text.split("\n"):
+                for word in line.split():
+                    if word in polish_sensitive or word.upper() in polish_sensitive or word.capitalize() in polish_sensitive:
+                        if not word in self.text:
+                            continue
+                        words.add(word)
+                        self.text = self.text.replace(word, f"**XXX**")
+            file.write(self.text)
+
+        if self.make_raport:
+            if len(words) != 0:
+                self.raport.append(f"\nHidden polish words:\n")
+            for word in words:
+                self.raport.append(f" - {word}\n")
+
+    def _anonymize_regexes_expressions(self, path):
+        logging.info(f"File {self.filename} enters _anonymize_regexes_expressions()")
+        regexes = self.regex_categories if self.regex_categories else default_regexes
+        sensitive = _get_sensitive_data(text=self.text, chosen_regexes=regexes)
+        expressions = set()
+        with open(path, "w+") as file:
+            for datatype, word in set(sensitive):
+                if not word in self.text:
+                    continue
+                expressions.add((datatype, word))
+                self.text = self.text.replace(word, f"**XXX**")
+            file.write(self.text)
+
+        if self.make_raport:
+            if len(regexes) != 0:
+                self.raport.append(f"\nUsed regexes:\n")
+            for regex in regexes:
+                self.raport.append(f" - {regex}\n")
+            if len(expressions) != 0:
+                self.raport.append(f"\nHidden regex matches:\n")
+            for datatype, expression in expressions:
+                self.raport.append(f" - Trigger: {datatype}   Expression: {expression}\n")
 
     def hide_sensitive(self, path: str) -> None:
         """
@@ -378,26 +477,20 @@ class TXT:
 
         :param path: Path for allocating processed file.
         """
-        chosen_regexes = [
-            "NUMER PESEL",
-            "NUMER DOWODU OSOBISTEGO",
-            "NUMER KARTY KREDYTOWEJ",
-            "NUMER NIP",
-            "NUMER TELEFONU",
-            "NUMER RACHUNKU BANKOWEGO",
-            "EMAIL ADDRESS",
-        ]
 
-        with open(self.filepath) as file:
-            text = file.read()
-            sensitive = _get_sensitive_data(
-                text=text, chosen_regexes=chosen_regexes
-            )
+        # Anonymize regex expressions from config
+        self._anonymize_regexes_expressions(path)
 
-        with open(path, "w+") as file:
-            for _, word in set(sensitive):
-                text = text.replace(word, f"**XXX**")
-            file.write(text)
+        # Anonymize polish expressions
+        self._anonymize_polish_expressions(path)
+
+        # Anonymize expressions from config
+        self._anonymize_expressions(path)
+
+        # Highlight expressions from config
+        self._highlight_expressions(path)
+
+        return self.raport if self.make_raport else None
 
     def hide_text(self, args: list[str], path: str):
         """

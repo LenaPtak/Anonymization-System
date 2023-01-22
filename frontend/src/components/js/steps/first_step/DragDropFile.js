@@ -80,7 +80,7 @@ export default function DragDropFile(props) {
         <input
           ref={inputRef}
           type="file"
-          accept=".jpeg, .png, .png, .pdf"
+          accept=".jpeg, .png, .png, .pdf, .txt"
           className="dd__input"
           multiple={true}
           onChange={handleFiles}

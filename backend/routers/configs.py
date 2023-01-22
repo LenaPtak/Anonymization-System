@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api", tags=["Config"])
 
 
 @router.post("/config")
-async def create_config(config: Config, session_id: UUID = Depends(cookie)):
+def create_config(config: Config, session_id: UUID = Depends(cookie)):
     """
     Creates configuration for processed files
     """
