@@ -7,10 +7,10 @@ export default function Converting() {
   return (
     <div className="invite d-flex justify-content-center">
       <div className="invite__text">
-        <h1 className="invite__tittle">CONVERT YOUR FILES.</h1>
+        <h1 className="invite__tittle">DIFFERENT TYPES OF FILES.</h1>
         <h5 className="invite__under-tittle">
-          If you want, you can convert your files in .pdf .jpg .jpeg and .png
-          formats in any direction.
+          Ability to upload files in up to four different formats: .pdf, .png,
+          .jpg and .txt. We have this all.
         </h5>
         <Link
           to="/anonymization/send-files"
