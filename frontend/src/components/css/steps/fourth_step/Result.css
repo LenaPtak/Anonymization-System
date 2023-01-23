@@ -1,6 +1,7 @@
 .result {
   padding: 2rem;
   margin-left: 2rem;
+  margin-top: 0.5rem;
   background-color: rgb(245, 245, 245);
   border-radius: 0.75rem;
   height: 90%;
@@ -16,14 +17,15 @@
   justify-content: center;
   display: inline-block;
   width: 100%;
-  border: 1px solid #ccc;
-  background-color: white;
+  /* border: 1px solid #ccc; */
+  background-color: #eee;
+  color: #ccc;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
   margin-bottom: 15px;
 }
-
+/* 
 .result__tile.selected {
   background-color: rgb(226, 255, 255);
   border: 1px solid rgb(17 188 191);
@@ -32,7 +34,7 @@
 .result__tile:hover {
   background-color: rgb(226, 255, 255);
   border: 1px solid rgb(17 188 191);
-}
+} */
 
 .result__tile input[type="radio"] {
   display: none;

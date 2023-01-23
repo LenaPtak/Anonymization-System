@@ -7,7 +7,7 @@
 .all-files-type__title {
   font-size: 24px;
   font-weight: 200;
-  margin-bottom: 2rem;
+  margin-bottom: 5px;
   text-align: center;
 }
 
@@ -16,14 +16,16 @@
   display: inline-block;
   width: 200px;
   height: 130px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
+  background-color: #eee;
+  color: #ccc;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
   margin: 10px;
 }
 
-.file-type-tile.selected {
+/* .file-type-tile.selected {
   background-color: rgb(226, 255, 255);
   border: 1px solid rgb(17 188 191);
 }
@@ -31,7 +33,7 @@
 .file-type-tile:hover {
   background-color: rgb(226, 255, 255);
   border: 1px solid rgb(17 188 191);
-}
+} */
 
 .file-type-tile input[type="radio"] {
   display: none;

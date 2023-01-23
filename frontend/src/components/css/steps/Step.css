@@ -63,3 +63,12 @@
     padding: 1rem 2rem;
   }
 }
+
+.step__available-soon {
+  text-align: center;
+  width: 60rem;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: rgb(70, 70, 70);
+}

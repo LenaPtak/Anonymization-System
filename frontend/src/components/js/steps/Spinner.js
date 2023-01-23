@@ -4,7 +4,8 @@ function Spinner() {
   return (
     <div>
       <img
-        src="..\loading.gif"
+        src="..\color_spinner.gif"
+        // src="..\loading.gif"
         style={{ width: '100%', margin: 'auto', display: 'block' }}
         alt="Loading..."
       />

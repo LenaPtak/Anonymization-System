@@ -9,7 +9,7 @@ export default function Header() {
         to="/"
         style={{ textDecoration: "none", color: "black", marginRight: "auto" }}
       >
-        <img className="header__logo" src="..\images\logo.png" alt="logo" />
+        <img className="header__logo" src="..\images\new_logo.png" alt="logo" />
       </Link>
       <Link to="/about-us" style={{ textDecoration: "none", color: "black" }}>
         <div className="header__pages">about us</div>
