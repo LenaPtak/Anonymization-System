@@ -17,8 +17,9 @@
   justify-content: center;
   display: inline-block;
   width: 100%;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   background-color: #eee;
+  color: #ccc;
   border-radius: 10px;
   text-align: center;
   cursor: pointer;

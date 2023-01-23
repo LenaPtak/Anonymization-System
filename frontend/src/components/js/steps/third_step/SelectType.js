@@ -34,15 +34,16 @@ export default function SelectType(props) {
       onClick={handleClick}
       onChange={handleSelectChange}
     >
-      {filetypes.map((filetype) => (
+      {/* {filetypes.map((filetype) => ( */}
         <option
-          key={filetype}
+          key={filetypeWeb}
           // value={filetype}
-          selected={filetype === filetypeWeb}
+          // selected={filetype === filetypeWeb}
         >
-          {flag ? filetype : filetypeWeb}
+          { filetypeWeb }
+          {/* {flag ? filetype : filetypeWeb} */}
         </option>
-      ))}
+      {/* ))} */}
     </select>
   );
 }

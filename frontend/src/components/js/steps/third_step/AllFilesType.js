@@ -44,7 +44,7 @@ export default function AllFilesType({ handleClick, handleFlag }) {
             key={filetype}
             className={`file-type-tile`}
             value={filetype}
-            onClick={() => handleClickConfig(filetype)}
+            // onClick={() => handleClickConfig(filetype)}
           >
             <div className="file-type-extension">{filetype}</div>
           </div>
