@@ -9,11 +9,11 @@ export default function Description() {
         anonymization tool also allows you to download your anonymized files in
         a couple of different ways.
       </div>
-      <div className="fourth-description__paragraph">
+      {/* <div className="fourth-description__paragraph">
         By default, you have the option to download all of your files as they
         were sent, <b>each file individually</b>. This can be useful if you want
         to keep files organized in a specific way.
-      </div>
+      </div> */}
       <div className="fourth-description__paragraph">
         Second option you have is to download all of your files as a{" "}
         <b>single, merged file</b>. This can be convenient if you want to keep

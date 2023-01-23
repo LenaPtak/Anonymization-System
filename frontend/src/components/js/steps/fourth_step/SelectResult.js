@@ -6,6 +6,7 @@ export default function SelectResult() {
   return (
     <div>
       <div className="row">
+        <div className="step__available-soon">available soon!</div>
         <div className="col">
           <Result />
         </div>

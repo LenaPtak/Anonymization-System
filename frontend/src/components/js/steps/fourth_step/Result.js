@@ -4,7 +4,7 @@ import "../../../css/steps/fourth_step/Result.css";
 
 export default function Result() {
   const { config, setConfig } = useContext(ConfigContext);
-  const forms = ["default", "merge", "split"];
+  const forms = ["merge", "split"];
 
   const handleClick = (form) => {
     setConfig((prevConfig) => {

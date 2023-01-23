@@ -17,6 +17,7 @@ export default function SelectFiletype() {
 
   return (
     <div className="row g-3">
+      <div className="step__available-soon">available soon!</div>
       <div className="col select-filetype__all-files">
         <AllFilesType handleClick={handleClick} handleFlag={handleFlag} />
       </div>
