@@ -15,18 +15,72 @@ export default function Possibilities() {
         </h5>
       </div>
       <div className="d-flex justify-content-center possibilities__items">
-        <div className="d-flex align-items-center possibilities__item">
-          Select category by which you want to hide the data
+        <div className="col possibilities__item">
+          <div className="row possibilities__item__text">
+            Select category by which you want to hide the data
+          </div>
+          <img
+            className="row"
+            src="..\images\icon1.png"
+            style={{
+              width: "100%",
+              margin: "auto",
+              display: "block",
+              maxWidth: "100px",
+            }}
+            alt=""
+          />
         </div>
-        <div className="d-flex align-items-center possibilities__item">
-          Converting .pdf .jpg .png files
+
+        <div className="col possibilities__item">
+          <div className="row possibilities__item__text">
+            Upload .pdf .jpg .png .txt files
+          </div>
+          <img
+            className="row"
+            src="..\images\icon4.png"
+            style={{
+              width: "100%",
+              margin: "auto",
+              display: "block",
+              maxWidth: "100px",
+            }}
+            alt=""
+          />
         </div>
-        <div className="d-flex align-items-center possibilities__item">
-          You can enter the exact phrases you want to hide
+
+        <div className="col possibilities__item">
+          <div className="row possibilities__item__text">
+            You can enter phrases you want to hide or highlight
+          </div>
+          <img
+            className="row"
+            src="..\images\icon3.png"
+            style={{
+              width: "100%",
+              margin: "auto",
+              display: "block",
+              maxWidth: "100px",
+            }}
+            alt=""
+          />
         </div>
-        <div className="d-flex align-items-center possibilities__item">
-          You can choose whether you want to combine the documents or prefer
-          each one separately
+
+        <div className="col possibilities__item">
+          <div className="row possibilities__item__text">
+            Anonymization progress report
+          </div>
+          <img
+            className="row"
+            src="..\images\icon2.png"
+            style={{
+              width: "100%",
+              margin: "auto",
+              display: "block",
+              maxWidth: "100px",
+            }}
+            alt=""
+          />
         </div>
       </div>
     </div>
