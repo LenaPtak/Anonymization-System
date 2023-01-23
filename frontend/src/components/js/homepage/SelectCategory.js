@@ -6,16 +6,13 @@ import StartBtn from "./StartBtn";
 export default function SelectCategory() {
   return (
     <div className="select-category d-flex justify-content-center">
-      <img
-        className="select-category__photo"
-        src="..\images\zdj2.png"
-        alt=""
-      />
+      <img className="select-category__photo" src="..\images\zdj2.png" alt="" />
       <div className="select-category__text">
         <h1 className="select-category__tittle">ANONYMIZATION BY CATEGORY.</h1>
         <h5 className="select-category__under-tittle">
           Select categories such as e.g. PESEL, e-mail, telephone numbers and
-          other that you want to hide. You can enter the exact phrases too!
+          other that you want to hide. You can enter the exact phrases to hide
+          or highlight too!
         </h5>
         <Link
           to="/anonymization/send-files"
