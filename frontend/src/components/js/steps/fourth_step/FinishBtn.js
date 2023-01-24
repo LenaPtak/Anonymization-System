@@ -80,30 +80,35 @@ export default function FinishBtn() {
   }
 
   function downloadRaport() {
-    console.log("funkcja");
-    fetch("http://localhost:8000/api/raport", {
-      method: "GET",
-      credentials: "include",
-    })
-      .catch((e) => console.log(`e: ${e}`))
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement("a");
+    if (config.make_raport) {
+      fetch("http://localhost:8000/api/raport", {
+        method: "GET",
+        credentials: "include",
+      })
+        .catch((e) => console.log(`e: ${e}`))
+        .then((response) => response.blob())
+        .then((blob) => {
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute("download", "raport.txt");
+          link.href = url;
+          link.setAttribute("download", "raport.txt");
 
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
 
-        setTimeout(() => {
-          window.location.replace("/");
-        }, 3000);
+          setTimeout(() => {
+            window.location.replace("/");
+          }, 3000);
 
-        console.log("Pobieram raport");
-      });
+          // console.log("Pobieram raport");
+        });
+    } else {
+      setTimeout(() => {
+        window.location.replace("/");
+      }, 3000);
+    }
   }
 
   useEffect(() => {
