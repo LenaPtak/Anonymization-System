@@ -39,19 +39,23 @@ export default function Step() {
           <div className="step__form">
             <DragDropFile updateUploadedFiles={updateUploadedFiles} />
             <div className="d-flex flex-row-reverse step__buttons">
-              <Link
-                to={{
-                  pathname: "/anonymization/select-category",
-                }}
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                <button
-                  className="step__btn"
-                  onClick={() => handleSubmit(uploadedFiles)}
+              {uploadedFiles.length > 0 ? (
+                <Link
+                  to={{
+                    pathname: "/anonymization/select-category",
+                  }}
+                  style={{ textDecoration: "none", color: "black" }}
                 >
-                  Next step
-                </button>
-              </Link>
+                  <button
+                    className="step__btn"
+                    onClick={() => handleSubmit(uploadedFiles)}
+                  >
+                    Next step
+                  </button>
+                </Link>
+              ) : (
+                <button className="step__btn__disabled">Next step</button>
+              )}
             </div>
           </div>
         </div>

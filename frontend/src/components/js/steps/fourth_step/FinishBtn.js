@@ -7,7 +7,6 @@ export default function FinishBtn() {
   const { config, setConfig } = useContext(ConfigContext);
 
   function createConfig(config) {
-    console.log(config);
     fetch("http://localhost:8000/api/config", {
       method: "POST",
       credentials: "include",
