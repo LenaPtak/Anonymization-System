@@ -509,20 +509,109 @@ class TXT:
 
 
 class JPG:
-    def __init__(self, filepath):
+    def __init__(
+        self,
+        filepath,
+        regex_categories=None,
+        expressions_to_anonymize=None,
+        expressions_to_highlight=None,
+        hide_people=None,
+        make_raport=None,
+        result_type=None
+    ):
         self.filepath = filepath
         self.filename = filepath.replace("/", "_").split(".")[-2][1:]
+        self.raport = [""]
+
+        self.regex_categories = regex_categories
+        self.expressions_to_anonymize = expressions_to_anonymize
+        self.expressions_to_highlight = expressions_to_highlight
+        self.hide_people = hide_people
+        self.make_raport = make_raport
+        self.result_type = result_type
         self.image = cv2.imread(self.filepath)
         self.regex_categories = polish_sensitive
 
-    def hide_sensitive(self):
-        yolo_wrapper = YoloWrapper()
-        results = yolo_wrapper.model(self.image)
-        self.image = yolo_wrapper.process_results(results, self.image)
-        eo = EasyOCRWrapper(None)
+    def _highlight_expressions(self, texts, results):
+        """
+        Funkcja _highlight_expressions zaznacza w PDFie podane w liście wyrażenia tekstowe.
 
-        results = eo.model(self.image)
-        texts, boxes = eo.preprocess_results(results, self.image)
+        :param page: Page
+        """
+        if self.expressions_to_highlight:
+            expressions = set()
+            logging.info(f"File {self.filename} enters _highlight_expressions()")
+            for expression in self.expressions_to_anonymize:
+                if not expression in "\n".join(texts):
+                    continue
+                expressions.add(expression)
+            self.image = self.eo.highlight_strings(
+                self.image,
+                results,
+                list(expressions)
+            )
+ 
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHidden custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
+
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHighlighted custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
+
+    def _anonymize_expressions(self, texts, results):
+        """
+        Funkcja _anonymize_expressions ukrywa w PDFie podane w liście wyrażenia tekstowe.
+
+        :param page: Page
+        """
+        if self.expressions_to_anonymize:
+            expressions = set()
+            logging.info(f"File {self.filename} enters _anonymize_expressions()")
+            for expression in self.expressions_to_anonymize:
+                if not expression in "\n".join(texts):
+                    continue
+                expressions.add(expression)
+            self.image = self.eo.anonymize_strings(
+                self.image,
+                results,
+                list(expressions)
+            )
+ 
+            if self.make_raport:
+                if len(expressions) != 0:
+                    self.raport.append(f"\nHidden custom expressions:\n")
+                for expression in expressions:
+                    self.raport.append(f" - {expression}\n")
+
+    def _anonymize_polish_expressions(self, texts, results):
+        logging.info(f"File {self.filename} enters _anonymize_polish_expressions()")
+        words = set()
+        for line in texts:
+            for word in line.split():
+                if word in polish_sensitive or word.upper() in polish_sensitive or word.capitalize() in polish_sensitive:
+                    if not word in "\n".join(texts):
+                        continue
+                    words.add(word)
+        sensitive = list(words)
+        self.image = self.eo.anonymize_strings(
+                self.image,
+                results,
+                sensitive
+        )
+
+        if self.make_raport:
+            if len(words) != 0:
+                self.raport.append(f"\nHidden polish words:\n")
+            for word in words:
+                self.raport.append(f" - {word}\n")
+
+    def _anonymize_regexes_expressions(self, texts, results):
+        logging.info(f"File {self.filename} enters _anonymize_regexes_expressions()")
         regexes = self.regex_categories \
             if self.regex_categories \
             else default_regexes
@@ -531,19 +620,70 @@ class JPG:
                 chosen_regexes=regexes
         )
         sensitive = list(sensitive)
-        for i in sensitive:
-            print("INFO (IMAGE PROCESSING) sensitive:", i)
-        self.image = eo.anonymize_strings(
+        expressions = sensitive
+        self.image = self.eo.anonymize_strings(
                 self.image,
                 results,
                 sensitive
         )
+        if self.make_raport:
+            if len(regexes) != 0:
+                self.raport.append(f"\nUsed regexes:\n")
+            for regex in regexes:
+                self.raport.append(f" - {regex}\n")
+            if len(expressions) != 0:
+                self.raport.append(f"\nHidden regex matches:\n")
+            for datatype, expression in expressions:
+                self.raport.append(f" - Trigger: {datatype}   Expression: {expression}\n")
+
+
+    def hide_sensitive(self) -> None:
+        """
+        This method hide sensitive data in 'plain/text' file based on predefined regexes.
+
+        :param path: Path for allocating processed file.
+        """
+        if self.hide_people:
+            yolo_wrapper = YoloWrapper()
+            results = yolo_wrapper.model(self.image)
+            self.image = yolo_wrapper.process_results(results, self.image)
+        self.eo = EasyOCRWrapper(None)
+        results = self.eo.model(self.image)
+        texts, boxes = self.eo.preprocess_results(results, self.image)
+        # Anonymize regex expressions from config
+        self._anonymize_regexes_expressions(texts, results)
+
+        # Anonymize polish expressions
+        self._anonymize_polish_expressions(texts, results)
+
+        # Anonymize expressions from config
+        self._anonymize_expressions(texts, results)
+
+        # Highlight expressions from config
+        self._highlight_expressions(texts, results)
+
+        return self.raport if self.make_raport else None
 
     def save_image(self, path):
         cv2.imwrite(path, self.image)
 
 
 class PNG(JPG):
-    def __init__(self, filepath):
-        super().__init__(filepath)
-        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+    def __init__(
+        self,
+        filepath,
+        regex_categories=None,
+        expressions_to_anonymize=None,
+        expressions_to_highlight=None,
+        hide_people=None,
+        make_raport=None,
+    ):
+        super().__init__(
+                filepath,
+                regex_categories,
+                expressions_to_anonymize,
+                expressions_to_highlight,
+                hide_people,
+                make_raport,
+        )
+        # self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
