@@ -99,37 +99,39 @@ export default function DragDropFile(props) {
             </div>
           ) : (
             <div style={{ overflowY: "scroll" }} className="dd_scrollable">
-              <div className="dd_text">Drag and drop your file here or</div>
+              {/* <div className="dd_text">Drag and drop your file here or</div> */}
               <button className="dd__uploadBtn" onClick={onButtonClick}>
-                upload a file
+                upload more files
               </button>
-              <ol>
-                {uploadedFiles.map((file) => (
-                  <li key={file.name}>
-                    {file.name}
-                    <button
-                      onClick={() => handleRemoveFile(file)}
-                      className="dd_deleteBtn"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="25"
-                        height="25"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
+              <div className="dd__fileList">
+                <div>
+                  {uploadedFiles.map((file) => (
+                    <ol key={file.name}>
+                      <button
+                        onClick={() => handleRemoveFile(file)}
+                        className="dd_deleteBtn"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
-                  </li>
-                ))}
-              </ol>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="25"
+                          height="25"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                      {file.name}
+                    </ol>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </label>

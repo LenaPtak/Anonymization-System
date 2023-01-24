@@ -93,10 +93,6 @@ export default function Categories() {
     category[1].toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  useEffect(() => {
-    console.log(config);
-  }, []);
-
   return (
     <div className="categories justify-content-center">
       <div className="categories__title">Select category to anonymize:</div>

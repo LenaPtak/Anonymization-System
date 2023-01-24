@@ -47,36 +47,6 @@
   text-decoration-line: underline;
 }
 
-.dd_deleteBtn {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  border: 2px solid rgb(231, 50, 50);
-  background-color: #fff;
-  cursor: pointer;
-  box-shadow: 0 0 10px #333;
-  overflow: hidden;
-  transition: 0.3s;
-  margin-left: 15px;
-  margin-top: 15px;
-}
-
-.dd_deleteBtn:hover {
-  background-color: rgb(245, 207, 207);
-  transform: scale(1.2);
-  box-shadow: 0 0 4px #111;
-  transition: 0.3s;
-}
-
-svg {
-  color: rgb(231, 50, 50);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: 0.3s;
-}
 
 #drag-file-element {
   position: absolute;
@@ -135,6 +105,50 @@ main {
 .dd_scrollable {
   width: 100%;
   height: 90%;
+}
+
+.dd__fileList {
+  width: 100%;
+  text-align: left;
+  /* align-items: flex-start; */
+}
+
+.dd_deleteBtn {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  border: 2px solid rgb(231, 50, 50);
+  background-color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 10px #333;
+  overflow: hidden;
+  transition: 0.3s;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.dd_deleteBtn:hover {
+  background-color: rgb(245, 207, 207);
+  transform: scale(1.2);
+  box-shadow: 0 0 4px #111;
+  transition: 0.3s;
+}
+
+.dd_filename {
+  font-size: 20px;
+  margin-left: 0px;
+  margin-top: 10px;
+}
+
+svg {
+  color: rgb(231, 50, 50);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: 0.3s;
 }
 
 ol li {

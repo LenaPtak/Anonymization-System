@@ -16,12 +16,12 @@ export default function SecondStep(props) {
           <div className="step__form">
             <SelectCategory />
             <div className="d-flex justify-content-between step__buttons">
-              <Link
+              {/* <Link
                 to="/anonymization/send-files"
                 style={{ textDecoration: "none", color: "black" }}
-              >
-                <button className="step__btn">Previous step</button>
-              </Link>
+              > */}
+              <div className="step__btn__none">Previous step</div>
+              {/* </Link> */}
               <Link
                 to="/anonymization/phrases"
                 style={{ textDecoration: "none", color: "black" }}
