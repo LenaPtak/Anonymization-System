@@ -15,10 +15,19 @@ import { ConfigContext } from "./ConfigContext";
 
 function App() {
   const [config, setConfig] = useState({
-    regex_categories: [],
+    regex_categories: [
+      "NUMER PESEL",
+      "NUMER DOWODU OSOBISTEGO",
+      "NUMER KARTY KREDYTOWEJ",
+      "NUMER NIP",
+      "NUMER TELEFONU",
+      "NUMER RACHUNKU BANKOWEGO",
+      "EMAIL ADDRESS",
+      "HOME ADDRESS",
+    ],
     expressions_to_anonymize: [],
     expressions_to_highlight: [],
-    hide_people: false,
+    hide_people: true,
     make_raport: false,
     result_form: "",
     file_configs: [
