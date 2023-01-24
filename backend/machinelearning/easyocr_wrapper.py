@@ -182,10 +182,76 @@ class EasyOCRWrapper(Wrapper):
                                     int(base_coords[1][1]+(base_coords[3][1] -
                                         base_coords[1][1])*percentage[1][1])
                             ]]))],
-                            color=(255, 255, 0)
+                            color=(0, 0, 0)
                     )
 
         return image
+
+    def highlight_strings(self, image, data, phrases):
+        print("INFO: Highlighting phrases:", phrases)
+        orig_image = deepcopy(image)
+        for i in [f for f in data if f is not []]:
+            words = self.ocr_model.readtext(
+                    i[1][0],
+                    paragraph=False,
+                    width_ths=0.03,
+            )
+            # a = (xa,ya) b = (xb,yb)
+            # vec = (xa+(xb-xa), ya+(yb-ya))
+            for word in words:
+                test = False
+                for w in word[1].split():
+                    if w in [x[1] for x in phrases]:
+                        test = True
+                        break
+                if test:
+                    # TODO: Check if the shape should be swapped
+                    box_shape = list(np.shape(i[1][0]))[0:2]
+                    percentage = [
+                        [
+                            word[0][0][0]/box_shape[1],
+                            word[0][0][1]/box_shape[0]
+                        ],
+                        [
+                            word[0][2][0]/box_shape[1],
+                            word[0][2][1]/box_shape[0]
+                        ]
+                    ]
+                    base_coords = i[0][0][0]
+                    # print(base_coords)
+                    for _ in range(i[1][1]):
+                        base_coords = [[x, y] for y, x in base_coords]
+                        percentage = [[x, 1-y] for y, x in percentage]
+                    cv2.fillPoly(
+                            image,
+                            pts=[np.int32(np.array([[
+                                    int(base_coords[0][0]+(base_coords[2][0] -
+                                        base_coords[0][0])*percentage[0][0]),
+                                    int(base_coords[0][1]+(base_coords[2][1] -
+                                        base_coords[0][1])*percentage[0][1])
+                                ],
+                                [
+                                    int(base_coords[1][0]+(base_coords[3][0] -
+                                        base_coords[1][0])*percentage[0][0]),
+                                    int(base_coords[1][1]+(base_coords[3][1] -
+                                        base_coords[1][1])*percentage[0][1])
+                                ],
+                                [
+                                    int(base_coords[0][0]+(base_coords[2][0] -
+                                        base_coords[0][0])*percentage[1][0]),
+                                    int(base_coords[0][1]+(base_coords[2][1] -
+                                        base_coords[0][1])*percentage[1][1])
+                                ],
+                                [
+                                    int(base_coords[1][0]+(base_coords[3][0] -
+                                        base_coords[1][0])*percentage[1][0]),
+                                    int(base_coords[1][1]+(base_coords[3][1] -
+                                        base_coords[1][1])*percentage[1][1])
+                            ]]))],
+                            color=(255, 0, 0)
+                    )
+
+        return cv2.addWeighted(image, 0.25, orig_image, 0.75, 0)
 
 
 if __name__ == "__main__":

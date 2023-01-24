@@ -8,7 +8,7 @@ from starlette.responses import FileResponse
 
 from backend.machinelearning.yolo_wrapper import YoloWrapper
 from backend.pydantics import UserFile, Config
-from backend.pdf import PDF, TXT
+from backend.pdf import PDF, TXT, JPG, PNG
 from backend.consts import (
     CONTENT_TYPE_TO_PATH_MAP,
     TXT_DIR_PATH,
@@ -121,13 +121,38 @@ async def process_file(file: UserFile, config: Config) -> tuple[FileResponse, li
         if txt_raport:
             raport += txt_raport
 
-    elif processed_type == "image/png":
-        # TODO: Jan Bylicki task 10.10.2023
-        pass
+    elif processed_type == 'image/jpeg':
+        if config:
+            hide_people = config.hide_people
 
-    elif processed_type == "image/jpeg":
-        # TODO: Jan Bylicki task 10.10.2023
-        pass
+            img_config = {
+                "regex_categories": [regex.upper() for regex in config.regex_categories],
+                "expressions_to_anonymize": _map_expressions_from_list(config.expressions_to_anonymize),
+                "expressions_to_highlight": _map_expressions_from_list(config.expressions_to_highlight),
+                "hide_people": config.hide_people,
+                "make_raport": config.make_raport,
+            }
+            image_processor = JPG(filepath=file.location, **img_config)
+        else:
+            image_processor = JPG(filepath=file.location)
+        image_processor.hide_sensitive()
+        image_processor.save_image(processed_path)
+    elif processed_type == 'image/png':
+        if config:
+            hide_people = config.hide_people
+
+            img_config = {
+                "regex_categories": [regex.upper() for regex in config.regex_categories],
+                "expressions_to_anonymize": _map_expressions_from_list(config.expressions_to_anonymize),
+                "expressions_to_highlight": _map_expressions_from_list(config.expressions_to_highlight),
+                "hide_people": config.hide_people,
+                "make_raport": config.make_raport,
+            }
+            image_processor = PNG(filepath=file.location, **img_config)
+        else:
+            image_processor = PNG(filepath=file.location)
+        image_processor.hide_sensitive()
+        image_processor.save_image(processed_path)
 
     else:
         raise HTTPException(
