@@ -541,14 +541,17 @@ class JPG:
         if self.expressions_to_highlight:
             expressions = set()
             logging.info(f"File {self.filename} enters _highlight_expressions()")
-            for expression in self.expressions_to_anonymize:
+            for expression in self.expressions_to_highlight:
                 if not expression in "\n".join(texts):
                     continue
                 expressions.add(expression)
+            print(list(expressions))
+            expressions = [(None, i) for i in list(expressions)]
+            print("\n".join(texts))
             self.image = self.eo.highlight_strings(
                 self.image,
                 results,
-                list(expressions)
+                expressions
             )
  
             if self.make_raport:
@@ -576,10 +579,14 @@ class JPG:
                 if not expression in "\n".join(texts):
                     continue
                 expressions.add(expression)
+            expressions = [(None, i) for i in list(expressions)]
+            print(list(expressions))
+            print("\n".join(texts))
+
             self.image = self.eo.anonymize_strings(
                 self.image,
                 results,
-                list(expressions)
+                expressions
             )
  
             if self.make_raport:

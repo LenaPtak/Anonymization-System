@@ -77,13 +77,13 @@ class YoloWrapper(Wrapper):
                 float(conf),
                 int(class_id),
             )
-            if self.get_all_classes()[class_id] in self.get_classes():
+            if self.get_all_classes()[class_id] in self.get_classes() and conf > 0.5:
                 mask = np.zeros(
                     (np.shape(data)[0], np.shape(data)[1], 3), dtype=np.uint8
                 )
                 mask = cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
                 out = np.where(mask == np.array([255, 255, 255]), blurred_img, out)
-
+            
         if self.show_image:
             im_pil = Image.fromarray(out)
             im_pil.show()

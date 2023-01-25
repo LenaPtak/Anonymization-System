@@ -45,6 +45,8 @@ class EasyOCRWrapper(Wrapper):
         return self.detail
 
     def model(self, data):
+        data = cv2.cvtColor(deepcopy(data), cv2.COLOR_RGB2GRAY)
+        data = cv2.cvtColor(deepcopy(data), cv2.COLOR_GRAY2RGB)
         prediction_result = get_prediction(
             image=data,
             craft_net=self.craft_net,
@@ -63,7 +65,7 @@ class EasyOCRWrapper(Wrapper):
             best_text, best_text_len, r_poly, best_image = "", 0, None, None
             rotation = 0
             img = file_utils.rectify_poly(data, poly)
-            for i in range(4):
+            for i in range(3):
                 candidate = self.ocr_model.readtext(img)
                 img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
                 if candidate:
@@ -141,6 +143,7 @@ class EasyOCRWrapper(Wrapper):
                 if test:
                     # TODO: Check if the shape should be swapped
                     box_shape = list(np.shape(i[1][0]))[0:2]
+                    print(box_shape)
                     percentage = [
                         [
                             word[0][0][0]/box_shape[1],
@@ -152,36 +155,15 @@ class EasyOCRWrapper(Wrapper):
                         ]
                     ]
                     base_coords = i[0][0][0]
-                    # print(base_coords)
+                    print(base_coords, percentage)
                     for _ in range(i[1][1]):
                         base_coords = [[x, y] for y, x in base_coords]
                         percentage = [[x, 1-y] for y, x in percentage]
                     cv2.fillPoly(
                             image,
-                            pts=[np.int32(np.array([[
-                                    int(base_coords[0][0]+(base_coords[2][0] -
-                                        base_coords[0][0])*percentage[0][0]),
-                                    int(base_coords[0][1]+(base_coords[2][1] -
-                                        base_coords[0][1])*percentage[0][1])
-                                ],
-                                [
-                                    int(base_coords[1][0]+(base_coords[3][0] -
-                                        base_coords[1][0])*percentage[0][0]),
-                                    int(base_coords[1][1]+(base_coords[3][1] -
-                                        base_coords[1][1])*percentage[0][1])
-                                ],
-                                [
-                                    int(base_coords[0][0]+(base_coords[2][0] -
-                                        base_coords[0][0])*percentage[1][0]),
-                                    int(base_coords[0][1]+(base_coords[2][1] -
-                                        base_coords[0][1])*percentage[1][1])
-                                ],
-                                [
-                                    int(base_coords[1][0]+(base_coords[3][0] -
-                                        base_coords[1][0])*percentage[1][0]),
-                                    int(base_coords[1][1]+(base_coords[3][1] -
-                                        base_coords[1][1])*percentage[1][1])
-                            ]]))],
+                            pts=[np.int32(np.array(
+                                i[0][0][0]
+                            ))],
                             color=(0, 0, 0)
                     )
 
@@ -198,6 +180,7 @@ class EasyOCRWrapper(Wrapper):
             )
             # a = (xa,ya) b = (xb,yb)
             # vec = (xa+(xb-xa), ya+(yb-ya))
+            print(words)
             for word in words:
                 test = False
                 for w in word[1].split():
@@ -218,37 +201,17 @@ class EasyOCRWrapper(Wrapper):
                         ]
                     ]
                     base_coords = i[0][0][0]
-                    # print(base_coords)
+                    print(base_coords)
                     for _ in range(i[1][1]):
                         base_coords = [[x, y] for y, x in base_coords]
                         percentage = [[x, 1-y] for y, x in percentage]
+
                     cv2.fillPoly(
                             image,
-                            pts=[np.int32(np.array([[
-                                    int(base_coords[0][0]+(base_coords[2][0] -
-                                        base_coords[0][0])*percentage[0][0]),
-                                    int(base_coords[0][1]+(base_coords[2][1] -
-                                        base_coords[0][1])*percentage[0][1])
-                                ],
-                                [
-                                    int(base_coords[1][0]+(base_coords[3][0] -
-                                        base_coords[1][0])*percentage[0][0]),
-                                    int(base_coords[1][1]+(base_coords[3][1] -
-                                        base_coords[1][1])*percentage[0][1])
-                                ],
-                                [
-                                    int(base_coords[0][0]+(base_coords[2][0] -
-                                        base_coords[0][0])*percentage[1][0]),
-                                    int(base_coords[0][1]+(base_coords[2][1] -
-                                        base_coords[0][1])*percentage[1][1])
-                                ],
-                                [
-                                    int(base_coords[1][0]+(base_coords[3][0] -
-                                        base_coords[1][0])*percentage[1][0]),
-                                    int(base_coords[1][1]+(base_coords[3][1] -
-                                        base_coords[1][1])*percentage[1][1])
-                            ]]))],
-                            color=(255, 0, 0)
+                            pts=[np.int32(np.array(
+                                i[0][0][0]
+                            ))],
+                            color=(255, 255, 0)
                     )
 
         return cv2.addWeighted(image, 0.25, orig_image, 0.75, 0)
